@@ -1,0 +1,10 @@
+{
+  "name": "podcast-tune-backend",
+  "version": "1.0.0",
+  "description": "Graphql API server for PodcastTune, built with Node, Express, Apollo, Prisma, and PostgreSQL.",
+  "main": "index.js",
+  "repository": "git@github.com:Zimniros/Podcast-Tune-Graphql-API.git",
+  "author": "Anton Zimnitski <zimniros@protonmail.com>",
+  "license": "GNU General Public License v3.0",
+  "private": false
+}

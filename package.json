@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "git@github.com:Zimniros/Podcast-Tune-Graphql-API.git",
   "author": "Anton Zimnitski <zimniros@protonmail.com>",
-  "license": "GNU General Public License v3.0",
+  "license": "GPL-3.0-or-later",
   "private": false,
   "devDependencies": {
     "babel-eslint": "^10.0.1",

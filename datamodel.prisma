@@ -1,4 +1,11 @@
 type User {
-  id: ID! @unique
+  id: ID! @id
+  name: String!
+  email: String! @unique
+}
+
+type Genre {
+  id: ID! @id
+  itunesId: String!
   name: String!
 }

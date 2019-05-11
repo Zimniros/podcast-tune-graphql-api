@@ -17,11 +17,11 @@ const fetchCategories = async () => {
 
   return categoriesData.reduce((acc, category) => {
     const { name, id, subgenres } = category;
-    acc.push(Object.assign({}, { name, itunesId: id }));
+    acc.push(Object.assign({}, { name, itunesId: +id }));
 
     if (subgenres && subgenres.length && subgenres.length > 0) {
       subgenres.map(el =>
-        acc.push(Object.assign({}, { name: el.name, itunesId: el.id }))
+        acc.push(Object.assign({}, { name: el.name, itunesId: +el.id }))
       );
     }
 

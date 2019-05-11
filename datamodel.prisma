@@ -6,17 +6,16 @@ type User {
 
 type Category {
   id: ID! @id
-  itunesId: String!
+  itunesId: Int!
   name: String!
 }
 
 type Podcast {
   id: ID! @id
-  itunesId: String!
+  itunesId: Int!
   title: String!
   author: String!
   description: String!
   artwork: String!
   feedUrl: String!
-  categories: [Category!]!
 }

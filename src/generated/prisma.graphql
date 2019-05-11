@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Sat May 11 2019 13:10:42 GMT+0300 (Moscow Standard Time)
+# timestamp: Sat May 11 2019 19:06:13 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -20,7 +20,7 @@ type BatchPayload {
 
 type Category implements Node {
   id: ID!
-  itunesId: String!
+  itunesId: Int!
   name: String!
 }
 
@@ -36,13 +36,8 @@ type CategoryConnection {
 
 input CategoryCreateInput {
   id: ID
-  itunesId: String!
+  itunesId: Int!
   name: String!
-}
-
-input CategoryCreateManyInput {
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
 }
 
 """An edge in a connection."""
@@ -65,139 +60,8 @@ enum CategoryOrderByInput {
 
 type CategoryPreviousValues {
   id: ID!
-  itunesId: String!
+  itunesId: Int!
   name: String!
-}
-
-input CategoryScalarWhereInput {
-  """Logical AND on all given filters."""
-  AND: [CategoryScalarWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [CategoryScalarWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [CategoryScalarWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  itunesId: String
-
-  """All values that are not equal to given value."""
-  itunesId_not: String
-
-  """All values that are contained in given list."""
-  itunesId_in: [String!]
-
-  """All values that are not contained in given list."""
-  itunesId_not_in: [String!]
-
-  """All values less than the given value."""
-  itunesId_lt: String
-
-  """All values less than or equal the given value."""
-  itunesId_lte: String
-
-  """All values greater than the given value."""
-  itunesId_gt: String
-
-  """All values greater than or equal the given value."""
-  itunesId_gte: String
-
-  """All values containing the given string."""
-  itunesId_contains: String
-
-  """All values not containing the given string."""
-  itunesId_not_contains: String
-
-  """All values starting with the given string."""
-  itunesId_starts_with: String
-
-  """All values not starting with the given string."""
-  itunesId_not_starts_with: String
-
-  """All values ending with the given string."""
-  itunesId_ends_with: String
-
-  """All values not ending with the given string."""
-  itunesId_not_ends_with: String
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
 }
 
 type CategorySubscriptionPayload {
@@ -237,52 +101,14 @@ input CategorySubscriptionWhereInput {
   node: CategoryWhereInput
 }
 
-input CategoryUpdateDataInput {
-  itunesId: String
-  name: String
-}
-
 input CategoryUpdateInput {
-  itunesId: String
+  itunesId: Int
   name: String
-}
-
-input CategoryUpdateManyDataInput {
-  itunesId: String
-  name: String
-}
-
-input CategoryUpdateManyInput {
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
-  set: [CategoryWhereUniqueInput!]
-  disconnect: [CategoryWhereUniqueInput!]
-  delete: [CategoryWhereUniqueInput!]
-  update: [CategoryUpdateWithWhereUniqueNestedInput!]
-  updateMany: [CategoryUpdateManyWithWhereNestedInput!]
-  deleteMany: [CategoryScalarWhereInput!]
-  upsert: [CategoryUpsertWithWhereUniqueNestedInput!]
 }
 
 input CategoryUpdateManyMutationInput {
-  itunesId: String
+  itunesId: Int
   name: String
-}
-
-input CategoryUpdateManyWithWhereNestedInput {
-  where: CategoryScalarWhereInput!
-  data: CategoryUpdateManyDataInput!
-}
-
-input CategoryUpdateWithWhereUniqueNestedInput {
-  where: CategoryWhereUniqueInput!
-  data: CategoryUpdateDataInput!
-}
-
-input CategoryUpsertWithWhereUniqueNestedInput {
-  where: CategoryWhereUniqueInput!
-  update: CategoryUpdateDataInput!
-  create: CategoryCreateInput!
 }
 
 input CategoryWhereInput {
@@ -334,46 +160,28 @@ input CategoryWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  itunesId: String
+  itunesId: Int
 
   """All values that are not equal to given value."""
-  itunesId_not: String
+  itunesId_not: Int
 
   """All values that are contained in given list."""
-  itunesId_in: [String!]
+  itunesId_in: [Int!]
 
   """All values that are not contained in given list."""
-  itunesId_not_in: [String!]
+  itunesId_not_in: [Int!]
 
   """All values less than the given value."""
-  itunesId_lt: String
+  itunesId_lt: Int
 
   """All values less than or equal the given value."""
-  itunesId_lte: String
+  itunesId_lte: Int
 
   """All values greater than the given value."""
-  itunesId_gt: String
+  itunesId_gt: Int
 
   """All values greater than or equal the given value."""
-  itunesId_gte: String
-
-  """All values containing the given string."""
-  itunesId_contains: String
-
-  """All values not containing the given string."""
-  itunesId_not_contains: String
-
-  """All values starting with the given string."""
-  itunesId_starts_with: String
-
-  """All values not starting with the given string."""
-  itunesId_not_starts_with: String
-
-  """All values ending with the given string."""
-  itunesId_ends_with: String
-
-  """All values not ending with the given string."""
-  itunesId_not_ends_with: String
+  itunesId_gte: Int
   name: String
 
   """All values that are not equal to given value."""
@@ -431,23 +239,23 @@ scalar Long
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
-  createPodcast(data: PodcastCreateInput!): Podcast!
   createCategory(data: CategoryCreateInput!): Category!
+  createPodcast(data: PodcastCreateInput!): Podcast!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updatePodcast(data: PodcastUpdateInput!, where: PodcastWhereUniqueInput!): Podcast
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
+  updatePodcast(data: PodcastUpdateInput!, where: PodcastWhereUniqueInput!): Podcast
   deleteUser(where: UserWhereUniqueInput!): User
-  deletePodcast(where: PodcastWhereUniqueInput!): Podcast
   deleteCategory(where: CategoryWhereUniqueInput!): Category
+  deletePodcast(where: PodcastWhereUniqueInput!): Podcast
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  upsertPodcast(where: PodcastWhereUniqueInput!, create: PodcastCreateInput!, update: PodcastUpdateInput!): Podcast!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
+  upsertPodcast(where: PodcastWhereUniqueInput!, create: PodcastCreateInput!, update: PodcastUpdateInput!): Podcast!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  updateManyPodcasts(data: PodcastUpdateManyMutationInput!, where: PodcastWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
+  updateManyPodcasts(data: PodcastUpdateManyMutationInput!, where: PodcastWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
-  deleteManyPodcasts(where: PodcastWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
+  deleteManyPodcasts(where: PodcastWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -480,13 +288,12 @@ type PageInfo {
 
 type Podcast implements Node {
   id: ID!
-  itunesId: String!
+  itunesId: Int!
   title: String!
   author: String!
   description: String!
   artwork: String!
   feedUrl: String!
-  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
 }
 
 """A connection to a list of items."""
@@ -501,13 +308,12 @@ type PodcastConnection {
 
 input PodcastCreateInput {
   id: ID
-  itunesId: String!
+  itunesId: Int!
   title: String!
   author: String!
   description: String!
   artwork: String!
   feedUrl: String!
-  categories: CategoryCreateManyInput
 }
 
 """An edge in a connection."""
@@ -538,7 +344,7 @@ enum PodcastOrderByInput {
 
 type PodcastPreviousValues {
   id: ID!
-  itunesId: String!
+  itunesId: Int!
   title: String!
   author: String!
   description: String!
@@ -584,17 +390,16 @@ input PodcastSubscriptionWhereInput {
 }
 
 input PodcastUpdateInput {
-  itunesId: String
+  itunesId: Int
   title: String
   author: String
   description: String
   artwork: String
   feedUrl: String
-  categories: CategoryUpdateManyInput
 }
 
 input PodcastUpdateManyMutationInput {
-  itunesId: String
+  itunesId: Int
   title: String
   author: String
   description: String
@@ -651,46 +456,28 @@ input PodcastWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  itunesId: String
+  itunesId: Int
 
   """All values that are not equal to given value."""
-  itunesId_not: String
+  itunesId_not: Int
 
   """All values that are contained in given list."""
-  itunesId_in: [String!]
+  itunesId_in: [Int!]
 
   """All values that are not contained in given list."""
-  itunesId_not_in: [String!]
+  itunesId_not_in: [Int!]
 
   """All values less than the given value."""
-  itunesId_lt: String
+  itunesId_lt: Int
 
   """All values less than or equal the given value."""
-  itunesId_lte: String
+  itunesId_lte: Int
 
   """All values greater than the given value."""
-  itunesId_gt: String
+  itunesId_gt: Int
 
   """All values greater than or equal the given value."""
-  itunesId_gte: String
-
-  """All values containing the given string."""
-  itunesId_contains: String
-
-  """All values not containing the given string."""
-  itunesId_not_contains: String
-
-  """All values starting with the given string."""
-  itunesId_starts_with: String
-
-  """All values not starting with the given string."""
-  itunesId_not_starts_with: String
-
-  """All values ending with the given string."""
-  itunesId_ends_with: String
-
-  """All values not ending with the given string."""
-  itunesId_not_ends_with: String
+  itunesId_gte: Int
   title: String
 
   """All values that are not equal to given value."""
@@ -891,9 +678,6 @@ input PodcastWhereInput {
 
   """All values not ending with the given string."""
   feedUrl_not_ends_with: String
-  categories_every: CategoryWhereInput
-  categories_some: CategoryWhereInput
-  categories_none: CategoryWhereInput
 }
 
 input PodcastWhereUniqueInput {
@@ -906,14 +690,14 @@ enum PrismaDatabase {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  podcasts(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Podcast]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
+  podcasts(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Podcast]!
   user(where: UserWhereUniqueInput!): User
-  podcast(where: PodcastWhereUniqueInput!): Podcast
   category(where: CategoryWhereUniqueInput!): Category
+  podcast(where: PodcastWhereUniqueInput!): Podcast
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  podcastsConnection(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PodcastConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
+  podcastsConnection(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PodcastConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -924,8 +708,8 @@ type Query {
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-  podcast(where: PodcastSubscriptionWhereInput): PodcastSubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
+  podcast(where: PodcastSubscriptionWhereInput): PodcastSubscriptionPayload
 }
 
 type User implements Node {

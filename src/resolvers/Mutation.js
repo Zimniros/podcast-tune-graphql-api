@@ -1,24 +1,24 @@
-import fetchGenres from '../lib/fetchGenres';
+import fetchCategories from '../lib/fetchCategories';
 
 const Mutations = {
-  async getGenres(parent, args, ctx, info) {
-    const genresData = await fetchGenres();
-    await ctx.db.mutation.deleteManyGenres();
+  async getCategories(parent, args, ctx, info) {
+    const categoriesData = await fetchCategories();
+    await ctx.db.mutation.deleteManyCategories();
 
     const promises = [];
 
-    genresData.forEach(genre => {
-      const upsertPromise = ctx.db.mutation.createGenre({
+    categoriesData.forEach(category => {
+      const upsertPromise = ctx.db.mutation.createCategory({
         data: {
-          ...genre,
+          ...category,
         },
       });
       promises.push(upsertPromise);
     });
 
-    const genres = await Promise.all(promises);
+    const categories = await Promise.all(promises);
 
-    return genres;
+    return categories;
   },
 };
 

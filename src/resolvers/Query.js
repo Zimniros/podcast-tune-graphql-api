@@ -1,8 +1,8 @@
 const Query = {
-  async genres(parent, args, ctx, info) {
-    const genres = await ctx.db.query.genres();
+  async categories(parent, args, ctx, info) {
+    const categories = await ctx.db.query.categories();
 
-    return genres;
+    return categories;
   },
 };
 

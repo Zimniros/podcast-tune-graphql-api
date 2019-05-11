@@ -1,9 +1,9 @@
 # import * from './generated/prisma.graphql'
 
 type Mutation {
-  getGenres: [Genre!]!
+  getCategories: [Category!]!
 }
 
 type Query {
-  genres: [Genre!]
+  categories: [Category!]
 }

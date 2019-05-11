@@ -1,7 +1,11 @@
 # source: http://localhost:4466
-# timestamp: Mon May 06 2019 15:21:41 GMT+0300 (Moscow Standard Time)
+# timestamp: Sat May 11 2019 13:10:42 GMT+0300 (Moscow Standard Time)
 
-type AggregateGenre {
+type AggregateCategory {
+  count: Int!
+}
+
+type AggregatePodcast {
   count: Int!
 }
 
@@ -14,38 +18,43 @@ type BatchPayload {
   count: Long!
 }
 
-type Genre implements Node {
+type Category implements Node {
   id: ID!
   itunesId: String!
   name: String!
 }
 
 """A connection to a list of items."""
-type GenreConnection {
+type CategoryConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [GenreEdge]!
-  aggregate: AggregateGenre!
+  edges: [CategoryEdge]!
+  aggregate: AggregateCategory!
 }
 
-input GenreCreateInput {
+input CategoryCreateInput {
   id: ID
   itunesId: String!
   name: String!
 }
 
+input CategoryCreateManyInput {
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
+}
+
 """An edge in a connection."""
-type GenreEdge {
+type CategoryEdge {
   """The item at the end of the edge."""
-  node: Genre!
+  node: Category!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum GenreOrderByInput {
+enum CategoryOrderByInput {
   id_ASC
   id_DESC
   itunesId_ASC
@@ -54,68 +63,21 @@ enum GenreOrderByInput {
   name_DESC
 }
 
-type GenrePreviousValues {
+type CategoryPreviousValues {
   id: ID!
   itunesId: String!
   name: String!
 }
 
-type GenreSubscriptionPayload {
-  mutation: MutationType!
-  node: Genre
-  updatedFields: [String!]
-  previousValues: GenrePreviousValues
-}
-
-input GenreSubscriptionWhereInput {
+input CategoryScalarWhereInput {
   """Logical AND on all given filters."""
-  AND: [GenreSubscriptionWhereInput!]
+  AND: [CategoryScalarWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [GenreSubscriptionWhereInput!]
+  OR: [CategoryScalarWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [GenreSubscriptionWhereInput!]
-
-  """The subscription event gets dispatched when it's listed in mutation_in"""
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: GenreWhereInput
-}
-
-input GenreUpdateInput {
-  itunesId: String
-  name: String
-}
-
-input GenreUpdateManyMutationInput {
-  itunesId: String
-  name: String
-}
-
-input GenreWhereInput {
-  """Logical AND on all given filters."""
-  AND: [GenreWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [GenreWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [GenreWhereInput!]
+  NOT: [CategoryScalarWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -238,7 +200,223 @@ input GenreWhereInput {
   name_not_ends_with: String
 }
 
-input GenreWhereUniqueInput {
+type CategorySubscriptionPayload {
+  mutation: MutationType!
+  node: Category
+  updatedFields: [String!]
+  previousValues: CategoryPreviousValues
+}
+
+input CategorySubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CategorySubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CategorySubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CategorySubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: CategoryWhereInput
+}
+
+input CategoryUpdateDataInput {
+  itunesId: String
+  name: String
+}
+
+input CategoryUpdateInput {
+  itunesId: String
+  name: String
+}
+
+input CategoryUpdateManyDataInput {
+  itunesId: String
+  name: String
+}
+
+input CategoryUpdateManyInput {
+  create: [CategoryCreateInput!]
+  connect: [CategoryWhereUniqueInput!]
+  set: [CategoryWhereUniqueInput!]
+  disconnect: [CategoryWhereUniqueInput!]
+  delete: [CategoryWhereUniqueInput!]
+  update: [CategoryUpdateWithWhereUniqueNestedInput!]
+  updateMany: [CategoryUpdateManyWithWhereNestedInput!]
+  deleteMany: [CategoryScalarWhereInput!]
+  upsert: [CategoryUpsertWithWhereUniqueNestedInput!]
+}
+
+input CategoryUpdateManyMutationInput {
+  itunesId: String
+  name: String
+}
+
+input CategoryUpdateManyWithWhereNestedInput {
+  where: CategoryScalarWhereInput!
+  data: CategoryUpdateManyDataInput!
+}
+
+input CategoryUpdateWithWhereUniqueNestedInput {
+  where: CategoryWhereUniqueInput!
+  data: CategoryUpdateDataInput!
+}
+
+input CategoryUpsertWithWhereUniqueNestedInput {
+  where: CategoryWhereUniqueInput!
+  update: CategoryUpdateDataInput!
+  create: CategoryCreateInput!
+}
+
+input CategoryWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CategoryWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CategoryWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CategoryWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  itunesId: String
+
+  """All values that are not equal to given value."""
+  itunesId_not: String
+
+  """All values that are contained in given list."""
+  itunesId_in: [String!]
+
+  """All values that are not contained in given list."""
+  itunesId_not_in: [String!]
+
+  """All values less than the given value."""
+  itunesId_lt: String
+
+  """All values less than or equal the given value."""
+  itunesId_lte: String
+
+  """All values greater than the given value."""
+  itunesId_gt: String
+
+  """All values greater than or equal the given value."""
+  itunesId_gte: String
+
+  """All values containing the given string."""
+  itunesId_contains: String
+
+  """All values not containing the given string."""
+  itunesId_not_contains: String
+
+  """All values starting with the given string."""
+  itunesId_starts_with: String
+
+  """All values not starting with the given string."""
+  itunesId_not_starts_with: String
+
+  """All values ending with the given string."""
+  itunesId_ends_with: String
+
+  """All values not ending with the given string."""
+  itunesId_not_ends_with: String
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+input CategoryWhereUniqueInput {
   id: ID
 }
 
@@ -253,17 +431,23 @@ scalar Long
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
-  createGenre(data: GenreCreateInput!): Genre!
+  createPodcast(data: PodcastCreateInput!): Podcast!
+  createCategory(data: CategoryCreateInput!): Category!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateGenre(data: GenreUpdateInput!, where: GenreWhereUniqueInput!): Genre
+  updatePodcast(data: PodcastUpdateInput!, where: PodcastWhereUniqueInput!): Podcast
+  updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   deleteUser(where: UserWhereUniqueInput!): User
-  deleteGenre(where: GenreWhereUniqueInput!): Genre
+  deletePodcast(where: PodcastWhereUniqueInput!): Podcast
+  deleteCategory(where: CategoryWhereUniqueInput!): Category
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  upsertGenre(where: GenreWhereUniqueInput!, create: GenreCreateInput!, update: GenreUpdateInput!): Genre!
+  upsertPodcast(where: PodcastWhereUniqueInput!, create: PodcastCreateInput!, update: PodcastUpdateInput!): Podcast!
+  upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  updateManyGenres(data: GenreUpdateManyMutationInput!, where: GenreWhereInput): BatchPayload!
+  updateManyPodcasts(data: PodcastUpdateManyMutationInput!, where: PodcastWhereInput): BatchPayload!
+  updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
-  deleteManyGenres(where: GenreWhereInput): BatchPayload!
+  deleteManyPodcasts(where: PodcastWhereInput): BatchPayload!
+  deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -294,17 +478,442 @@ type PageInfo {
   endCursor: String
 }
 
+type Podcast implements Node {
+  id: ID!
+  itunesId: String!
+  title: String!
+  author: String!
+  description: String!
+  artwork: String!
+  feedUrl: String!
+  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
+}
+
+"""A connection to a list of items."""
+type PodcastConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [PodcastEdge]!
+  aggregate: AggregatePodcast!
+}
+
+input PodcastCreateInput {
+  id: ID
+  itunesId: String!
+  title: String!
+  author: String!
+  description: String!
+  artwork: String!
+  feedUrl: String!
+  categories: CategoryCreateManyInput
+}
+
+"""An edge in a connection."""
+type PodcastEdge {
+  """The item at the end of the edge."""
+  node: Podcast!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum PodcastOrderByInput {
+  id_ASC
+  id_DESC
+  itunesId_ASC
+  itunesId_DESC
+  title_ASC
+  title_DESC
+  author_ASC
+  author_DESC
+  description_ASC
+  description_DESC
+  artwork_ASC
+  artwork_DESC
+  feedUrl_ASC
+  feedUrl_DESC
+}
+
+type PodcastPreviousValues {
+  id: ID!
+  itunesId: String!
+  title: String!
+  author: String!
+  description: String!
+  artwork: String!
+  feedUrl: String!
+}
+
+type PodcastSubscriptionPayload {
+  mutation: MutationType!
+  node: Podcast
+  updatedFields: [String!]
+  previousValues: PodcastPreviousValues
+}
+
+input PodcastSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [PodcastSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [PodcastSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [PodcastSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: PodcastWhereInput
+}
+
+input PodcastUpdateInput {
+  itunesId: String
+  title: String
+  author: String
+  description: String
+  artwork: String
+  feedUrl: String
+  categories: CategoryUpdateManyInput
+}
+
+input PodcastUpdateManyMutationInput {
+  itunesId: String
+  title: String
+  author: String
+  description: String
+  artwork: String
+  feedUrl: String
+}
+
+input PodcastWhereInput {
+  """Logical AND on all given filters."""
+  AND: [PodcastWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [PodcastWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [PodcastWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  itunesId: String
+
+  """All values that are not equal to given value."""
+  itunesId_not: String
+
+  """All values that are contained in given list."""
+  itunesId_in: [String!]
+
+  """All values that are not contained in given list."""
+  itunesId_not_in: [String!]
+
+  """All values less than the given value."""
+  itunesId_lt: String
+
+  """All values less than or equal the given value."""
+  itunesId_lte: String
+
+  """All values greater than the given value."""
+  itunesId_gt: String
+
+  """All values greater than or equal the given value."""
+  itunesId_gte: String
+
+  """All values containing the given string."""
+  itunesId_contains: String
+
+  """All values not containing the given string."""
+  itunesId_not_contains: String
+
+  """All values starting with the given string."""
+  itunesId_starts_with: String
+
+  """All values not starting with the given string."""
+  itunesId_not_starts_with: String
+
+  """All values ending with the given string."""
+  itunesId_ends_with: String
+
+  """All values not ending with the given string."""
+  itunesId_not_ends_with: String
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  author: String
+
+  """All values that are not equal to given value."""
+  author_not: String
+
+  """All values that are contained in given list."""
+  author_in: [String!]
+
+  """All values that are not contained in given list."""
+  author_not_in: [String!]
+
+  """All values less than the given value."""
+  author_lt: String
+
+  """All values less than or equal the given value."""
+  author_lte: String
+
+  """All values greater than the given value."""
+  author_gt: String
+
+  """All values greater than or equal the given value."""
+  author_gte: String
+
+  """All values containing the given string."""
+  author_contains: String
+
+  """All values not containing the given string."""
+  author_not_contains: String
+
+  """All values starting with the given string."""
+  author_starts_with: String
+
+  """All values not starting with the given string."""
+  author_not_starts_with: String
+
+  """All values ending with the given string."""
+  author_ends_with: String
+
+  """All values not ending with the given string."""
+  author_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  artwork: String
+
+  """All values that are not equal to given value."""
+  artwork_not: String
+
+  """All values that are contained in given list."""
+  artwork_in: [String!]
+
+  """All values that are not contained in given list."""
+  artwork_not_in: [String!]
+
+  """All values less than the given value."""
+  artwork_lt: String
+
+  """All values less than or equal the given value."""
+  artwork_lte: String
+
+  """All values greater than the given value."""
+  artwork_gt: String
+
+  """All values greater than or equal the given value."""
+  artwork_gte: String
+
+  """All values containing the given string."""
+  artwork_contains: String
+
+  """All values not containing the given string."""
+  artwork_not_contains: String
+
+  """All values starting with the given string."""
+  artwork_starts_with: String
+
+  """All values not starting with the given string."""
+  artwork_not_starts_with: String
+
+  """All values ending with the given string."""
+  artwork_ends_with: String
+
+  """All values not ending with the given string."""
+  artwork_not_ends_with: String
+  feedUrl: String
+
+  """All values that are not equal to given value."""
+  feedUrl_not: String
+
+  """All values that are contained in given list."""
+  feedUrl_in: [String!]
+
+  """All values that are not contained in given list."""
+  feedUrl_not_in: [String!]
+
+  """All values less than the given value."""
+  feedUrl_lt: String
+
+  """All values less than or equal the given value."""
+  feedUrl_lte: String
+
+  """All values greater than the given value."""
+  feedUrl_gt: String
+
+  """All values greater than or equal the given value."""
+  feedUrl_gte: String
+
+  """All values containing the given string."""
+  feedUrl_contains: String
+
+  """All values not containing the given string."""
+  feedUrl_not_contains: String
+
+  """All values starting with the given string."""
+  feedUrl_starts_with: String
+
+  """All values not starting with the given string."""
+  feedUrl_not_starts_with: String
+
+  """All values ending with the given string."""
+  feedUrl_ends_with: String
+
+  """All values not ending with the given string."""
+  feedUrl_not_ends_with: String
+  categories_every: CategoryWhereInput
+  categories_some: CategoryWhereInput
+  categories_none: CategoryWhereInput
+}
+
+input PodcastWhereUniqueInput {
+  id: ID
+}
+
 enum PrismaDatabase {
   default
 }
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  genres(where: GenreWhereInput, orderBy: GenreOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Genre]!
+  podcasts(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Podcast]!
+  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   user(where: UserWhereUniqueInput!): User
-  genre(where: GenreWhereUniqueInput!): Genre
+  podcast(where: PodcastWhereUniqueInput!): Podcast
+  category(where: CategoryWhereUniqueInput!): Category
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  genresConnection(where: GenreWhereInput, orderBy: GenreOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GenreConnection!
+  podcastsConnection(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PodcastConnection!
+  categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -315,7 +924,8 @@ type Query {
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-  genre(where: GenreSubscriptionWhereInput): GenreSubscriptionPayload
+  podcast(where: PodcastSubscriptionWhereInput): PodcastSubscriptionPayload
+  category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
 }
 
 type User implements Node {

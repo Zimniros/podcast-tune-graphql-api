@@ -1,9 +1,9 @@
-const Query = {
-  async categories(parent, args, ctx, info) {
-    const categories = await ctx.db.query.categories();
+import { forwardTo } from 'prisma-binding';
 
-    return categories;
-  },
+const Query = {
+  categories: forwardTo('db'),
+  podcasts: forwardTo('db'),
+  podcastsConnection: forwardTo('db'),
 };
 
 export { Query as default };

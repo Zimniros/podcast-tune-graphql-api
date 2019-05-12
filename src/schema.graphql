@@ -7,4 +7,14 @@ type Mutation {
 
 type Query {
   categories: [Category!]
+  podcasts(
+    where: PodcastWhereInput
+    orderBy: PodcastOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Podcast]!
+  podcastsConnection(where: PodcastWhereInput): PodcastConnection!
 }

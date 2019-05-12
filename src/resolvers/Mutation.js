@@ -1,3 +1,6 @@
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
 import fetchCategories from '../lib/fetchCategories';
 import fetchPodcastsForCategory from '../lib/fetchPodcastsForCategory';
 
@@ -38,6 +41,36 @@ const Mutations = {
     console.timeEnd('getPodcastsForAllCategories');
 
     return true;
+  },
+  async register(parent, args, ctx, info) {
+    args.email = args.email.toLowerCase();
+
+    const password = await bcrypt.hash(args.password, 10);
+
+    const user = await ctx.db.mutation.createUser(
+      {
+        data: {
+          ...args,
+          password,
+          permissions: { set: ['USER'] },
+        },
+      },
+      info
+    );
+
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      process.env.APP_SECRET
+    );
+
+    ctx.response.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days cookie
+    });
+
+    return user;
   },
 };
 

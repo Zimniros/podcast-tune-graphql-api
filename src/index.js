@@ -1,11 +1,12 @@
 import './config';
 
+import cookieParser from 'cookie-parser';
 import createServer from './createServer';
 import db from './db';
 
 const server = createServer();
 
-// TODO Use express middleware to handle cookies (JWT)
+server.express.use(cookieParser());
 // TODO Use express middleware to populate current user
 
 server.start(

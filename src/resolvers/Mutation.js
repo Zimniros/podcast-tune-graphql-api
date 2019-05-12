@@ -23,7 +23,7 @@ const Mutations = {
     return categories;
   },
   // Initial Data Population for Podcast preview for each category
-  async getPodcastsForAllCategories(parent, args, ctx, info) {
+  async getPodcastsForAllCategories(parent, { limit = 200 }, ctx, info) {
     const categories = await ctx.db.query.categories();
 
     // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop/37576787#37576787
@@ -32,7 +32,7 @@ const Mutations = {
 
     for (const category of categories) {
       const { itunesId } = category;
-      await fetchPodcastsForCategory(itunesId);
+      await fetchPodcastsForCategory({ categoryId: itunesId, limit });
     }
 
     console.timeEnd('getPodcastsForAllCategories');

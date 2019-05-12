@@ -7,7 +7,9 @@ function prettifyPreviewData(data) {
     author: data.artistName,
     feedUrl: data.feedUrl,
     artwork: data.artworkUrl600 || data.artworkUrl100,
-    // categories: data.genreIds.filter(id => id !== '26'),
+    categoryIds: data.genreIds
+      .filter(id => id !== '26')
+      .map(id => ({ itunesId: +id })),
   };
 }
 

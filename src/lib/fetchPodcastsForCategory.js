@@ -3,9 +3,9 @@ import fetchPodcastPreview from './fetchPodcastPreview';
 import fetchTopPodcasts from './fetchTopPodcasts';
 import db from '../db';
 
-const fetchPodcastsForCategory = async categoryId => {
+const fetchPodcastsForCategory = async ({ categoryId, limit }) => {
   console.time(`fetchPodcastsForCategory-${categoryId}`);
-  const previewsData = await fetchTopPodcasts(categoryId);
+  const previewsData = await fetchTopPodcasts({ categoryId, limit });
 
   await Promise.all(
     previewsData.map(async preview => {
@@ -17,12 +17,17 @@ const fetchPodcastsForCategory = async categoryId => {
 
       if (!podcastExists) {
         const podcastPreview = await fetchPodcastPreview(itunesId);
+        const { categoryIds } = podcastPreview;
+        delete podcastPreview.categoryIds;
 
         try {
           await db.mutation.createPodcast({
             data: {
               ...find(previewsData, { itunesId }),
               ...podcastPreview,
+              categories: {
+                connect: categoryIds,
+              },
             },
           });
         } catch (error) {

@@ -15,11 +15,11 @@ function prettifyPreviewData(data) {
   }));
 }
 
-const fetchTopPodcasts = async categoryId => {
+const fetchTopPodcasts = async ({ categoryId, limit }) => {
   console.time(`fetchTopPodcasts-${categoryId}`);
 
   const jsonData = await axios(
-    `https://itunes.apple.com/us/rss/topaudiopodcasts/limit=50/genre=${categoryId}/json`
+    `https://itunes.apple.com/us/rss/topaudiopodcasts/limit=${limit}/genre=${categoryId}/json`
   );
 
   const feedData = jsonData.data.feed.entry;

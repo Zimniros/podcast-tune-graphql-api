@@ -5,6 +5,8 @@ services:
     restart: always
     ports:
       - "4466:4466"
+    env_file:
+      - .env
     environment:
       PRISMA_CONFIG: |
         port: 4466
@@ -25,10 +27,13 @@ services:
     restart: always
     ports:
       - "5432:5432"
+    env_file:
+      - .env
     environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
 volumes:
   postgres:

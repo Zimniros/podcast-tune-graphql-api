@@ -20,6 +20,7 @@ const fetchPodcastPreview = async podcastId => {
 
   const { resultCount, results } = jsonData.data;
   if (resultCount === 0) {
+    console.log(`There's not any data for podcast ${podcastId}.`);
     return null;
   }
 

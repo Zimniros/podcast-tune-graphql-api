@@ -26,7 +26,8 @@ type Podcast {
   title: String!
   author: String!
   description: String!
-  artwork: String!
+  artworkSmall: String!
+  artworkLarge: String!
   feedUrl: String!
   categories: [Category!]!
 }

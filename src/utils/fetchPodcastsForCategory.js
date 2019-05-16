@@ -1,94 +1,17 @@
-import { find } from 'lodash';
-import fetchPodcastPreview from './fetchPodcastPreview';
 import fetchTopPodcasts from './fetchTopPodcasts';
-import db from '../db';
+import createPodcastPreview from './createPodcastPreview';
 
 const fetchPodcastsForCategory = async ({ categoryId, limit }) => {
   const previewsData = await fetchTopPodcasts({ categoryId, limit });
 
-  for (const preview of previewsData) {
-    const { itunesId } = preview;
+  let index = 0;
+  const range = 20;
 
-    const podcastExists = await db.exists.Podcast({
-      itunesId,
-    });
-
-    if (!podcastExists) {
-      const podcastPreview = await fetchPodcastPreview(itunesId);
-
-      if (!podcastPreview) return;
-
-      try {
-        const { categoryIds } = podcastPreview;
-        delete podcastPreview.categoryIds;
-
-        await db.mutation.createPodcast({
-          data: {
-            ...find(previewsData, { itunesId }),
-            ...podcastPreview,
-            categories: {
-              connect: categoryIds,
-            },
-          },
-        });
-      } catch (error) {
-        console.log(
-          `Error during fetching preview for podcast '${
-            podcastPreview.title
-          }' (ItunesId: ${podcastPreview.itunesId})`
-        );
-        console.log(
-          `==========================================================================================`
-        );
-
-        console.log({
-          podcastExists,
-          podcastPreview,
-          '...find(previewsData, { itunesId })': {
-            ...find(previewsData, { itunesId }),
-          },
-        });
-
-        console.log(
-          `==========================================================================================`
-        );
-      }
-    }
+  while (index <= previewsData.length) {
+    const previews = previewsData.slice(index, index + range);
+    await Promise.all(previews.map(preview => createPodcastPreview(preview)));
+    index += range;
   }
-
-  // await Promise.all(
-  //   previewsData.map(async preview => {
-  //     const { itunesId } = preview;
-
-  //     const podcastExists = await db.exists.Podcast({
-  //       itunesId,
-  //     });
-
-  //     if (!podcastExists) {
-  //       const podcastPreview = await fetchPodcastPreview(itunesId);
-  //       const { categoryIds } = podcastPreview;
-  //       delete podcastPreview.categoryIds;
-
-  //       try {
-  //         await db.mutation.createPodcast({
-  //           data: {
-  //             ...find(previewsData, { itunesId }),
-  //             ...podcastPreview,
-  //             categories: {
-  //               connect: categoryIds,
-  //             },
-  //           },
-  //         });
-  //       } catch (error) {
-  //         console.log(
-  //           `Error during fetching preview for podcast '${
-  //             podcastPreview.title
-  //           }' (ItunesId: ${podcastPreview.itunesId})`
-  //         );
-  //       }
-  //     }
-  //   })
-  // );
 };
 
 export default fetchPodcastsForCategory;

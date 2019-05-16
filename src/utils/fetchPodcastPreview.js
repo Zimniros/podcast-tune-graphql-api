@@ -6,7 +6,8 @@ function prettifyPreviewData(data) {
     title: data.trackName,
     author: data.artistName,
     feedUrl: data.feedUrl,
-    artwork: data.artworkUrl600 || data.artworkUrl100,
+    artworkSmall: data.artworkUrl100,
+    artworkLarge: data.artworkUrl600,
     categoryIds: data.genreIds
       .filter(id => id !== '26')
       .map(id => ({ itunesId: +id })),

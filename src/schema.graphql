@@ -9,6 +9,15 @@ type Mutation {
 
 type Query {
   categories: [Category!]
+  categoriesConnection(
+    where: CategoryWhereInput
+    orderBy: CategoryOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): CategoryConnection!
   podcasts(
     where: PodcastWhereInput
     orderBy: PodcastOrderByInput
@@ -18,5 +27,13 @@ type Query {
     first: Int
     last: Int
   ): [Podcast]!
-  podcastsConnection(where: PodcastWhereInput): PodcastConnection!
+  podcastsConnection(
+    where: PodcastWhereInput
+    orderBy: PodcastOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): PodcastConnection!
 }

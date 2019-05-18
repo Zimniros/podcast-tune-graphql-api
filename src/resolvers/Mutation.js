@@ -43,7 +43,7 @@ const Mutations = {
       console.log(
         `Getting podcasts for category '${name}' (${itunesId}). Category ${categories.findIndex(
           el => el.itunesId === itunesId
-        ) + 1} out of ${categories.length + 1}`
+        ) + 1} out of ${categories.length}`
       );
       console.time(`  Podcasts for category ${itunesId} fetched in`);
       await fetchPodcastsForCategory({ categoryId: itunesId, limit });

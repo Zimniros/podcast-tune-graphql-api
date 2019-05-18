@@ -9,10 +9,19 @@ function getSummary(data) {
 }
 
 function prettifyPreviewData(data) {
-  return data.map(el => ({
-    itunesId: getItunesId(el),
-    description: getSummary(el),
-  }));
+  if (Array.isArray(data)) {
+    return data.map(el => ({
+      itunesId: getItunesId(el),
+      description: getSummary(el),
+    }));
+  }
+
+  if (typeof data === 'object') {
+    return {
+      itunesId: getItunesId(data),
+      description: getSummary(data),
+    };
+  }
 }
 
 const fetchTopPodcasts = async ({ categoryId, limit }) => {

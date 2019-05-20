@@ -1,7 +1,11 @@
 # source: http://localhost:4466
-# timestamp: Thu May 16 2019 23:10:01 GMT+0300 (Moscow Standard Time)
+# timestamp: Mon May 20 2019 17:41:56 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
+  count: Int!
+}
+
+type AggregateEpisode {
   count: Int!
 }
 
@@ -385,6 +389,816 @@ input CategoryWhereUniqueInput {
   itunesId: Int
 }
 
+scalar DateTime
+
+type Episode implements Node {
+  id: ID!
+  podcast: Podcast!
+  title: String!
+  description: String
+  author: String!
+  mediaUrl: String
+  duration: Float
+  durationVerified: Boolean!
+  pubDate: DateTime
+  link: String
+}
+
+"""A connection to a list of items."""
+type EpisodeConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [EpisodeEdge]!
+  aggregate: AggregateEpisode!
+}
+
+input EpisodeCreateInput {
+  id: ID
+  title: String!
+  description: String
+  author: String!
+  mediaUrl: String
+  duration: Float
+  durationVerified: Boolean
+  pubDate: DateTime
+  link: String
+  podcast: PodcastCreateOneWithoutEpisodesInput!
+}
+
+input EpisodeCreateManyWithoutPodcastInput {
+  create: [EpisodeCreateWithoutPodcastInput!]
+  connect: [EpisodeWhereUniqueInput!]
+}
+
+input EpisodeCreateWithoutPodcastInput {
+  id: ID
+  title: String!
+  description: String
+  author: String!
+  mediaUrl: String
+  duration: Float
+  durationVerified: Boolean
+  pubDate: DateTime
+  link: String
+}
+
+"""An edge in a connection."""
+type EpisodeEdge {
+  """The item at the end of the edge."""
+  node: Episode!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum EpisodeOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  description_ASC
+  description_DESC
+  author_ASC
+  author_DESC
+  mediaUrl_ASC
+  mediaUrl_DESC
+  duration_ASC
+  duration_DESC
+  durationVerified_ASC
+  durationVerified_DESC
+  pubDate_ASC
+  pubDate_DESC
+  link_ASC
+  link_DESC
+}
+
+type EpisodePreviousValues {
+  id: ID!
+  title: String!
+  description: String
+  author: String!
+  mediaUrl: String
+  duration: Float
+  durationVerified: Boolean!
+  pubDate: DateTime
+  link: String
+}
+
+input EpisodeScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [EpisodeScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [EpisodeScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [EpisodeScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  author: String
+
+  """All values that are not equal to given value."""
+  author_not: String
+
+  """All values that are contained in given list."""
+  author_in: [String!]
+
+  """All values that are not contained in given list."""
+  author_not_in: [String!]
+
+  """All values less than the given value."""
+  author_lt: String
+
+  """All values less than or equal the given value."""
+  author_lte: String
+
+  """All values greater than the given value."""
+  author_gt: String
+
+  """All values greater than or equal the given value."""
+  author_gte: String
+
+  """All values containing the given string."""
+  author_contains: String
+
+  """All values not containing the given string."""
+  author_not_contains: String
+
+  """All values starting with the given string."""
+  author_starts_with: String
+
+  """All values not starting with the given string."""
+  author_not_starts_with: String
+
+  """All values ending with the given string."""
+  author_ends_with: String
+
+  """All values not ending with the given string."""
+  author_not_ends_with: String
+  mediaUrl: String
+
+  """All values that are not equal to given value."""
+  mediaUrl_not: String
+
+  """All values that are contained in given list."""
+  mediaUrl_in: [String!]
+
+  """All values that are not contained in given list."""
+  mediaUrl_not_in: [String!]
+
+  """All values less than the given value."""
+  mediaUrl_lt: String
+
+  """All values less than or equal the given value."""
+  mediaUrl_lte: String
+
+  """All values greater than the given value."""
+  mediaUrl_gt: String
+
+  """All values greater than or equal the given value."""
+  mediaUrl_gte: String
+
+  """All values containing the given string."""
+  mediaUrl_contains: String
+
+  """All values not containing the given string."""
+  mediaUrl_not_contains: String
+
+  """All values starting with the given string."""
+  mediaUrl_starts_with: String
+
+  """All values not starting with the given string."""
+  mediaUrl_not_starts_with: String
+
+  """All values ending with the given string."""
+  mediaUrl_ends_with: String
+
+  """All values not ending with the given string."""
+  mediaUrl_not_ends_with: String
+  duration: Float
+
+  """All values that are not equal to given value."""
+  duration_not: Float
+
+  """All values that are contained in given list."""
+  duration_in: [Float!]
+
+  """All values that are not contained in given list."""
+  duration_not_in: [Float!]
+
+  """All values less than the given value."""
+  duration_lt: Float
+
+  """All values less than or equal the given value."""
+  duration_lte: Float
+
+  """All values greater than the given value."""
+  duration_gt: Float
+
+  """All values greater than or equal the given value."""
+  duration_gte: Float
+  durationVerified: Boolean
+
+  """All values that are not equal to given value."""
+  durationVerified_not: Boolean
+  pubDate: DateTime
+
+  """All values that are not equal to given value."""
+  pubDate_not: DateTime
+
+  """All values that are contained in given list."""
+  pubDate_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  pubDate_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  pubDate_lt: DateTime
+
+  """All values less than or equal the given value."""
+  pubDate_lte: DateTime
+
+  """All values greater than the given value."""
+  pubDate_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  pubDate_gte: DateTime
+  link: String
+
+  """All values that are not equal to given value."""
+  link_not: String
+
+  """All values that are contained in given list."""
+  link_in: [String!]
+
+  """All values that are not contained in given list."""
+  link_not_in: [String!]
+
+  """All values less than the given value."""
+  link_lt: String
+
+  """All values less than or equal the given value."""
+  link_lte: String
+
+  """All values greater than the given value."""
+  link_gt: String
+
+  """All values greater than or equal the given value."""
+  link_gte: String
+
+  """All values containing the given string."""
+  link_contains: String
+
+  """All values not containing the given string."""
+  link_not_contains: String
+
+  """All values starting with the given string."""
+  link_starts_with: String
+
+  """All values not starting with the given string."""
+  link_not_starts_with: String
+
+  """All values ending with the given string."""
+  link_ends_with: String
+
+  """All values not ending with the given string."""
+  link_not_ends_with: String
+}
+
+type EpisodeSubscriptionPayload {
+  mutation: MutationType!
+  node: Episode
+  updatedFields: [String!]
+  previousValues: EpisodePreviousValues
+}
+
+input EpisodeSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [EpisodeSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [EpisodeSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [EpisodeSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: EpisodeWhereInput
+}
+
+input EpisodeUpdateInput {
+  title: String
+  description: String
+  author: String
+  mediaUrl: String
+  duration: Float
+  durationVerified: Boolean
+  pubDate: DateTime
+  link: String
+  podcast: PodcastUpdateOneRequiredWithoutEpisodesInput
+}
+
+input EpisodeUpdateManyDataInput {
+  title: String
+  description: String
+  author: String
+  mediaUrl: String
+  duration: Float
+  durationVerified: Boolean
+  pubDate: DateTime
+  link: String
+}
+
+input EpisodeUpdateManyMutationInput {
+  title: String
+  description: String
+  author: String
+  mediaUrl: String
+  duration: Float
+  durationVerified: Boolean
+  pubDate: DateTime
+  link: String
+}
+
+input EpisodeUpdateManyWithoutPodcastInput {
+  create: [EpisodeCreateWithoutPodcastInput!]
+  connect: [EpisodeWhereUniqueInput!]
+  set: [EpisodeWhereUniqueInput!]
+  disconnect: [EpisodeWhereUniqueInput!]
+  delete: [EpisodeWhereUniqueInput!]
+  update: [EpisodeUpdateWithWhereUniqueWithoutPodcastInput!]
+  updateMany: [EpisodeUpdateManyWithWhereNestedInput!]
+  deleteMany: [EpisodeScalarWhereInput!]
+  upsert: [EpisodeUpsertWithWhereUniqueWithoutPodcastInput!]
+}
+
+input EpisodeUpdateManyWithWhereNestedInput {
+  where: EpisodeScalarWhereInput!
+  data: EpisodeUpdateManyDataInput!
+}
+
+input EpisodeUpdateWithoutPodcastDataInput {
+  title: String
+  description: String
+  author: String
+  mediaUrl: String
+  duration: Float
+  durationVerified: Boolean
+  pubDate: DateTime
+  link: String
+}
+
+input EpisodeUpdateWithWhereUniqueWithoutPodcastInput {
+  where: EpisodeWhereUniqueInput!
+  data: EpisodeUpdateWithoutPodcastDataInput!
+}
+
+input EpisodeUpsertWithWhereUniqueWithoutPodcastInput {
+  where: EpisodeWhereUniqueInput!
+  update: EpisodeUpdateWithoutPodcastDataInput!
+  create: EpisodeCreateWithoutPodcastInput!
+}
+
+input EpisodeWhereInput {
+  """Logical AND on all given filters."""
+  AND: [EpisodeWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [EpisodeWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [EpisodeWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  author: String
+
+  """All values that are not equal to given value."""
+  author_not: String
+
+  """All values that are contained in given list."""
+  author_in: [String!]
+
+  """All values that are not contained in given list."""
+  author_not_in: [String!]
+
+  """All values less than the given value."""
+  author_lt: String
+
+  """All values less than or equal the given value."""
+  author_lte: String
+
+  """All values greater than the given value."""
+  author_gt: String
+
+  """All values greater than or equal the given value."""
+  author_gte: String
+
+  """All values containing the given string."""
+  author_contains: String
+
+  """All values not containing the given string."""
+  author_not_contains: String
+
+  """All values starting with the given string."""
+  author_starts_with: String
+
+  """All values not starting with the given string."""
+  author_not_starts_with: String
+
+  """All values ending with the given string."""
+  author_ends_with: String
+
+  """All values not ending with the given string."""
+  author_not_ends_with: String
+  mediaUrl: String
+
+  """All values that are not equal to given value."""
+  mediaUrl_not: String
+
+  """All values that are contained in given list."""
+  mediaUrl_in: [String!]
+
+  """All values that are not contained in given list."""
+  mediaUrl_not_in: [String!]
+
+  """All values less than the given value."""
+  mediaUrl_lt: String
+
+  """All values less than or equal the given value."""
+  mediaUrl_lte: String
+
+  """All values greater than the given value."""
+  mediaUrl_gt: String
+
+  """All values greater than or equal the given value."""
+  mediaUrl_gte: String
+
+  """All values containing the given string."""
+  mediaUrl_contains: String
+
+  """All values not containing the given string."""
+  mediaUrl_not_contains: String
+
+  """All values starting with the given string."""
+  mediaUrl_starts_with: String
+
+  """All values not starting with the given string."""
+  mediaUrl_not_starts_with: String
+
+  """All values ending with the given string."""
+  mediaUrl_ends_with: String
+
+  """All values not ending with the given string."""
+  mediaUrl_not_ends_with: String
+  duration: Float
+
+  """All values that are not equal to given value."""
+  duration_not: Float
+
+  """All values that are contained in given list."""
+  duration_in: [Float!]
+
+  """All values that are not contained in given list."""
+  duration_not_in: [Float!]
+
+  """All values less than the given value."""
+  duration_lt: Float
+
+  """All values less than or equal the given value."""
+  duration_lte: Float
+
+  """All values greater than the given value."""
+  duration_gt: Float
+
+  """All values greater than or equal the given value."""
+  duration_gte: Float
+  durationVerified: Boolean
+
+  """All values that are not equal to given value."""
+  durationVerified_not: Boolean
+  pubDate: DateTime
+
+  """All values that are not equal to given value."""
+  pubDate_not: DateTime
+
+  """All values that are contained in given list."""
+  pubDate_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  pubDate_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  pubDate_lt: DateTime
+
+  """All values less than or equal the given value."""
+  pubDate_lte: DateTime
+
+  """All values greater than the given value."""
+  pubDate_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  pubDate_gte: DateTime
+  link: String
+
+  """All values that are not equal to given value."""
+  link_not: String
+
+  """All values that are contained in given list."""
+  link_in: [String!]
+
+  """All values that are not contained in given list."""
+  link_not_in: [String!]
+
+  """All values less than the given value."""
+  link_lt: String
+
+  """All values less than or equal the given value."""
+  link_lte: String
+
+  """All values greater than the given value."""
+  link_gt: String
+
+  """All values greater than or equal the given value."""
+  link_gte: String
+
+  """All values containing the given string."""
+  link_contains: String
+
+  """All values not containing the given string."""
+  link_not_contains: String
+
+  """All values starting with the given string."""
+  link_starts_with: String
+
+  """All values not starting with the given string."""
+  link_not_starts_with: String
+
+  """All values ending with the given string."""
+  link_ends_with: String
+
+  """All values not ending with the given string."""
+  link_not_ends_with: String
+  podcast: PodcastWhereInput
+}
+
+input EpisodeWhereUniqueInput {
+  id: ID
+}
+
 """Raw JSON value"""
 scalar Json
 
@@ -397,21 +1211,27 @@ scalar Long
 type Mutation {
   createUser(data: UserCreateInput!): User!
   createPodcast(data: PodcastCreateInput!): Podcast!
+  createEpisode(data: EpisodeCreateInput!): Episode!
   createCategory(data: CategoryCreateInput!): Category!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updatePodcast(data: PodcastUpdateInput!, where: PodcastWhereUniqueInput!): Podcast
+  updateEpisode(data: EpisodeUpdateInput!, where: EpisodeWhereUniqueInput!): Episode
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   deleteUser(where: UserWhereUniqueInput!): User
   deletePodcast(where: PodcastWhereUniqueInput!): Podcast
+  deleteEpisode(where: EpisodeWhereUniqueInput!): Episode
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertPodcast(where: PodcastWhereUniqueInput!, create: PodcastCreateInput!, update: PodcastUpdateInput!): Podcast!
+  upsertEpisode(where: EpisodeWhereUniqueInput!, create: EpisodeCreateInput!, update: EpisodeUpdateInput!): Episode!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyPodcasts(data: PodcastUpdateManyMutationInput!, where: PodcastWhereInput): BatchPayload!
+  updateManyEpisodes(data: EpisodeUpdateManyMutationInput!, where: EpisodeWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyPodcasts(where: PodcastWhereInput): BatchPayload!
+  deleteManyEpisodes(where: EpisodeWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
@@ -459,6 +1279,7 @@ type Podcast implements Node {
   artworkLarge: String!
   feedUrl: String!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
+  episodes(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Episode!]
 }
 
 """A connection to a list of items."""
@@ -472,6 +1293,24 @@ type PodcastConnection {
 }
 
 input PodcastCreateInput {
+  id: ID
+  itunesId: Int!
+  title: String!
+  author: String!
+  description: String!
+  artworkSmall: String!
+  artworkLarge: String!
+  feedUrl: String!
+  categories: CategoryCreateManyInput
+  episodes: EpisodeCreateManyWithoutPodcastInput
+}
+
+input PodcastCreateOneWithoutEpisodesInput {
+  create: PodcastCreateWithoutEpisodesInput
+  connect: PodcastWhereUniqueInput
+}
+
+input PodcastCreateWithoutEpisodesInput {
   id: ID
   itunesId: Int!
   title: String!
@@ -568,6 +1407,7 @@ input PodcastUpdateInput {
   artworkLarge: String
   feedUrl: String
   categories: CategoryUpdateManyInput
+  episodes: EpisodeUpdateManyWithoutPodcastInput
 }
 
 input PodcastUpdateManyMutationInput {
@@ -578,6 +1418,29 @@ input PodcastUpdateManyMutationInput {
   artworkSmall: String
   artworkLarge: String
   feedUrl: String
+}
+
+input PodcastUpdateOneRequiredWithoutEpisodesInput {
+  create: PodcastCreateWithoutEpisodesInput
+  connect: PodcastWhereUniqueInput
+  update: PodcastUpdateWithoutEpisodesDataInput
+  upsert: PodcastUpsertWithoutEpisodesInput
+}
+
+input PodcastUpdateWithoutEpisodesDataInput {
+  itunesId: Int
+  title: String
+  author: String
+  description: String
+  artworkSmall: String
+  artworkLarge: String
+  feedUrl: String
+  categories: CategoryUpdateManyInput
+}
+
+input PodcastUpsertWithoutEpisodesInput {
+  update: PodcastUpdateWithoutEpisodesDataInput!
+  create: PodcastCreateWithoutEpisodesInput!
 }
 
 input PodcastWhereInput {
@@ -894,6 +1757,9 @@ input PodcastWhereInput {
   categories_every: CategoryWhereInput
   categories_some: CategoryWhereInput
   categories_none: CategoryWhereInput
+  episodes_every: EpisodeWhereInput
+  episodes_some: EpisodeWhereInput
+  episodes_none: EpisodeWhereInput
 }
 
 input PodcastWhereUniqueInput {
@@ -908,12 +1774,15 @@ enum PrismaDatabase {
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   podcasts(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Podcast]!
+  episodes(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Episode]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   user(where: UserWhereUniqueInput!): User
   podcast(where: PodcastWhereUniqueInput!): Podcast
+  episode(where: EpisodeWhereUniqueInput!): Episode
   category(where: CategoryWhereUniqueInput!): Category
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   podcastsConnection(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PodcastConnection!
+  episodesConnection(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EpisodeConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
 
   """Fetches an object given its ID"""
@@ -926,6 +1795,7 @@ type Query {
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   podcast(where: PodcastSubscriptionWhereInput): PodcastSubscriptionPayload
+  episode(where: EpisodeSubscriptionWhereInput): EpisodeSubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
 }
 

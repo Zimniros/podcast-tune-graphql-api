@@ -30,4 +30,18 @@ type Podcast {
   artworkLarge: String!
   feedUrl: String!
   categories: [Category!]!
+  episodes: [Episode!]!
+}
+
+type Episode {
+  id: ID! @id
+  podcast: Podcast!
+  title: String!
+  description: String
+  author: String!
+  mediaUrl: String
+  duration: Float @default(value: 0)
+  durationVerified: Boolean! @default(value: false)
+  pubDate: DateTime
+  link: String
 }

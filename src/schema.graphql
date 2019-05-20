@@ -8,16 +8,6 @@ type Mutation {
 }
 
 type Query {
-  categories: [Category!]
-  categoriesConnection(
-    where: CategoryWhereInput
-    orderBy: CategoryOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): CategoryConnection!
   podcasts(
     where: PodcastWhereInput
     orderBy: PodcastOrderByInput
@@ -27,6 +17,29 @@ type Query {
     first: Int
     last: Int
   ): [Podcast]!
+  episodes(
+    where: EpisodeWhereInput
+    orderBy: EpisodeOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Episode]!
+  categories(
+    where: CategoryWhereInput
+    orderBy: CategoryOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Category]!
+
+  podcast(where: PodcastWhereUniqueInput!): Podcast
+  episode(where: EpisodeWhereUniqueInput!): Episode
+  category(where: CategoryWhereUniqueInput!): Category
+
   podcastsConnection(
     where: PodcastWhereInput
     orderBy: PodcastOrderByInput
@@ -36,4 +49,22 @@ type Query {
     first: Int
     last: Int
   ): PodcastConnection!
+  episodesConnection(
+    where: EpisodeWhereInput
+    orderBy: EpisodeOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): EpisodeConnection!
+  categoriesConnection(
+    where: CategoryWhereInput
+    orderBy: CategoryOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): CategoryConnection!
 }

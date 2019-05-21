@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Mon May 20 2019 17:41:56 GMT+0300 (Moscow Standard Time)
+# timestamp: Tue May 21 2019 19:53:07 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -396,7 +396,6 @@ type Episode implements Node {
   podcast: Podcast!
   title: String!
   description: String
-  author: String!
   mediaUrl: String
   duration: Float
   durationVerified: Boolean!
@@ -418,7 +417,6 @@ input EpisodeCreateInput {
   id: ID
   title: String!
   description: String
-  author: String!
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -436,7 +434,6 @@ input EpisodeCreateWithoutPodcastInput {
   id: ID
   title: String!
   description: String
-  author: String!
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -460,8 +457,6 @@ enum EpisodeOrderByInput {
   title_DESC
   description_ASC
   description_DESC
-  author_ASC
-  author_DESC
   mediaUrl_ASC
   mediaUrl_DESC
   duration_ASC
@@ -478,7 +473,6 @@ type EpisodePreviousValues {
   id: ID!
   title: String!
   description: String
-  author: String!
   mediaUrl: String
   duration: Float
   durationVerified: Boolean!
@@ -615,46 +609,6 @@ input EpisodeScalarWhereInput {
 
   """All values not ending with the given string."""
   description_not_ends_with: String
-  author: String
-
-  """All values that are not equal to given value."""
-  author_not: String
-
-  """All values that are contained in given list."""
-  author_in: [String!]
-
-  """All values that are not contained in given list."""
-  author_not_in: [String!]
-
-  """All values less than the given value."""
-  author_lt: String
-
-  """All values less than or equal the given value."""
-  author_lte: String
-
-  """All values greater than the given value."""
-  author_gt: String
-
-  """All values greater than or equal the given value."""
-  author_gte: String
-
-  """All values containing the given string."""
-  author_contains: String
-
-  """All values not containing the given string."""
-  author_not_contains: String
-
-  """All values starting with the given string."""
-  author_starts_with: String
-
-  """All values not starting with the given string."""
-  author_not_starts_with: String
-
-  """All values ending with the given string."""
-  author_ends_with: String
-
-  """All values not ending with the given string."""
-  author_not_ends_with: String
   mediaUrl: String
 
   """All values that are not equal to given value."""
@@ -825,7 +779,6 @@ input EpisodeSubscriptionWhereInput {
 input EpisodeUpdateInput {
   title: String
   description: String
-  author: String
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -837,7 +790,6 @@ input EpisodeUpdateInput {
 input EpisodeUpdateManyDataInput {
   title: String
   description: String
-  author: String
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -848,7 +800,6 @@ input EpisodeUpdateManyDataInput {
 input EpisodeUpdateManyMutationInput {
   title: String
   description: String
-  author: String
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -876,7 +827,6 @@ input EpisodeUpdateManyWithWhereNestedInput {
 input EpisodeUpdateWithoutPodcastDataInput {
   title: String
   description: String
-  author: String
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -1024,46 +974,6 @@ input EpisodeWhereInput {
 
   """All values not ending with the given string."""
   description_not_ends_with: String
-  author: String
-
-  """All values that are not equal to given value."""
-  author_not: String
-
-  """All values that are contained in given list."""
-  author_in: [String!]
-
-  """All values that are not contained in given list."""
-  author_not_in: [String!]
-
-  """All values less than the given value."""
-  author_lt: String
-
-  """All values less than or equal the given value."""
-  author_lte: String
-
-  """All values greater than the given value."""
-  author_gt: String
-
-  """All values greater than or equal the given value."""
-  author_gte: String
-
-  """All values containing the given string."""
-  author_contains: String
-
-  """All values not containing the given string."""
-  author_not_contains: String
-
-  """All values starting with the given string."""
-  author_starts_with: String
-
-  """All values not starting with the given string."""
-  author_not_starts_with: String
-
-  """All values ending with the given string."""
-  author_ends_with: String
-
-  """All values not ending with the given string."""
-  author_not_ends_with: String
   mediaUrl: String
 
   """All values that are not equal to given value."""
@@ -1278,6 +1188,7 @@ type Podcast implements Node {
   artworkSmall: String!
   artworkLarge: String!
   feedUrl: String!
+  websiteUrl: String!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
   episodes(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Episode!]
 }
@@ -1301,6 +1212,7 @@ input PodcastCreateInput {
   artworkSmall: String!
   artworkLarge: String!
   feedUrl: String!
+  websiteUrl: String!
   categories: CategoryCreateManyInput
   episodes: EpisodeCreateManyWithoutPodcastInput
 }
@@ -1319,6 +1231,7 @@ input PodcastCreateWithoutEpisodesInput {
   artworkSmall: String!
   artworkLarge: String!
   feedUrl: String!
+  websiteUrl: String!
   categories: CategoryCreateManyInput
 }
 
@@ -1348,6 +1261,8 @@ enum PodcastOrderByInput {
   artworkLarge_DESC
   feedUrl_ASC
   feedUrl_DESC
+  websiteUrl_ASC
+  websiteUrl_DESC
 }
 
 type PodcastPreviousValues {
@@ -1359,6 +1274,7 @@ type PodcastPreviousValues {
   artworkSmall: String!
   artworkLarge: String!
   feedUrl: String!
+  websiteUrl: String!
 }
 
 type PodcastSubscriptionPayload {
@@ -1406,6 +1322,7 @@ input PodcastUpdateInput {
   artworkSmall: String
   artworkLarge: String
   feedUrl: String
+  websiteUrl: String
   categories: CategoryUpdateManyInput
   episodes: EpisodeUpdateManyWithoutPodcastInput
 }
@@ -1418,6 +1335,7 @@ input PodcastUpdateManyMutationInput {
   artworkSmall: String
   artworkLarge: String
   feedUrl: String
+  websiteUrl: String
 }
 
 input PodcastUpdateOneRequiredWithoutEpisodesInput {
@@ -1435,6 +1353,7 @@ input PodcastUpdateWithoutEpisodesDataInput {
   artworkSmall: String
   artworkLarge: String
   feedUrl: String
+  websiteUrl: String
   categories: CategoryUpdateManyInput
 }
 
@@ -1754,6 +1673,46 @@ input PodcastWhereInput {
 
   """All values not ending with the given string."""
   feedUrl_not_ends_with: String
+  websiteUrl: String
+
+  """All values that are not equal to given value."""
+  websiteUrl_not: String
+
+  """All values that are contained in given list."""
+  websiteUrl_in: [String!]
+
+  """All values that are not contained in given list."""
+  websiteUrl_not_in: [String!]
+
+  """All values less than the given value."""
+  websiteUrl_lt: String
+
+  """All values less than or equal the given value."""
+  websiteUrl_lte: String
+
+  """All values greater than the given value."""
+  websiteUrl_gt: String
+
+  """All values greater than or equal the given value."""
+  websiteUrl_gte: String
+
+  """All values containing the given string."""
+  websiteUrl_contains: String
+
+  """All values not containing the given string."""
+  websiteUrl_not_contains: String
+
+  """All values starting with the given string."""
+  websiteUrl_starts_with: String
+
+  """All values not starting with the given string."""
+  websiteUrl_not_starts_with: String
+
+  """All values ending with the given string."""
+  websiteUrl_ends_with: String
+
+  """All values not ending with the given string."""
+  websiteUrl_not_ends_with: String
   categories_every: CategoryWhereInput
   categories_some: CategoryWhereInput
   categories_none: CategoryWhereInput

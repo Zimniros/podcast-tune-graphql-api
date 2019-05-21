@@ -29,6 +29,7 @@ type Podcast {
   artworkSmall: String!
   artworkLarge: String!
   feedUrl: String!
+  websiteUrl: String!
   categories: [Category!]!
   episodes: [Episode!]!
 }
@@ -38,7 +39,6 @@ type Episode {
   podcast: Podcast!
   title: String!
   description: String
-  author: String!
   mediaUrl: String
   duration: Float @default(value: 0)
   durationVerified: Boolean! @default(value: false)

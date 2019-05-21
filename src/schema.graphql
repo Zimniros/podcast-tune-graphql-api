@@ -68,3 +68,7 @@ type Query {
     last: Int
   ): CategoryConnection!
 }
+
+type Subscription {
+  episode(podcastId: ID!): EpisodeSubscriptionPayload
+}

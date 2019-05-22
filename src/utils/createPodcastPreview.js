@@ -31,7 +31,8 @@ const createPodcastPreview = async preview => {
     console.log(
       `Error during fetching preview for podcast '${
         podcastPreview.title
-      }' (ItunesId: ${podcastPreview.itunesId})`
+      }' (ItunesId: ${podcastPreview.itunesId})`,
+      { error }
     );
     console.log(
       `==========================================================================================`

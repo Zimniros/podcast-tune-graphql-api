@@ -6,14 +6,14 @@ import generateCookie from '../utils/generateCookie';
 
 const Mutations = {
   // Initial Data Population for Categories
-  async getCategories(parent, args, ctx, info) {
+  async getCategories(parent, args, { db }, info) {
     const categoriesData = await fetchCategories();
-    await ctx.db.mutation.deleteManyCategories();
+    await db.mutation.deleteManyCategories();
 
     const promises = [];
 
     categoriesData.forEach(category => {
-      const upsertPromise = ctx.db.mutation.createCategory({
+      const upsertPromise = db.mutation.createCategory({
         data: {
           ...category,
         },
@@ -26,9 +26,14 @@ const Mutations = {
     return categories;
   },
   // Initial Data Population for Podcast preview for each category
-  async getPodcastsForAllCategories(parent, { limit = 200 }, ctx, info) {
-    ctx.request.setTimeout(0);
-    const categories = await ctx.db.query.categories();
+  async getPodcastsForAllCategories(
+    parent,
+    { limit = 200, country = 'US' },
+    { db, request },
+    info
+  ) {
+    request.setTimeout(0);
+    const categories = await db.query.categories();
 
     // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop/37576787#37576787
 
@@ -46,7 +51,7 @@ const Mutations = {
         ) + 1} out of ${categories.length}`
       );
       console.time(`  Podcasts for category ${itunesId} fetched in`);
-      await fetchPodcastsForCategory({ categoryId: itunesId, limit });
+      await fetchPodcastsForCategory({ categoryId: itunesId, limit, country });
 
       console.timeEnd(`  Podcasts for category ${itunesId} fetched in`);
     }

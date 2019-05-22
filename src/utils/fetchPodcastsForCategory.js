@@ -1,8 +1,8 @@
 import fetchTopPodcasts from './fetchTopPodcasts';
 import createPodcastPreview from './createPodcastPreview';
 
-const fetchPodcastsForCategory = async ({ categoryId, limit }) => {
-  const previewsData = await fetchTopPodcasts({ categoryId, limit });
+const fetchPodcastsForCategory = async ({ categoryId, limit, country }) => {
+  const previewsData = await fetchTopPodcasts({ categoryId, limit, country });
 
   let index = 0;
   const range = 20;

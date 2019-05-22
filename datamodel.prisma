@@ -29,9 +29,11 @@ type Podcast {
   artworkSmall: String!
   artworkLarge: String!
   feedUrl: String!
-  websiteUrl: String!
+  websiteUrl: String
   categories: [Category!]!
   episodes: [Episode!]!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
 
 type Episode {
@@ -39,7 +41,7 @@ type Episode {
   podcast: Podcast!
   title: String!
   description: String
-  mediaUrl: String
+  mediaUrl: String!
   duration: Float @default(value: 0)
   durationVerified: Boolean! @default(value: false)
   pubDate: DateTime

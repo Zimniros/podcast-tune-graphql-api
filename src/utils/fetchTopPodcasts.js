@@ -24,11 +24,11 @@ function prettifyPreviewData(data) {
   }
 }
 
-const fetchTopPodcasts = async ({ categoryId, limit }) => {
+const fetchTopPodcasts = async ({ categoryId, limit, country }) => {
   console.time(`  Top podcasts for ${categoryId} fetched in`);
 
   const jsonData = await axios(
-    `https://itunes.apple.com/us/rss/topaudiopodcasts/limit=${limit}/genre=${categoryId}/json`
+    `https://itunes.apple.com/${country}/rss/topaudiopodcasts/limit=${limit}/genre=${categoryId}/json`
   );
 
   const feedData = jsonData.data.feed.entry;

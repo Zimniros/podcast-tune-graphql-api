@@ -1,4 +1,5 @@
 import { forwardTo } from 'prisma-binding';
+import populatePodcastFeed from '../utils/populatePodcastFeed';
 
 const Query = {
   podcasts: forwardTo('db'),
@@ -10,7 +11,24 @@ const Query = {
   category: forwardTo('db'),
 
   podcastsConnection: forwardTo('db'),
-  episodesConnection: forwardTo('db'),
+  async episodesConnection(parent, args, ctx, info) {
+    const { podcastId } = info.variableValues;
+    if (!podcastId) return forwardTo('db')(parent, args, ctx, info);
+
+    const episodes = await ctx.db.query.episodes({
+      where: {
+        podcast: {
+          id: podcastId,
+        },
+      },
+    });
+
+    if (episodes.length === 0) {
+      await populatePodcastFeed(podcastId);
+    }
+
+    return forwardTo('db')(parent, args, ctx, info);
+  },
   categoriesConnection: forwardTo('db'),
 };
 

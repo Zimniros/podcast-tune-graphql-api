@@ -6,6 +6,8 @@ import prettifyEpisodeData from './prettifyEpisodeData';
 
 const populatePodcastFeed = async podcastId =>
   new Promise(async (resolve, reject) => {
+    console.time(`Feed for podcast with id '${podcastId}' fetched in `);
+
     const podcast = await db.query.podcast({
       where: {
         id: podcastId,
@@ -18,11 +20,20 @@ const populatePodcastFeed = async podcastId =>
 
     const { feedUrl, title } = podcast;
 
-    const feedStream = await axios({
-      method: 'get',
-      url: feedUrl,
-      responseType: 'stream',
-    });
+    let feedStream;
+
+    try {
+      feedStream = await axios({
+        method: 'get',
+        url: feedUrl,
+        responseType: 'stream',
+      });
+    } catch (error) {
+      console.log(`Error during creating stream for podcast '${title}' feed.`, {
+        error,
+      });
+      return reject(error);
+    }
 
     const feedParser = new FeedParser();
     const feed = [];
@@ -37,6 +48,8 @@ const populatePodcastFeed = async podcastId =>
 
       if (episode != null) {
         const episodeData = prettifyEpisodeData(episode);
+
+        if (!episodeData.mediaUrl) return;
 
         try {
           const ep = await db.mutation.createEpisode({
@@ -53,29 +66,18 @@ const populatePodcastFeed = async podcastId =>
           feed.push(ep);
         } catch (error) {
           console.log(`Error during creating episode for podcast '${title}'`, {
-            episodeData,
+            error,
           });
           return reject(error);
         }
       } else {
-        const { meta } = this;
-
-        await db.mutation.updatePodcast({
-          where: {
-            id: podcastId,
-          },
-          data: {
-            websiteUrl: meta.link,
-          },
-        });
-
         context.destroy();
         return resolve(feed);
       }
     });
 
     feedParser.on('end', function() {
-      console.timeEnd(`Feed '${feedUrl}' fetched in `);
+      console.timeEnd(`Feed for podcast with id '${podcastId}' fetched in `);
     });
 
     feedStream.data.pipe(feedParser);

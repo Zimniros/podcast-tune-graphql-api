@@ -1,8 +1,21 @@
 # import * from './generated/prisma.graphql'
+enum CountryCodes {
+  US
+  GB
+  CA
+  DE
+  SE
+  CH
+  RU
+  BY
+  UA
+  LV
+  LT
+}
 
 type Mutation {
   getCategories: [Category!]!
-  getPodcastsForAllCategories(limit: Int): Boolean
+  getPodcastsForAllCategories(limit: Int, country: CountryCodes): Boolean
   login(email: String!, password: String!): User!
   register(email: String!, password: String!, name: String): User!
 }
@@ -67,8 +80,4 @@ type Query {
     first: Int
     last: Int
   ): CategoryConnection!
-}
-
-type Subscription {
-  episode(podcastId: ID!): EpisodeSubscriptionPayload
 }

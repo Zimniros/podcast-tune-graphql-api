@@ -4,39 +4,37 @@ function getItunesId(data) {
   return +data.id.attributes['im:id'];
 }
 
-function getSummary(data) {
-  return data.summary ? data.summary.label : '';
-}
-
 function prettifyPreviewData(data) {
   if (Array.isArray(data)) {
-    return data.map(el => ({
-      itunesId: getItunesId(el),
-      description: getSummary(el),
-    }));
+    return data.map(el => getItunesId(el));
   }
 
   if (typeof data === 'object') {
-    return {
-      itunesId: getItunesId(data),
-      description: getSummary(data),
-    };
+    return getItunesId(data);
   }
 }
 
-const fetchTopPodcasts = async ({ categoryId, limit, country }) => {
-  console.time(`  Top podcasts for ${categoryId} fetched in`);
+const fetchTopPodcasts = async ({ categoryId, limit = 200, country = 'US' }) =>
+  new Promise(async (resolve, reject) => {
+    if (!categoryId) return reject(new Error('A categoryId was not provided.'));
 
-  const jsonData = await axios(
-    `https://itunes.apple.com/${country}/rss/topaudiopodcasts/limit=${limit}/genre=${categoryId}/json`
-  );
+    console.time(`  Top podcasts for ${categoryId} fetched in`);
 
-  const feedData = jsonData.data.feed.entry;
-  const previewsData = prettifyPreviewData(feedData);
+    let jsonData;
 
-  console.timeEnd(`  Top podcasts for ${categoryId} fetched in`);
+    try {
+      jsonData = await axios(
+        `https://itunes.apple.com/${country}/rss/topaudiopodcasts/limit=${limit}/genre=${categoryId}/json`
+      );
+    } catch (error) {
+      return reject(error);
+    }
 
-  return previewsData;
-};
+    const feedData = jsonData.data.feed.entry;
+    const podcastsIds = prettifyPreviewData(feedData);
+
+    console.timeEnd(`  Top podcasts for ${categoryId} fetched in`);
+    return resolve(podcastsIds);
+  });
 
 export default fetchTopPodcasts;

@@ -29,7 +29,8 @@ type Podcast {
   artworkSmall: String!
   artworkLarge: String!
   feedUrl: String!
-  websiteUrl: String
+  websiteUrl: String!
+  itunesUrl: String!
   categories: [Category!]!
   episodes: [Episode!]!
   createdAt: DateTime! @createdAt

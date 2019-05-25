@@ -1,17 +1,34 @@
 import fetchTopPodcasts from './fetchTopPodcasts';
-import createPodcastPreview from '../createPodcastPreview';
+import createPodcast from '../createPodcast';
 
-const fetchPodcastsForCategory = async ({ categoryId, limit, country }) => {
-  const previewsData = await fetchTopPodcasts({ categoryId, limit, country });
+const fetchPodcastsForCategory = async ({ categoryId, limit, country }) =>
+  new Promise(async (resolve, reject) => {
+    let podcastsIds;
 
-  let index = 0;
-  const range = 20;
+    try {
+      podcastsIds = await fetchTopPodcasts({ categoryId, limit, country });
+    } catch (error) {
+      return reject(error);
+    }
 
-  while (index <= previewsData.length) {
-    const previews = previewsData.slice(index, index + range);
-    await Promise.all(previews.map(preview => createPodcastPreview(preview)));
-    index += range;
-  }
-};
+    let index = 0;
+    const range = 20;
+
+    while (index <= podcastsIds.length) {
+      const ids = podcastsIds.slice(index, index + range);
+
+      await Promise.all(
+        ids.map(id =>
+          createPodcast(id).catch(e =>
+            console.log('Error in creating podcast method', { e })
+          )
+        )
+      );
+
+      index += range;
+    }
+
+    resolve();
+  });
 
 export default fetchPodcastsForCategory;

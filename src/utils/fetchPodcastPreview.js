@@ -6,6 +6,7 @@ function prettifyPreviewData(data) {
     title: data.trackName,
     author: data.artistName,
     feedUrl: data.feedUrl,
+    itunesUrl: data.collectionViewUrl,
     artworkSmall: data.artworkUrl100,
     artworkLarge: data.artworkUrl600,
     categoryIds: data.genreIds
@@ -14,19 +15,28 @@ function prettifyPreviewData(data) {
   };
 }
 
-const fetchPodcastPreview = async podcastId => {
-  const jsonData = await axios.get(
-    `https://itunes.apple.com/lookup?id=${podcastId}`
-  );
+const fetchPodcastPreview = async itunesId =>
+  new Promise(async (resolve, reject) => {
+    if (!itunesId)
+      return reject(new Error('A podcast itunesId was not provided.'));
 
-  const { resultCount, results } = jsonData.data;
-  if (resultCount === 0) {
-    console.log(`There's not any data for podcast ${podcastId}.`);
-    return null;
-  }
+    let jsonData;
+    try {
+      jsonData = await axios.get(
+        `https://itunes.apple.com/lookup?id=${itunesId}&entity=podcast`
+      );
+    } catch (error) {
+      return reject(error);
+    }
 
-  const data = prettifyPreviewData(results[0]);
-  return data;
-};
+    const { resultCount, results } = jsonData.data;
+
+    if (resultCount === 0) {
+      return reject(new Error(`There's not any data for podcast ${itunesId}.`));
+    }
+
+    const data = prettifyPreviewData(results[0]);
+    return resolve(data);
+  });
 
 export default fetchPodcastPreview;

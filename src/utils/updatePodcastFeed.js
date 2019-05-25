@@ -4,7 +4,7 @@ import axios from 'axios';
 import db from '../db';
 import prettifyEpisodeData from './prettifyEpisodeData';
 
-const populatePodcastFeed = async podcastId =>
+const updatePodcastFeed = async podcastId =>
   new Promise(async (resolve, reject) => {
     console.time(`Feed for podcast with id '${podcastId}' fetched in `);
 
@@ -51,6 +51,15 @@ const populatePodcastFeed = async podcastId =>
 
         if (!episodeData.mediaUrl) return;
 
+        const exists = await db.exists.Episode({
+          mediaUrl: episode.mediaUrl,
+        });
+
+        if (exists) {
+          context.destroy();
+          return resolve(feed);
+        }
+
         try {
           const ep = await db.mutation.createEpisode({
             data: {
@@ -91,4 +100,4 @@ const populatePodcastFeed = async podcastId =>
     feedStream.data.pipe(feedParser);
   });
 
-export default populatePodcastFeed;
+export default updatePodcastFeed;

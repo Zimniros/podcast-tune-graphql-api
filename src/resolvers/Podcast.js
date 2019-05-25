@@ -1,8 +1,13 @@
+import dayjs from 'dayjs';
 import populatePodcastFeed from '../utils/populatePodcastFeed';
 import populatePodcastUrl from '../utils/populatePodcastUrl';
+import updatePodcastFeed from '../utils/updatePodcastFeed';
 
 const Podcast = {
-  async websiteUrl({ id }, args, { db }, info) {
+  async websiteUrl(parent, args, { db }, info) {
+    const { variableValues } = info;
+    const { id } = variableValues;
+
     const podcast = await db.query.podcast({
       where: {
         id,
@@ -24,7 +29,24 @@ const Podcast = {
 
     return websiteUrl;
   },
-  async episodes({ id }, args, { db }, info) {
+  async episodes(parent, args, { db }, info) {
+    const { variableValues } = info;
+    const { id } = variableValues;
+
+    const podcast = await db.query.podcast({
+      where: {
+        id,
+      },
+    });
+
+    const { feedCheckedAt } = podcast;
+
+    if (!feedCheckedAt) {
+      await populatePodcastFeed(id);
+    } else if (dayjs(new Date()).diff(dayjs(feedCheckedAt), 'hour') > 2) {
+      await updatePodcastFeed(id);
+    }
+
     const episodes = await db.query.episodes(
       {
         where: {
@@ -35,10 +57,6 @@ const Podcast = {
       },
       info
     );
-
-    if (Array.isArray(episodes) && episodes.length === 0) {
-      populatePodcastFeed(id);
-    }
 
     return episodes;
   },

@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Wed May 22 2019 20:35:26 GMT+0300 (Moscow Standard Time)
+# timestamp: Sat May 25 2019 15:01:25 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -1107,6 +1107,7 @@ input EpisodeWhereInput {
 
 input EpisodeWhereUniqueInput {
   id: ID
+  mediaUrl: String
 }
 
 """Raw JSON value"""
@@ -1193,6 +1194,7 @@ type Podcast implements Node {
   episodes(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Episode!]
   createdAt: DateTime!
   updatedAt: DateTime!
+  feedCheckedAt: DateTime
 }
 
 """A connection to a list of items."""
@@ -1215,6 +1217,7 @@ input PodcastCreateInput {
   artworkLarge: String!
   feedUrl: String!
   websiteUrl: String
+  feedCheckedAt: DateTime
   categories: CategoryCreateManyInput
   episodes: EpisodeCreateManyWithoutPodcastInput
 }
@@ -1234,6 +1237,7 @@ input PodcastCreateWithoutEpisodesInput {
   artworkLarge: String!
   feedUrl: String!
   websiteUrl: String
+  feedCheckedAt: DateTime
   categories: CategoryCreateManyInput
 }
 
@@ -1269,6 +1273,8 @@ enum PodcastOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  feedCheckedAt_ASC
+  feedCheckedAt_DESC
 }
 
 type PodcastPreviousValues {
@@ -1283,6 +1289,7 @@ type PodcastPreviousValues {
   websiteUrl: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  feedCheckedAt: DateTime
 }
 
 type PodcastSubscriptionPayload {
@@ -1331,6 +1338,7 @@ input PodcastUpdateInput {
   artworkLarge: String
   feedUrl: String
   websiteUrl: String
+  feedCheckedAt: DateTime
   categories: CategoryUpdateManyInput
   episodes: EpisodeUpdateManyWithoutPodcastInput
 }
@@ -1344,6 +1352,7 @@ input PodcastUpdateManyMutationInput {
   artworkLarge: String
   feedUrl: String
   websiteUrl: String
+  feedCheckedAt: DateTime
 }
 
 input PodcastUpdateOneRequiredWithoutEpisodesInput {
@@ -1362,6 +1371,7 @@ input PodcastUpdateWithoutEpisodesDataInput {
   artworkLarge: String
   feedUrl: String
   websiteUrl: String
+  feedCheckedAt: DateTime
   categories: CategoryUpdateManyInput
 }
 
@@ -1765,6 +1775,28 @@ input PodcastWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  feedCheckedAt: DateTime
+
+  """All values that are not equal to given value."""
+  feedCheckedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  feedCheckedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  feedCheckedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  feedCheckedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  feedCheckedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  feedCheckedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  feedCheckedAt_gte: DateTime
   categories_every: CategoryWhereInput
   categories_some: CategoryWhereInput
   categories_none: CategoryWhereInput

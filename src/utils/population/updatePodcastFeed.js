@@ -1,8 +1,8 @@
 import FeedParser from 'feedparser';
 import axios from 'axios';
 
-import db from '../db';
-import prettifyEpisodeData from './prettifyEpisodeData';
+import db from '../../db';
+import prettifyEpisodeData from '../prettifyEpisodeData';
 
 const updatePodcastFeed = async podcastId =>
   new Promise(async (resolve, reject) => {

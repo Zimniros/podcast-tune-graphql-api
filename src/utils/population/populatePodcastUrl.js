@@ -1,7 +1,7 @@
 import FeedParser from 'feedparser';
 import axios from 'axios';
 
-import db from '../db';
+import db from '../../db';
 
 const populatePodcastUrl = async podcastId =>
   new Promise(async (resolve, reject) => {

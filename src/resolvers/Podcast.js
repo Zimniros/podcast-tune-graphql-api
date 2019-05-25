@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import populatePodcastFeed from '../utils/populatePodcastFeed';
-import populatePodcastUrl from '../utils/populatePodcastUrl';
-import updatePodcastFeed from '../utils/updatePodcastFeed';
+import populatePodcastFeed from '../utils/population/populatePodcastFeed';
+import populatePodcastUrl from '../utils/population/populatePodcastUrl';
+import updatePodcastFeed from '../utils/population/updatePodcastFeed';
 
 const Podcast = {
   async websiteUrl(parent, args, { db }, info) {

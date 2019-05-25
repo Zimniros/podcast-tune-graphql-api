@@ -1,5 +1,6 @@
 import fetchTopPodcasts from './fetchTopPodcasts';
 import createPodcast from '../createPodcast';
+import createPodcastWithFeed from '../createPodcastWithFeed';
 
 const fetchPodcastsForCategory = async ({ categoryId, limit, country }) =>
   new Promise(async (resolve, reject) => {
@@ -12,15 +13,26 @@ const fetchPodcastsForCategory = async ({ categoryId, limit, country }) =>
     }
 
     let index = 0;
-    const range = 20;
+    // const range = 20; // Prevents from hitting request rate to apples servers
+    const range = 5; // Prevents 'createPodcastWithFeed' from crushing server due to too many request
 
     while (index <= podcastsIds.length) {
       const ids = podcastsIds.slice(index, index + range);
 
+      // await Promise.all(
+      //   ids.map(id =>
+      //     createPodcast(id).catch(e =>
+      //       console.log('Error in creating podcast method', { e })
+      //     )
+      //   )
+      // );
+
       await Promise.all(
         ids.map(id =>
-          createPodcast(id).catch(e =>
-            console.log('Error in creating podcast method', { e })
+          createPodcastWithFeed(id).catch(error =>
+            console.log(`Error in creating podcast method with id ${id}`, {
+              error: error.message,
+            })
           )
         )
       );

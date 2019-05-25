@@ -19,7 +19,10 @@ const createPodcast = itunesId =>
     });
 
     // Handle later
-    if (podcastExists) return resolve();
+    if (podcastExists)
+      return reject(
+        new Error(`Podcast with itunesId '${itunesId}' already exists.'`)
+      );
 
     try {
       previewData = await fetchPodcastPreview(itunesId);

@@ -16,6 +16,11 @@ enum CountryCodes {
 type Mutation {
   getCategories: [Category!]!
   getPodcastsForAllCategories(limit: Int, country: CountryCodes): Boolean
+  getPodcastsForCategory(
+    categoryId: Int!
+    limit: Int
+    country: CountryCodes
+  ): Boolean
   login(email: String!, password: String!): User!
   register(email: String!, password: String!, name: String): User!
 }

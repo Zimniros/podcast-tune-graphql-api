@@ -67,6 +67,7 @@ const populatePodcastFeed = async podcastId =>
         } catch (error) {
           console.log(`Error during creating episode for podcast '${title}'`, {
             error,
+            episodeData,
           });
           return reject(error);
         }

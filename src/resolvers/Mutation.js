@@ -110,6 +110,36 @@ const Mutations = {
 
     return true;
   },
+  async getPodcastsForCategory(
+    parent,
+    { categoryId, limit = 200, country = 'US' },
+    { db, request },
+    info
+  ) {
+    request.setTimeout(0);
+
+    const exists = await db.query.category({
+      where: {
+        itunesId: categoryId,
+      },
+    });
+
+    if (!exists)
+      throw new Error(`Category with id '${categoryId}' doesn't exist.`);
+
+    console.log(`==============================`);
+    console.log(`Getting podcasts for category`);
+    console.log(`==============================`);
+    console.time(`All podcasts for category '${categoryId}' fetched in`);
+
+    await fetchPodcastsForCategory({ categoryId, limit, country });
+
+    console.log(`==============================`);
+    console.timeEnd(`All podcasts for category '${categoryId}' fetched in`);
+    console.log(`==============================`);
+
+    return true;
+  },
 };
 
 export { Mutations as default };

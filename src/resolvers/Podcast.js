@@ -37,12 +37,7 @@ const Podcast = {
     );
 
     if (Array.isArray(episodes) && episodes.length === 0) {
-      console.time(`Episodes for podcast '${id}' populated in `);
-
-      const feed = await populatePodcastFeed(id);
-
-      console.timeEnd(`Episodes for podcast '${id}' populated in `);
-      return feed;
+      populatePodcastFeed(id);
     }
 
     return episodes;

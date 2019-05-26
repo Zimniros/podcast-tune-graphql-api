@@ -49,7 +49,7 @@ const populatePodcastFeed = async podcastId =>
       if (episode != null) {
         const episodeData = prettifyEpisodeData(episode);
 
-        if (!episodeData.mediaUrl) return;
+        if (!episodeData.title || !episodeData.mediaUrl) return;
 
         try {
           const ep = await db.mutation.createEpisode({

@@ -13,8 +13,12 @@ const fetchPodcastsForCategory = async ({ categoryId, limit, country }) =>
     }
 
     let index = 0;
-    // const range = 20; // Prevents from hitting request rate to apples servers
-    const range = 5; // Prevents 'createPodcastWithFeed' from crushing server due to too many request
+
+    // Prevents from hitting request rate to apples servers
+    // const range = 20;
+
+    // Prevents 'createPodcastWithFeed' from crushing server due to too many request
+    const range = 10;
 
     while (index <= podcastsIds.length) {
       const ids = podcastsIds.slice(index, index + range);

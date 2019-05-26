@@ -3,8 +3,8 @@ import { pick, get } from 'lodash';
 function filterEnclosures(enclosures) {
   const array = Array.isArray(enclosures) ? enclosures : [enclosures];
 
-  return array.find(el =>
-    ['audio/mpeg', 'audio/mpeg3', 'audio/mp4'].indexOf(el.type !== -1)
+  return array.find(
+    el => ['audio/mpeg', 'audio/mpeg3', 'audio/mp4'].indexOf(el.type) !== -1
   );
 }
 

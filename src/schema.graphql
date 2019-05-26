@@ -15,7 +15,12 @@ enum CountryCodes {
 
 type Mutation {
   getCategories: [Category!]!
-  getPodcastsForAllCategories(limit: Int, country: CountryCodes): Boolean
+  getPodcastsForAllCategories(
+    limit: Int
+    country: CountryCodes
+    first: Int
+    skip: Int
+  ): Boolean
   getPodcastsForCategory(
     categoryId: Int!
     limit: Int

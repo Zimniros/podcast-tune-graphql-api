@@ -13,12 +13,12 @@ const createPodcast = itunesId =>
 
     let previewData;
     let metaData;
+    let data;
 
     const podcastExists = await db.exists.Podcast({
       itunesId,
     });
 
-    // Handle later
     if (podcastExists)
       return reject(
         new Error(`Podcast with itunesId '${itunesId}' already exists.'`)
@@ -26,6 +26,16 @@ const createPodcast = itunesId =>
 
     try {
       previewData = await fetchPodcastPreview(itunesId);
+
+      const { categoryIds } = previewData;
+      delete previewData.categoryIds;
+
+      data = {
+        ...previewData,
+        categories: {
+          connect: categoryIds,
+        },
+      };
     } catch (error) {
       console.log('Error in fetching podcast preview', { itunesId });
       return reject(error);
@@ -33,27 +43,17 @@ const createPodcast = itunesId =>
 
     try {
       metaData = await getFeedMeta(previewData.feedUrl);
-    } catch (error) {
-      console.log('Error in fetching feed meta', { previewData });
-      return reject(error);
-    }
-
-    try {
-      const { categoryIds } = previewData;
-      delete previewData.categoryIds;
 
       const { link, description: metaDesc } = metaData;
       const description = get(metaData, 'itunes:summary.#') || metaDesc || '';
 
-      const data = {
-        ...previewData,
-        websiteUrl: link || '',
-        description,
-        categories: {
-          connect: categoryIds,
-        },
-      };
+      data = { ...data, websiteUrl: link || '', description };
+    } catch (error) {
+      console.log('Error in fetching podcast meta', { itunesId });
+      return reject(error);
+    }
 
+    try {
       const podcast = await db.mutation.createPodcast({
         data,
       });

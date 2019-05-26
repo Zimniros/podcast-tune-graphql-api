@@ -15,6 +15,7 @@ const getFeedMeta = async feedUrl =>
         method: 'get',
         url: feedUrl,
         responseType: 'stream',
+        timeout: 30000,
       });
     } catch (error) {
       return reject(error);
@@ -35,7 +36,6 @@ const getFeedMeta = async feedUrl =>
     });
 
     feedParser.on('end', function() {
-      console.log('end from getFeedMeta');
       console.timeEnd(`  Meta for feed '${feedUrl}' fetched in `);
     });
 

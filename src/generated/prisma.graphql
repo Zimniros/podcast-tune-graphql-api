@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Sat May 25 2019 23:25:32 GMT+0300 (Moscow Standard Time)
+# timestamp: Sun May 26 2019 16:04:40 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -1184,11 +1184,11 @@ type Podcast implements Node {
   itunesId: Int!
   title: String!
   author: String!
-  description: String!
+  description: String
   artworkSmall: String!
   artworkLarge: String!
-  feedUrl: String!
-  websiteUrl: String!
+  feedUrl: String
+  websiteUrl: String
   itunesUrl: String!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
   episodes(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Episode!]
@@ -1212,11 +1212,11 @@ input PodcastCreateInput {
   itunesId: Int!
   title: String!
   author: String!
-  description: String!
+  description: String
   artworkSmall: String!
   artworkLarge: String!
-  feedUrl: String!
-  websiteUrl: String!
+  feedUrl: String
+  websiteUrl: String
   itunesUrl: String!
   feedCheckedAt: DateTime
   categories: CategoryCreateManyInput
@@ -1233,11 +1233,11 @@ input PodcastCreateWithoutEpisodesInput {
   itunesId: Int!
   title: String!
   author: String!
-  description: String!
+  description: String
   artworkSmall: String!
   artworkLarge: String!
-  feedUrl: String!
-  websiteUrl: String!
+  feedUrl: String
+  websiteUrl: String
   itunesUrl: String!
   feedCheckedAt: DateTime
   categories: CategoryCreateManyInput
@@ -1286,11 +1286,11 @@ type PodcastPreviousValues {
   itunesId: Int!
   title: String!
   author: String!
-  description: String!
+  description: String
   artworkSmall: String!
   artworkLarge: String!
-  feedUrl: String!
-  websiteUrl: String!
+  feedUrl: String
+  websiteUrl: String
   itunesUrl: String!
   createdAt: DateTime!
   updatedAt: DateTime!

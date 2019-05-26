@@ -25,11 +25,11 @@ type Podcast {
   itunesId: Int! @unique
   title: String!
   author: String!
-  description: String!
+  description: String
   artworkSmall: String!
   artworkLarge: String!
-  feedUrl: String!
-  websiteUrl: String!
+  feedUrl: String
+  websiteUrl: String
   itunesUrl: String!
   categories: [Category!]!
   episodes: [Episode!]!

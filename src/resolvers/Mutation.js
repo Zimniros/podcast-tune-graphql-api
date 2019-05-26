@@ -76,12 +76,15 @@ const Mutations = {
   // Initial Data Population for Podcast preview for each category
   async getPodcastsForAllCategories(
     parent,
-    { limit = 200, country = 'US' },
+    { limit = 200, country = 'US', first = 67, skip = 0 },
     { db, request },
     info
   ) {
     request.setTimeout(0);
-    const categories = await db.query.categories();
+    const categories = await db.query.categories({
+      first,
+      skip,
+    });
 
     // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop/37576787#37576787
 

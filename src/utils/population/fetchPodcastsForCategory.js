@@ -15,31 +15,33 @@ const fetchPodcastsForCategory = async ({ categoryId, limit, country }) =>
     let index = 0;
 
     // Prevents from hitting request rate to apples servers
-    // const range = 20;
+    const range = 20;
 
     // Prevents 'createPodcastWithFeed' from crushing server due to too many request
-    const range = 10;
+    // const range = 10;
 
     while (index <= podcastsIds.length) {
       const ids = podcastsIds.slice(index, index + range);
 
-      // await Promise.all(
-      //   ids.map(id =>
-      //     createPodcast(id).catch(e =>
-      //       console.log('Error in creating podcast method', { e })
-      //     )
-      //   )
-      // );
-
       await Promise.all(
         ids.map(id =>
-          createPodcastWithFeed(id).catch(error =>
-            console.log(`Error in creating podcast method with id ${id}`, {
+          createPodcast(id).catch(error =>
+            console.log(`Error in creating podcast method ${id}`, {
               error: error.message,
             })
           )
         )
       );
+
+      // await Promise.all(
+      //   ids.map(id =>
+      //     createPodcastWithFeed(id).catch(error =>
+      //       console.log(`Error in creating podcast method with id ${id}`, {
+      //         error: error.message,
+      //       })
+      //     )
+      //   )
+      // );
 
       index += range;
     }

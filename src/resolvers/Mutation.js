@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import fetchCategories from '../utils/population/fetchCategories';
 import fetchPodcastsForCategory from '../utils/population/fetchPodcastsForCategory';
 import generateCookie from '../utils/generateCookie';
+import updatePodcastFeed from '../utils/population/updatePodcastFeed';
 
 const Mutations = {
   async register(parent, args, ctx, info) {
@@ -48,6 +49,11 @@ const Mutations = {
     ctx.response.cookie(...generateCookie(user.id));
 
     return user;
+  },
+  async updatePodcastFeed(parent, { id }, ctx, info) {
+    const episodes = await updatePodcastFeed(id);
+
+    return episodes;
   },
   /*
       Data population methods

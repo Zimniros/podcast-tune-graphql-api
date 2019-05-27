@@ -1,103 +1,118 @@
-import FeedParser from 'feedparser';
-import axios from 'axios';
-
+/* eslint-disable no-loop-func */
+import getFeedData from './getFeedData';
 import db from '../../db';
-import prettifyEpisodeData from '../prettifyEpisodeData';
 
-const updatePodcastFeed = async podcastId =>
+const updatePodcastFeed = id =>
   new Promise(async (resolve, reject) => {
-    console.time(`Feed for podcast with id '${podcastId}' fetched in `);
+    if (!id) return reject(new Error('A podcast ituidnesId was not provided.'));
+
+    let feedData;
+    const newEpisodes = [];
 
     const podcast = await db.query.podcast({
       where: {
-        id: podcastId,
+        id,
       },
     });
 
-    if (!podcast) {
-      return reject(new Error(`Podcast with id ${podcastId} was not found.`));
-    }
+    if (!podcast)
+      return reject(new Error(`Podcast with id '${id}' was not found.'`));
 
-    const { feedUrl, title } = podcast;
-
-    let feedStream;
+    if (podcast.isFeedUpdating)
+      return reject(new Error(`Podcast with id '${id}' is updating already.'`));
 
     try {
-      feedStream = await axios({
-        method: 'get',
-        url: feedUrl,
-        responseType: 'stream',
+      console.log(`======================================================`);
+      console.log(`Updating feed for podcast (id: '${id}').`);
+      console.log(`======================================================`);
+      console.time(`Feed for podcast updated in (id: '${id}')`);
+
+      await db.mutation.updatePodcast({
+        where: {
+          id,
+        },
+        data: {
+          isFeedUpdating: true,
+        },
       });
-    } catch (error) {
-      console.log(`Error during creating stream for podcast '${title}' feed.`, {
-        error,
-      });
-      return reject(error);
-    }
 
-    const feedParser = new FeedParser();
-    const feed = [];
-
-    feedParser.on('error', function(error) {
-      return reject(error);
-    });
-
-    feedParser.on('readable', async function() {
-      const context = this; // `this` is `feedparser`, which is a stream
-      const episode = context.read();
-
-      if (episode != null) {
-        const episodeData = prettifyEpisodeData(episode);
-
-        if (!episodeData.mediaUrl) return;
-
-        const exists = await db.exists.Episode({
-          mediaUrl: episode.mediaUrl,
+      try {
+        const { feedUrl } = podcast;
+        feedData = await getFeedData(feedUrl);
+      } catch (error) {
+        console.log('Error in fetching podcast feed', {
+          id,
+          error: error.message,
         });
 
-        if (exists) {
-          context.destroy();
-          return resolve(feed);
-        }
+        return reject(error);
+      } finally {
+        await db.mutation.updatePodcast({
+          where: {
+            id,
+          },
+          data: {
+            feedCheckedAt: new Date(),
+          },
+        });
+      }
 
+      const { episodes } = feedData;
+
+      for (const episode of episodes) {
         try {
+          const { title, mediaUrl } = episode;
+          if (!title || !mediaUrl) return;
+
+          const existingEpisodes = await db.query.episodes({
+            where: {
+              title,
+              mediaUrl,
+              podcast: {
+                id,
+              },
+            },
+          });
+
+          if (existingEpisodes.length !== 0) {
+            return resolve(newEpisodes);
+          }
+
           const ep = await db.mutation.createEpisode({
             data: {
-              ...episodeData,
+              ...episode,
               podcast: {
                 connect: {
-                  id: podcastId,
+                  id,
                 },
               },
             },
           });
 
-          feed.push(ep);
+          newEpisodes.push(ep);
         } catch (error) {
-          console.log(`Error during creating episode for podcast '${title}'`, {
-            error,
-          });
-          return reject(error);
+          console.log(
+            `Error in creating episode in updatePodcastFeed method.`,
+            {
+              error: error.message,
+            }
+          );
         }
-      } else {
-        context.destroy();
-        return resolve(feed);
       }
-    });
-
-    feedParser.on('end', async function() {
+    } finally {
       await db.mutation.updatePodcast({
         where: {
-          id: podcastId,
+          id,
         },
         data: {
-          feedCheckedAt: new Date(),
+          isFeedUpdating: false,
         },
       });
-      console.timeEnd(`Feed for podcast with id '${podcastId}' fetched in `);
-    });
 
-    feedStream.data.pipe(feedParser);
+      console.log(`======================================================`);
+      console.timeEnd(`Feed for podcast updated in (id: '${id}')`);
+      console.log(`======================================================`);
+    }
   });
 
 export default updatePodcastFeed;

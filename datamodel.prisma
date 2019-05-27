@@ -36,6 +36,7 @@ type Podcast {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   feedCheckedAt: DateTime
+  isFeedUpdating: Boolean! @default(value: false)
 }
 
 type Episode {

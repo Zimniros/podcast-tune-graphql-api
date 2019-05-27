@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Sun May 26 2019 16:04:40 GMT+0300 (Moscow Standard Time)
+# timestamp: Sun May 26 2019 20:50:35 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -1195,6 +1195,7 @@ type Podcast implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   feedCheckedAt: DateTime
+  isFeedUpdating: Boolean!
 }
 
 """A connection to a list of items."""
@@ -1219,6 +1220,7 @@ input PodcastCreateInput {
   websiteUrl: String
   itunesUrl: String!
   feedCheckedAt: DateTime
+  isFeedUpdating: Boolean
   categories: CategoryCreateManyInput
   episodes: EpisodeCreateManyWithoutPodcastInput
 }
@@ -1240,6 +1242,7 @@ input PodcastCreateWithoutEpisodesInput {
   websiteUrl: String
   itunesUrl: String!
   feedCheckedAt: DateTime
+  isFeedUpdating: Boolean
   categories: CategoryCreateManyInput
 }
 
@@ -1279,6 +1282,8 @@ enum PodcastOrderByInput {
   updatedAt_DESC
   feedCheckedAt_ASC
   feedCheckedAt_DESC
+  isFeedUpdating_ASC
+  isFeedUpdating_DESC
 }
 
 type PodcastPreviousValues {
@@ -1295,6 +1300,7 @@ type PodcastPreviousValues {
   createdAt: DateTime!
   updatedAt: DateTime!
   feedCheckedAt: DateTime
+  isFeedUpdating: Boolean!
 }
 
 type PodcastSubscriptionPayload {
@@ -1345,6 +1351,7 @@ input PodcastUpdateInput {
   websiteUrl: String
   itunesUrl: String
   feedCheckedAt: DateTime
+  isFeedUpdating: Boolean
   categories: CategoryUpdateManyInput
   episodes: EpisodeUpdateManyWithoutPodcastInput
 }
@@ -1360,6 +1367,7 @@ input PodcastUpdateManyMutationInput {
   websiteUrl: String
   itunesUrl: String
   feedCheckedAt: DateTime
+  isFeedUpdating: Boolean
 }
 
 input PodcastUpdateOneRequiredWithoutEpisodesInput {
@@ -1380,6 +1388,7 @@ input PodcastUpdateWithoutEpisodesDataInput {
   websiteUrl: String
   itunesUrl: String
   feedCheckedAt: DateTime
+  isFeedUpdating: Boolean
   categories: CategoryUpdateManyInput
 }
 
@@ -1845,6 +1854,10 @@ input PodcastWhereInput {
 
   """All values greater than or equal the given value."""
   feedCheckedAt_gte: DateTime
+  isFeedUpdating: Boolean
+
+  """All values that are not equal to given value."""
+  isFeedUpdating_not: Boolean
   categories_every: CategoryWhereInput
   categories_some: CategoryWhereInput
   categories_none: CategoryWhereInput

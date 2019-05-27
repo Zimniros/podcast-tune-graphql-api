@@ -58,6 +58,8 @@ const createPodcastWithFeed = (itunesId, limit = 100) =>
         itunesId,
         error: error.message,
       });
+    } finally {
+      data = { ...data, feedCheckedAt: new Date() };
     }
 
     try {

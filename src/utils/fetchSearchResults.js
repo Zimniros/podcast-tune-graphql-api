@@ -1,15 +1,17 @@
 import axios from 'axios';
 import prettifyPreviewData from './prettifyPreviewData';
 
-const fetchPodcastPreview = async itunesId =>
+const fetchSearchResults = async (searchTerm, limit = 20) =>
   new Promise(async (resolve, reject) => {
-    if (!itunesId)
+    if (!searchTerm)
       return reject(new Error('A podcast itunesId was not provided.'));
 
     let jsonData;
     try {
       jsonData = await axios.get(
-        `https://itunes.apple.com/lookup?id=${itunesId}&entity=podcast`
+        `https://itunes.apple.com/search?term=${encodeURIComponent(
+          searchTerm
+        )}&entity=podcast&${limit}`
       );
     } catch (error) {
       return reject(error);
@@ -18,11 +20,11 @@ const fetchPodcastPreview = async itunesId =>
     const { resultCount, results } = jsonData.data;
 
     if (resultCount === 0) {
-      return reject(new Error(`There's not any data for podcast ${itunesId}.`));
+      return resolve([]);
     }
 
-    const data = prettifyPreviewData(results[0]);
+    const data = results.map(preview => prettifyPreviewData(preview));
     return resolve(data);
   });
 
-export default fetchPodcastPreview;
+export default fetchSearchResults;

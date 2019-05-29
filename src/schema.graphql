@@ -62,6 +62,8 @@ type Query {
     last: Int
   ): [Category]!
 
+  itunesResults(searchTerm: String!, limit: Int): [Podcast]!
+
   podcast(where: PodcastWhereUniqueInput!): Podcast
   episode(where: EpisodeWhereUniqueInput!): Episode
   category(where: CategoryWhereUniqueInput!): Category

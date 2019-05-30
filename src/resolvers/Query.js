@@ -20,12 +20,11 @@ const Query = {
     try {
       console.log(`======================================================`);
       console.log(`Getting results for term '${searchTerm}'.`);
-      console.log(`======================================================`);
       console.time(`Search for term ${searchTerm} done in: `);
 
       const searchResults = await fetchSearchResults(searchTerm, limit);
 
-      if (!searchResults.length) return [];
+      if (!searchResults.length) return results;
 
       await Promise.all(
         searchResults.map(async previewData => {
@@ -69,7 +68,6 @@ const Query = {
       console.log({ error: error.message });
       // console.log({ error });
     } finally {
-      console.log(`======================================================`);
       console.timeEnd(`Search for term ${searchTerm} done in: `);
       console.log(`======================================================`);
     }

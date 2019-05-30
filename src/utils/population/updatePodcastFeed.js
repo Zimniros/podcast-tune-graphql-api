@@ -2,7 +2,7 @@
 import getFeedData from './getFeedData';
 import db from '../../db';
 
-const updatePodcastFeed = id =>
+const updatePodcastFeed = (id, info) =>
   new Promise(async (resolve, reject) => {
     if (!id) return reject(new Error('A podcast ituidnesId was not provided.'));
 
@@ -24,7 +24,6 @@ const updatePodcastFeed = id =>
     try {
       console.log(`======================================================`);
       console.log(`Updating feed for podcast (id: '${id}').`);
-      console.log(`======================================================`);
       console.time(`Feed for podcast updated in (id: '${id}')`);
 
       await db.mutation.updatePodcast({
@@ -64,30 +63,36 @@ const updatePodcastFeed = id =>
           const { title, mediaUrl } = episode;
           if (!title || !mediaUrl) return;
 
-          const existingEpisodes = await db.query.episodes({
-            where: {
-              title,
-              mediaUrl,
-              podcast: {
-                id,
+          const existingEpisodes = await db.query.episodes(
+            {
+              where: {
+                title,
+                mediaUrl,
+                podcast: {
+                  id,
+                },
               },
             },
-          });
+            info
+          );
 
           if (existingEpisodes.length !== 0) {
             return resolve(newEpisodes);
           }
 
-          const ep = await db.mutation.createEpisode({
-            data: {
-              ...episode,
-              podcast: {
-                connect: {
-                  id,
+          const ep = await db.mutation.createEpisode(
+            {
+              data: {
+                ...episode,
+                podcast: {
+                  connect: {
+                    id,
+                  },
                 },
               },
             },
-          });
+            info
+          );
 
           newEpisodes.push(ep);
         } catch (error) {
@@ -109,7 +114,6 @@ const updatePodcastFeed = id =>
         },
       });
 
-      console.log(`======================================================`);
       console.timeEnd(`Feed for podcast updated in (id: '${id}')`);
       console.log(`======================================================`);
     }

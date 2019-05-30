@@ -51,7 +51,7 @@ const Mutations = {
     return user;
   },
   async updatePodcastFeed(parent, { id }, ctx, info) {
-    const episodes = await updatePodcastFeed(id);
+    const episodes = await updatePodcastFeed(id, info);
 
     return episodes;
   },

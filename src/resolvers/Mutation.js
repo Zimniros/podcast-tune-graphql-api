@@ -6,16 +6,33 @@ import generateCookie from '../utils/generateCookie';
 import updatePodcastFeed from '../utils/population/updatePodcastFeed';
 
 const Mutations = {
-  async register(parent, args, ctx, info) {
-    args.email = args.email.toLowerCase();
+  async register(parent, { email, password, name }, ctx, info) {
+    if (!email || email.trim().length === 0) {
+      throw new Error(`Email is not provided.`);
+    }
 
-    const password = await bcrypt.hash(args.password, 10);
+    if (!password || password.trim().length === 0) {
+      throw new Error(`Password is not provided.`);
+    }
+
+    const emailLC = email.toLowerCase();
+
+    const userExists = await ctx.db.exists.User({
+      email,
+    });
+
+    if (userExists) {
+      throw new Error(`Email is already found in our database`);
+    }
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
 
     const user = await ctx.db.mutation.createUser(
       {
         data: {
-          ...args,
-          password,
+          email: emailLC,
+          name,
+          password: encryptedPassword,
           permissions: { set: ['USER'] },
         },
       },
@@ -27,14 +44,19 @@ const Mutations = {
     return user;
   },
   async login(parent, { email, password }, ctx, info) {
-    const user = await ctx.db.query.user(
-      {
-        where: {
-          email,
-        },
+    if (!email || email.trim().length === 0) {
+      throw new Error(`Email is not provided.`);
+    }
+
+    if (!password || password.trim().length === 0) {
+      throw new Error(`Password is not provided.`);
+    }
+
+    const user = await ctx.db.query.user({
+      where: {
+        email,
       },
-      info
-    );
+    });
 
     if (!user) {
       throw new Error(`No such user found for email ${email}`);

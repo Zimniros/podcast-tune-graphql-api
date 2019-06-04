@@ -1,5 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { randomBytes } from 'crypto';
+import { promisify } from 'util';
 
 import fetchCategories from '../utils/population/fetchCategories';
 import fetchPodcastsForCategory from '../utils/population/fetchPodcastsForCategory';
@@ -84,6 +86,75 @@ const Mutations = {
   logout(parent, args, ctx, info) {
     ctx.response.clearCookie('token');
     return { message: 'Goodbye!' };
+  },
+  async requestReset(parent, { email }, { db }, info) {
+    if (!email || email.trim().length === 0) {
+      throw new Error(`Email is not provided.`);
+    }
+
+    const user = await db.query.user({ where: { email } });
+
+    if (!user) {
+      throw new Error(`No such user found for email ${email}`);
+    }
+
+    const randomBytesPromiseified = promisify(randomBytes);
+    const resetToken = (await randomBytesPromiseified(20)).toString('hex');
+    const resetTokenExpiry = Date.now() + 3600000; // 1 hour from now
+    const res = await db.mutation.updateUser({
+      where: { email },
+      data: { resetToken, resetTokenExpiry },
+    });
+
+    return { message: 'Thanks!' };
+  },
+  async resetPassword(
+    parent,
+    { password, confirmPassword, resetToken },
+    { db, response },
+    info
+  ) {
+    if (!password || password.trim().length === 0) {
+      throw new Error(`Password is not provided.`);
+    }
+
+    if (!confirmPassword || confirmPassword.trim().length === 0) {
+      throw new Error(`Password confirmation is not provided.`);
+    }
+
+    if (password !== confirmPassword) {
+      throw new Error("Yo Passwords don't match!");
+    }
+
+    const [user] = await db.query.users({
+      where: {
+        resetToken,
+        resetTokenExpiry_gte: Date.now() - 3600000,
+      },
+    });
+    if (!user) {
+      throw new Error('This token is either invalid or expired!');
+    }
+
+    const newPassword = await bcrypt.hash(password, 10);
+
+    const updatedUser = await db.mutation.updateUser({
+      where: { email: user.email },
+      data: {
+        password: newPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    });
+
+    const token = jwt.sign({ userId: updatedUser.id }, process.env.APP_SECRET);
+
+    response.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+    });
+
+    return updatedUser;
   },
   async updatePodcastFeed(parent, { id }, ctx, info) {
     const episodes = await updatePodcastFeed(id, info);

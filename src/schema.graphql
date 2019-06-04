@@ -34,6 +34,7 @@ type Mutation {
 }
 
 type Query {
+  me: User
   podcasts(
     where: PodcastWhereInput
     orderBy: PodcastOrderByInput

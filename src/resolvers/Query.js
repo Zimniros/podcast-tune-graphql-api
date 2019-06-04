@@ -1,8 +1,20 @@
 import { forwardTo } from 'prisma-binding';
-import db from '../db';
 import fetchSearchResults from '../utils/fetchSearchResults';
 
 const Query = {
+  me(parent, args, ctx, info) {
+    console.log({ 'ctx.request.userId': ctx.request.userId });
+
+    if (!ctx.request.userId) {
+      return null;
+    }
+    return ctx.db.query.user(
+      {
+        where: { id: ctx.request.userId },
+      },
+      info
+    );
+  },
   podcasts: forwardTo('db'),
   episodes: forwardTo('db'),
   categories: forwardTo('db'),
@@ -15,7 +27,7 @@ const Query = {
   episodesConnection: forwardTo('db'),
   categoriesConnection: forwardTo('db'),
 
-  async itunesResults(parent, { searchTerm, limit }, ctx, info) {
+  async itunesResults(parent, { searchTerm, limit }, { db }, info) {
     const results = [];
     try {
       console.log(`======================================================`);

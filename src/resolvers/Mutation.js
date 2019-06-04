@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 import fetchCategories from '../utils/population/fetchCategories';
 import fetchPodcastsForCategory from '../utils/population/fetchPodcastsForCategory';
-import generateCookie from '../utils/generateCookie';
 import updatePodcastFeed from '../utils/population/updatePodcastFeed';
 
 const Mutations = {
@@ -39,7 +39,12 @@ const Mutations = {
       info
     );
 
-    ctx.response.cookie(...generateCookie(user.id));
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+
+    ctx.response.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+    });
 
     return user;
   },
@@ -68,7 +73,11 @@ const Mutations = {
       throw new Error('Invalid Password!');
     }
 
-    ctx.response.cookie(...generateCookie(user.id));
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+    ctx.response.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+    });
 
     return user;
   },

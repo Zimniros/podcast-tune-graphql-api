@@ -3,8 +3,6 @@ import fetchSearchResults from '../utils/fetchSearchResults';
 
 const Query = {
   me(parent, args, ctx, info) {
-    console.log({ 'ctx.request.userId': ctx.request.userId });
-
     if (!ctx.request.userId) {
       return null;
     }

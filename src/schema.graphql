@@ -13,9 +13,14 @@ enum CountryCodes {
   LT
 }
 
+type SuccessMessage {
+  message: String
+}
+
 type Mutation {
   login(email: String!, password: String!): User!
   register(email: String!, password: String!, name: String): User!
+  logout: SuccessMessage
 
   updatePodcastFeed(id: ID!): [Episode!]!
 

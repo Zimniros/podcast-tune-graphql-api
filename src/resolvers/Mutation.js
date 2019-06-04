@@ -81,6 +81,10 @@ const Mutations = {
 
     return user;
   },
+  logout(parent, args, ctx, info) {
+    ctx.response.clearCookie('token');
+    return { message: 'Goodbye!' };
+  },
   async updatePodcastFeed(parent, { id }, ctx, info) {
     const episodes = await updatePodcastFeed(id, info);
 

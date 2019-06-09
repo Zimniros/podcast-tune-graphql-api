@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Sun May 26 2019 20:50:35 GMT+0300 (Moscow Standard Time)
+# timestamp: Sun Jun 09 2019 17:35:17 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -1183,7 +1183,9 @@ type Podcast implements Node {
   id: ID!
   itunesId: Int!
   title: String!
+  titleLC: String!
   author: String!
+  authorLC: String!
   description: String
   artworkSmall: String!
   artworkLarge: String!
@@ -1212,7 +1214,9 @@ input PodcastCreateInput {
   id: ID
   itunesId: Int!
   title: String!
+  titleLC: String!
   author: String!
+  authorLC: String!
   description: String
   artworkSmall: String!
   artworkLarge: String!
@@ -1234,7 +1238,9 @@ input PodcastCreateWithoutEpisodesInput {
   id: ID
   itunesId: Int!
   title: String!
+  titleLC: String!
   author: String!
+  authorLC: String!
   description: String
   artworkSmall: String!
   artworkLarge: String!
@@ -1262,8 +1268,12 @@ enum PodcastOrderByInput {
   itunesId_DESC
   title_ASC
   title_DESC
+  titleLC_ASC
+  titleLC_DESC
   author_ASC
   author_DESC
+  authorLC_ASC
+  authorLC_DESC
   description_ASC
   description_DESC
   artworkSmall_ASC
@@ -1290,7 +1300,9 @@ type PodcastPreviousValues {
   id: ID!
   itunesId: Int!
   title: String!
+  titleLC: String!
   author: String!
+  authorLC: String!
   description: String
   artworkSmall: String!
   artworkLarge: String!
@@ -1343,7 +1355,9 @@ input PodcastSubscriptionWhereInput {
 input PodcastUpdateInput {
   itunesId: Int
   title: String
+  titleLC: String
   author: String
+  authorLC: String
   description: String
   artworkSmall: String
   artworkLarge: String
@@ -1359,7 +1373,9 @@ input PodcastUpdateInput {
 input PodcastUpdateManyMutationInput {
   itunesId: Int
   title: String
+  titleLC: String
   author: String
+  authorLC: String
   description: String
   artworkSmall: String
   artworkLarge: String
@@ -1380,7 +1396,9 @@ input PodcastUpdateOneRequiredWithoutEpisodesInput {
 input PodcastUpdateWithoutEpisodesDataInput {
   itunesId: Int
   title: String
+  titleLC: String
   author: String
+  authorLC: String
   description: String
   artworkSmall: String
   artworkLarge: String
@@ -1508,6 +1526,46 @@ input PodcastWhereInput {
 
   """All values not ending with the given string."""
   title_not_ends_with: String
+  titleLC: String
+
+  """All values that are not equal to given value."""
+  titleLC_not: String
+
+  """All values that are contained in given list."""
+  titleLC_in: [String!]
+
+  """All values that are not contained in given list."""
+  titleLC_not_in: [String!]
+
+  """All values less than the given value."""
+  titleLC_lt: String
+
+  """All values less than or equal the given value."""
+  titleLC_lte: String
+
+  """All values greater than the given value."""
+  titleLC_gt: String
+
+  """All values greater than or equal the given value."""
+  titleLC_gte: String
+
+  """All values containing the given string."""
+  titleLC_contains: String
+
+  """All values not containing the given string."""
+  titleLC_not_contains: String
+
+  """All values starting with the given string."""
+  titleLC_starts_with: String
+
+  """All values not starting with the given string."""
+  titleLC_not_starts_with: String
+
+  """All values ending with the given string."""
+  titleLC_ends_with: String
+
+  """All values not ending with the given string."""
+  titleLC_not_ends_with: String
   author: String
 
   """All values that are not equal to given value."""
@@ -1548,6 +1606,46 @@ input PodcastWhereInput {
 
   """All values not ending with the given string."""
   author_not_ends_with: String
+  authorLC: String
+
+  """All values that are not equal to given value."""
+  authorLC_not: String
+
+  """All values that are contained in given list."""
+  authorLC_in: [String!]
+
+  """All values that are not contained in given list."""
+  authorLC_not_in: [String!]
+
+  """All values less than the given value."""
+  authorLC_lt: String
+
+  """All values less than or equal the given value."""
+  authorLC_lte: String
+
+  """All values greater than the given value."""
+  authorLC_gt: String
+
+  """All values greater than or equal the given value."""
+  authorLC_gte: String
+
+  """All values containing the given string."""
+  authorLC_contains: String
+
+  """All values not containing the given string."""
+  authorLC_not_contains: String
+
+  """All values starting with the given string."""
+  authorLC_starts_with: String
+
+  """All values not starting with the given string."""
+  authorLC_not_starts_with: String
+
+  """All values ending with the given string."""
+  authorLC_ends_with: String
+
+  """All values not ending with the given string."""
+  authorLC_not_ends_with: String
   description: String
 
   """All values that are not equal to given value."""

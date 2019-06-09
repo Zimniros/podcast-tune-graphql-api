@@ -24,7 +24,9 @@ type Podcast {
   id: ID! @id
   itunesId: Int! @unique
   title: String!
+  titleLC: String!
   author: String!
+  authorLC: String!
   description: String
   artworkSmall: String!
   artworkLarge: String!

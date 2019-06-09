@@ -2,7 +2,9 @@ function prettifyPreviewData(data) {
   return {
     itunesId: data.collectionId,
     title: data.trackName,
+    titleLC: data.trackName.toLowerCase(),
     author: data.artistName,
+    authorLC: data.artistName.toLowerCase(),
     feedUrl: data.feedUrl,
     itunesUrl: data.collectionViewUrl,
     artworkSmall: data.artworkUrl100,

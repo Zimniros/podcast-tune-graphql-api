@@ -23,25 +23,25 @@ const fetchPodcastsForCategory = async ({ categoryId, limit, country }) =>
     while (index <= podcastsIds.length) {
       const ids = podcastsIds.slice(index, index + range);
 
-      await Promise.all(
-        ids.map(id =>
-          createPodcast(id).catch(error =>
-            console.log(`Error in creating podcast method ${id}`, {
-              error: error.message,
-            })
-          )
-        )
-      );
-
       // await Promise.all(
       //   ids.map(id =>
-      //     createPodcastWithFeed(id).catch(error =>
-      //       console.log(`Error in creating podcast method with id ${id}`, {
+      //     createPodcast(id).catch(error =>
+      //       console.log(`Error in creating podcast method ${id}`, {
       //         error: error.message,
       //       })
       //     )
       //   )
       // );
+
+      await Promise.all(
+        ids.map(id =>
+          createPodcastWithFeed(id).catch(error =>
+            console.log(`Error in creating podcast method with id ${id}`, {
+              error: error.message,
+            })
+          )
+        )
+      );
 
       index += range;
     }

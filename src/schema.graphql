@@ -29,6 +29,7 @@ type Mutation {
   ): User!
 
   updatePodcastFeed(id: ID!): [Episode!]!
+  updateEpisodeDuration(id: ID!, duration: Float!): Episode!
 
   getCategories: [Category!]!
   getPodcastsForAllCategories(

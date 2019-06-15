@@ -173,6 +173,24 @@ const Mutations = {
 
     return episodes;
   },
+  async updateEpisodeDuration(parent, { id, duration }, { db }, info) {
+    if (!id || id.trim().length === 0) {
+      throw new Error(`Episode id is not provided.`);
+    }
+
+    const episode = await db.mutation.updateEpisode({
+      where: {
+        id,
+      },
+      data: {
+        duration,
+        durationVerified: true,
+      },
+      info,
+    });
+
+    return episode;
+  },
   /*
       Data population methods
   */

@@ -104,6 +104,8 @@ const updatePodcastFeed = (id, info) =>
           );
         }
       }
+
+      return resolve(newEpisodes);
     } finally {
       await db.mutation.updatePodcast({
         where: {

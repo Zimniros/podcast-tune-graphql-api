@@ -5,9 +5,13 @@ function filterEnclosures(enclosures) {
 
   return array.find(
     el =>
-      ['audio/mpeg', 'audio/mpeg3', 'audio/mp4', 'audio/x-mpeg'].indexOf(
-        el.type
-      ) !== -1
+      [
+        'audio/mpeg',
+        'audio/mpeg3',
+        'audio/mp4',
+        'audio/x-mpeg',
+        'audio/x-m4a',
+      ].indexOf(el.type) !== -1
   );
 }
 

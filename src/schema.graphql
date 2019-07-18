@@ -28,6 +28,8 @@ type Mutation {
     confirmPassword: String!
   ): User!
 
+  setPlayingEpisode(id: ID!): [Episode!]!
+
   updatePodcastFeed(id: ID!): [Episode!]!
   updateEpisodeDuration(id: ID!, duration: Float!): Episode!
 
@@ -115,4 +117,5 @@ type User {
   name: String
   email: String!
   permissions: [Permission!]!
+  queue: Queue
 }

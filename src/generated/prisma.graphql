@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Sun Jun 09 2019 17:35:17 GMT+0300 (Moscow Standard Time)
+# timestamp: Thu Jul 18 2019 18:59:23 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -10,6 +10,10 @@ type AggregateEpisode {
 }
 
 type AggregatePodcast {
+  count: Int!
+}
+
+type AggregateQueue {
   count: Int!
 }
 
@@ -425,6 +429,11 @@ input EpisodeCreateInput {
   podcast: PodcastCreateOneWithoutEpisodesInput!
 }
 
+input EpisodeCreateManyInput {
+  create: [EpisodeCreateInput!]
+  connect: [EpisodeWhereUniqueInput!]
+}
+
 input EpisodeCreateManyWithoutPodcastInput {
   create: [EpisodeCreateWithoutPodcastInput!]
   connect: [EpisodeWhereUniqueInput!]
@@ -776,6 +785,17 @@ input EpisodeSubscriptionWhereInput {
   node: EpisodeWhereInput
 }
 
+input EpisodeUpdateDataInput {
+  title: String
+  description: String
+  mediaUrl: String
+  duration: Float
+  durationVerified: Boolean
+  pubDate: DateTime
+  link: String
+  podcast: PodcastUpdateOneRequiredWithoutEpisodesInput
+}
+
 input EpisodeUpdateInput {
   title: String
   description: String
@@ -795,6 +815,18 @@ input EpisodeUpdateManyDataInput {
   durationVerified: Boolean
   pubDate: DateTime
   link: String
+}
+
+input EpisodeUpdateManyInput {
+  create: [EpisodeCreateInput!]
+  connect: [EpisodeWhereUniqueInput!]
+  set: [EpisodeWhereUniqueInput!]
+  disconnect: [EpisodeWhereUniqueInput!]
+  delete: [EpisodeWhereUniqueInput!]
+  update: [EpisodeUpdateWithWhereUniqueNestedInput!]
+  updateMany: [EpisodeUpdateManyWithWhereNestedInput!]
+  deleteMany: [EpisodeScalarWhereInput!]
+  upsert: [EpisodeUpsertWithWhereUniqueNestedInput!]
 }
 
 input EpisodeUpdateManyMutationInput {
@@ -834,9 +866,20 @@ input EpisodeUpdateWithoutPodcastDataInput {
   link: String
 }
 
+input EpisodeUpdateWithWhereUniqueNestedInput {
+  where: EpisodeWhereUniqueInput!
+  data: EpisodeUpdateDataInput!
+}
+
 input EpisodeUpdateWithWhereUniqueWithoutPodcastInput {
   where: EpisodeWhereUniqueInput!
   data: EpisodeUpdateWithoutPodcastDataInput!
+}
+
+input EpisodeUpsertWithWhereUniqueNestedInput {
+  where: EpisodeWhereUniqueInput!
+  update: EpisodeUpdateDataInput!
+  create: EpisodeCreateInput!
 }
 
 input EpisodeUpsertWithWhereUniqueWithoutPodcastInput {
@@ -1120,18 +1163,22 @@ scalar Long
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createQueue(data: QueueCreateInput!): Queue!
   createPodcast(data: PodcastCreateInput!): Podcast!
   createEpisode(data: EpisodeCreateInput!): Episode!
   createCategory(data: CategoryCreateInput!): Category!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateQueue(data: QueueUpdateInput!, where: QueueWhereUniqueInput!): Queue
   updatePodcast(data: PodcastUpdateInput!, where: PodcastWhereUniqueInput!): Podcast
   updateEpisode(data: EpisodeUpdateInput!, where: EpisodeWhereUniqueInput!): Episode
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteQueue(where: QueueWhereUniqueInput!): Queue
   deletePodcast(where: PodcastWhereUniqueInput!): Podcast
   deleteEpisode(where: EpisodeWhereUniqueInput!): Episode
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertQueue(where: QueueWhereUniqueInput!, create: QueueCreateInput!, update: QueueUpdateInput!): Queue!
   upsertPodcast(where: PodcastWhereUniqueInput!, create: PodcastCreateInput!, update: PodcastUpdateInput!): Podcast!
   upsertEpisode(where: EpisodeWhereUniqueInput!, create: EpisodeCreateInput!, update: EpisodeUpdateInput!): Episode!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
@@ -1140,6 +1187,7 @@ type Mutation {
   updateManyEpisodes(data: EpisodeUpdateManyMutationInput!, where: EpisodeWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyQueues(where: QueueWhereInput): BatchPayload!
   deleteManyPodcasts(where: PodcastWhereInput): BatchPayload!
   deleteManyEpisodes(where: EpisodeWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
@@ -1975,14 +2023,17 @@ enum PrismaDatabase {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  queues(where: QueueWhereInput, orderBy: QueueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Queue]!
   podcasts(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Podcast]!
   episodes(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Episode]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   user(where: UserWhereUniqueInput!): User
+  queue(where: QueueWhereUniqueInput!): Queue
   podcast(where: PodcastWhereUniqueInput!): Podcast
   episode(where: EpisodeWhereUniqueInput!): Episode
   category(where: CategoryWhereUniqueInput!): Category
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  queuesConnection(where: QueueWhereInput, orderBy: QueueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): QueueConnection!
   podcastsConnection(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PodcastConnection!
   episodesConnection(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EpisodeConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
@@ -1994,8 +2045,178 @@ type Query {
   ): Node
 }
 
+type Queue implements Node {
+  id: ID!
+  user: User!
+  episodes(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Episode!]
+}
+
+"""A connection to a list of items."""
+type QueueConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [QueueEdge]!
+  aggregate: AggregateQueue!
+}
+
+input QueueCreateInput {
+  id: ID
+  user: UserCreateOneWithoutQueueInput!
+  episodes: EpisodeCreateManyInput
+}
+
+input QueueCreateOneWithoutUserInput {
+  create: QueueCreateWithoutUserInput
+  connect: QueueWhereUniqueInput
+}
+
+input QueueCreateWithoutUserInput {
+  id: ID
+  episodes: EpisodeCreateManyInput
+}
+
+"""An edge in a connection."""
+type QueueEdge {
+  """The item at the end of the edge."""
+  node: Queue!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum QueueOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type QueuePreviousValues {
+  id: ID!
+}
+
+type QueueSubscriptionPayload {
+  mutation: MutationType!
+  node: Queue
+  updatedFields: [String!]
+  previousValues: QueuePreviousValues
+}
+
+input QueueSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [QueueSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [QueueSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [QueueSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: QueueWhereInput
+}
+
+input QueueUpdateInput {
+  user: UserUpdateOneRequiredWithoutQueueInput
+  episodes: EpisodeUpdateManyInput
+}
+
+input QueueUpdateOneWithoutUserInput {
+  create: QueueCreateWithoutUserInput
+  connect: QueueWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: QueueUpdateWithoutUserDataInput
+  upsert: QueueUpsertWithoutUserInput
+}
+
+input QueueUpdateWithoutUserDataInput {
+  episodes: EpisodeUpdateManyInput
+}
+
+input QueueUpsertWithoutUserInput {
+  update: QueueUpdateWithoutUserDataInput!
+  create: QueueCreateWithoutUserInput!
+}
+
+input QueueWhereInput {
+  """Logical AND on all given filters."""
+  AND: [QueueWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [QueueWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [QueueWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  user: UserWhereInput
+  episodes_every: EpisodeWhereInput
+  episodes_some: EpisodeWhereInput
+  episodes_none: EpisodeWhereInput
+}
+
+input QueueWhereUniqueInput {
+  id: ID
+}
+
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  queue(where: QueueSubscriptionWhereInput): QueueSubscriptionPayload
   podcast(where: PodcastSubscriptionWhereInput): PodcastSubscriptionPayload
   episode(where: EpisodeSubscriptionWhereInput): EpisodeSubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
@@ -2009,6 +2230,7 @@ type User implements Node {
   resetToken: String
   resetTokenExpiry: Float
   permissions: [Permission!]!
+  queue: Queue
 }
 
 """A connection to a list of items."""
@@ -2029,10 +2251,26 @@ input UserCreateInput {
   resetToken: String
   resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
+  queue: QueueCreateOneWithoutUserInput
+}
+
+input UserCreateOneWithoutQueueInput {
+  create: UserCreateWithoutQueueInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreatepermissionsInput {
   set: [Permission!]
+}
+
+input UserCreateWithoutQueueInput {
+  id: ID
+  name: String
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserCreatepermissionsInput
 }
 
 """An edge in a connection."""
@@ -2113,6 +2351,7 @@ input UserUpdateInput {
   resetToken: String
   resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
+  queue: QueueUpdateOneWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
@@ -2124,8 +2363,29 @@ input UserUpdateManyMutationInput {
   permissions: UserUpdatepermissionsInput
 }
 
+input UserUpdateOneRequiredWithoutQueueInput {
+  create: UserCreateWithoutQueueInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutQueueDataInput
+  upsert: UserUpsertWithoutQueueInput
+}
+
 input UserUpdatepermissionsInput {
   set: [Permission!]
+}
+
+input UserUpdateWithoutQueueDataInput {
+  name: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserUpdatepermissionsInput
+}
+
+input UserUpsertWithoutQueueInput {
+  update: UserUpdateWithoutQueueDataInput!
+  create: UserCreateWithoutQueueInput!
 }
 
 input UserWhereInput {
@@ -2359,6 +2619,7 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   resetTokenExpiry_gte: Float
+  queue: QueueWhereInput
 }
 
 input UserWhereUniqueInput {

@@ -12,6 +12,13 @@ type User {
   resetToken: String
   resetTokenExpiry: Float
   permissions: [Permission] @scalarList(strategy: RELATION)
+  queue: Queue
+}
+
+type Queue {
+  id: ID! @id
+  user: User! @relation(link: INLINE)
+  episodes: [Episode!]!
 }
 
 type Category {

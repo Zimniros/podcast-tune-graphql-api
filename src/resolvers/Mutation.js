@@ -191,6 +191,46 @@ const Mutations = {
 
     return episode;
   },
+  async setPlayingEpisode(parent, { id }, { request, db }, info) {
+    const { userId } = request;
+
+    if (!userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
+    const [existingQueueEpisode] = await db.query.queueEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      info
+    );
+
+    if (existingQueueEpisode) {
+      console.log('This episode is already in the queue');
+      return existingQueueEpisode;
+    }
+
+    const queueEpisode = await db.mutation.createQueueEpisode(
+      {
+        data: {
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+          episode: {
+            connect: { id },
+          },
+        },
+      },
+      info
+    );
+
+    return queueEpisode;
+  },
   /*
       Data population methods
   */

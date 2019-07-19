@@ -49,6 +49,8 @@ type Mutation {
 
 type Query {
   me: User
+  queue: [QueueEpisode!]!
+
   podcasts(
     where: PodcastWhereInput
     orderBy: PodcastOrderByInput

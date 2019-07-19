@@ -13,6 +13,21 @@ const Query = {
       info
     );
   },
+  queue(parent, args, { request, db }, info) {
+    const { userId } = request;
+
+    if (!request.userId) {
+      throw new Error(`You aren't logged in!`);
+    }
+
+    return db.query.queueEpisodes(
+      {
+        where: { user: { id: userId } },
+      },
+      info
+    );
+  },
+
   podcasts: forwardTo('db'),
   episodes: forwardTo('db'),
   categories: forwardTo('db'),

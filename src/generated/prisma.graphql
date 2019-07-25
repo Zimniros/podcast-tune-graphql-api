@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Fri Jul 19 2019 16:05:59 GMT+0300 (Moscow Standard Time)
+# timestamp: Thu Jul 25 2019 16:34:02 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -1172,6 +1172,7 @@ type Mutation {
   upsertEpisode(where: EpisodeWhereUniqueInput!, create: EpisodeCreateInput!, update: EpisodeUpdateInput!): Episode!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyQueueEpisodes(data: QueueEpisodeUpdateManyMutationInput!, where: QueueEpisodeWhereInput): BatchPayload!
   updateManyPodcasts(data: PodcastUpdateManyMutationInput!, where: PodcastWhereInput): BatchPayload!
   updateManyEpisodes(data: EpisodeUpdateManyMutationInput!, where: EpisodeWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
@@ -2038,6 +2039,7 @@ type QueueEpisode implements Node {
   id: ID!
   user: User!
   episode: Episode!
+  position: Int!
 }
 
 """A connection to a list of items."""
@@ -2052,6 +2054,7 @@ type QueueEpisodeConnection {
 
 input QueueEpisodeCreateInput {
   id: ID
+  position: Int!
   user: UserCreateOneWithoutQueueInput!
   episode: EpisodeCreateOneInput!
 }
@@ -2063,6 +2066,7 @@ input QueueEpisodeCreateManyWithoutUserInput {
 
 input QueueEpisodeCreateWithoutUserInput {
   id: ID
+  position: Int!
   episode: EpisodeCreateOneInput!
 }
 
@@ -2078,10 +2082,13 @@ type QueueEpisodeEdge {
 enum QueueEpisodeOrderByInput {
   id_ASC
   id_DESC
+  position_ASC
+  position_DESC
 }
 
 type QueueEpisodePreviousValues {
   id: ID!
+  position: Int!
 }
 
 input QueueEpisodeScalarWhereInput {
@@ -2133,6 +2140,28 @@ input QueueEpisodeScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  position: Int
+
+  """All values that are not equal to given value."""
+  position_not: Int
+
+  """All values that are contained in given list."""
+  position_in: [Int!]
+
+  """All values that are not contained in given list."""
+  position_not_in: [Int!]
+
+  """All values less than the given value."""
+  position_lt: Int
+
+  """All values less than or equal the given value."""
+  position_lte: Int
+
+  """All values greater than the given value."""
+  position_gt: Int
+
+  """All values greater than or equal the given value."""
+  position_gte: Int
 }
 
 type QueueEpisodeSubscriptionPayload {
@@ -2173,8 +2202,17 @@ input QueueEpisodeSubscriptionWhereInput {
 }
 
 input QueueEpisodeUpdateInput {
+  position: Int
   user: UserUpdateOneRequiredWithoutQueueInput
   episode: EpisodeUpdateOneRequiredInput
+}
+
+input QueueEpisodeUpdateManyDataInput {
+  position: Int
+}
+
+input QueueEpisodeUpdateManyMutationInput {
+  position: Int
 }
 
 input QueueEpisodeUpdateManyWithoutUserInput {
@@ -2184,11 +2222,18 @@ input QueueEpisodeUpdateManyWithoutUserInput {
   disconnect: [QueueEpisodeWhereUniqueInput!]
   delete: [QueueEpisodeWhereUniqueInput!]
   update: [QueueEpisodeUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [QueueEpisodeUpdateManyWithWhereNestedInput!]
   deleteMany: [QueueEpisodeScalarWhereInput!]
   upsert: [QueueEpisodeUpsertWithWhereUniqueWithoutUserInput!]
 }
 
+input QueueEpisodeUpdateManyWithWhereNestedInput {
+  where: QueueEpisodeScalarWhereInput!
+  data: QueueEpisodeUpdateManyDataInput!
+}
+
 input QueueEpisodeUpdateWithoutUserDataInput {
+  position: Int
   episode: EpisodeUpdateOneRequiredInput
 }
 
@@ -2252,6 +2297,28 @@ input QueueEpisodeWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  position: Int
+
+  """All values that are not equal to given value."""
+  position_not: Int
+
+  """All values that are contained in given list."""
+  position_in: [Int!]
+
+  """All values that are not contained in given list."""
+  position_not_in: [Int!]
+
+  """All values less than the given value."""
+  position_lt: Int
+
+  """All values less than or equal the given value."""
+  position_lte: Int
+
+  """All values greater than the given value."""
+  position_gt: Int
+
+  """All values greater than or equal the given value."""
+  position_gte: Int
   user: UserWhereInput
   episode: EpisodeWhereInput
 }

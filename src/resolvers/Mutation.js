@@ -205,31 +205,87 @@ const Mutations = {
           episode: { id },
         },
       },
-      info
+      `{
+        id
+        position
+      }`
     );
+
+    let episodesToUpdate;
+    let episodeToReturn;
 
     if (existingQueueEpisode) {
-      console.log('This episode is already in the queue');
-      return existingQueueEpisode;
-    }
+      const { position } = existingQueueEpisode;
 
-    const queueEpisode = await db.mutation.createQueueEpisode(
-      {
-        data: {
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-          episode: {
-            connect: { id },
+      episodesToUpdate = await db.query.queueEpisodes(
+        {
+          where: {
+            user: { id: userId },
+            position_lt: position,
+            id_not: existingQueueEpisode.id,
           },
         },
-      },
-      info
-    );
+        `{
+          id
+          position
+        }`
+      );
 
-    return queueEpisode;
+      episodeToReturn = await db.mutation.updateQueueEpisode(
+        {
+          where: {
+            id: existingQueueEpisode.id,
+          },
+          data: {
+            position: 1,
+          },
+        },
+        info
+      );
+    } else {
+      episodesToUpdate = await db.query.queueEpisodes(
+        {
+          where: {
+            user: { id: userId },
+          },
+        },
+        `{
+          id
+          position
+        }`
+      );
+
+      episodeToReturn = await db.mutation.createQueueEpisode(
+        {
+          data: {
+            position: 1,
+            user: {
+              connect: {
+                id: userId,
+              },
+            },
+            episode: {
+              connect: { id },
+            },
+          },
+        },
+        info
+      );
+    }
+
+    const episodesToUpdateMutations = [];
+
+    for (const episode of episodesToUpdate) {
+      const mutation = db.mutation.updateQueueEpisode({
+        data: { position: episode.position + 1 },
+        where: { id: episode.id },
+      });
+
+      episodesToUpdateMutations.push(mutation);
+    }
+    await Promise.all(episodesToUpdateMutations);
+
+    return episodeToReturn;
   },
   /*
       Data population methods

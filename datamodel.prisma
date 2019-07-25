@@ -19,6 +19,7 @@ type QueueEpisode {
   id: ID! @id
   user: User!
   episode: Episode!
+  position: Int!
 }
 
 type Category {

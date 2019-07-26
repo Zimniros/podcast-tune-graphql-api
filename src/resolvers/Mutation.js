@@ -276,17 +276,126 @@ const Mutations = {
     const episodesToUpdateMutations = [];
 
     for (const episode of episodesToUpdate) {
-      const mutation = db.mutation.updateQueueEpisode({
-        data: { position: episode.position + 1 },
-        where: { id: episode.id },
-      });
+      const mutation = db.mutation.updateQueueEpisode(
+        {
+          data: { position: episode.position + 1 },
+          where: { id: episode.id },
+        },
+        info
+      );
 
       episodesToUpdateMutations.push(mutation);
     }
-    await Promise.all(episodesToUpdateMutations);
 
-    return episodeToReturn;
+    const updatedEpisodes = await Promise.all(episodesToUpdateMutations);
+
+    return [episodeToReturn, ...updatedEpisodes];
   },
+  async addEpisodeToQueue(parent, { id }, { request, db }, info) {
+    const { userId } = request;
+
+    if (!userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
+    const [existingQueueEpisode] = await db.query.queueEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+        position
+      }`
+    );
+
+    const { aggregate } = await db.query.queueEpisodesConnection(
+      {
+        where: {
+          user: {
+            id: userId,
+          },
+        },
+      },
+      `{
+      aggregate {
+        count
+      }
+    }`
+    );
+    const { count: numberOfEpisodesInQueue } = aggregate;
+
+    let episodesToUpdate = [];
+    let episodeToReturn = null;
+
+    if (existingQueueEpisode) {
+      const { position } = existingQueueEpisode;
+
+      episodesToUpdate = await db.query.queueEpisodes(
+        {
+          where: {
+            user: { id: userId },
+            position_gt: position,
+            id_not: existingQueueEpisode.id,
+          },
+        },
+        `{
+          id
+          position
+        }`
+      );
+
+      episodeToReturn = await db.mutation.updateQueueEpisode(
+        {
+          where: {
+            id: existingQueueEpisode.id,
+          },
+          data: {
+            position: numberOfEpisodesInQueue,
+          },
+        },
+        info
+      );
+    } else {
+      episodeToReturn = await db.mutation.createQueueEpisode(
+        {
+          data: {
+            position: numberOfEpisodesInQueue + 1,
+            user: {
+              connect: {
+                id: userId,
+              },
+            },
+            episode: {
+              connect: { id },
+            },
+          },
+        },
+        info
+      );
+    }
+
+    const episodesToUpdateMutations = [];
+
+    for (const episode of episodesToUpdate) {
+      const mutation = db.mutation.updateQueueEpisode(
+        {
+          data: { position: episode.position - 1 },
+          where: { id: episode.id },
+        },
+        info
+      );
+
+      episodesToUpdateMutations.push(mutation);
+    }
+
+    const updatedEpisodes = await Promise.all(episodesToUpdateMutations);
+
+    return [episodeToReturn, ...updatedEpisodes];
+  },
+
   /*
       Data population methods
   */

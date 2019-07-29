@@ -50,6 +50,7 @@ type Mutation {
 
 type Query {
   me: User
+  playingEpisode: QueueEpisode
   queue: [QueueEpisode!]!
 
   podcasts(

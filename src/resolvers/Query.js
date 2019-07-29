@@ -22,10 +22,26 @@ const Query = {
 
     return db.query.queueEpisodes(
       {
-        where: { user: { id: userId } },
+        where: { user: { id: userId }, position_not: 1 },
       },
       info
     );
+  },
+  async playingEpisode(parent, args, { request, db }, info) {
+    const { userId } = request;
+
+    if (!request.userId) {
+      throw new Error(`You aren't logged in!`);
+    }
+
+    const episodes = await db.query.queueEpisodes(
+      {
+        where: { user: { id: userId }, position: 1 },
+      },
+      info
+    );
+
+    return episodes[0];
   },
 
   podcasts: forwardTo('db'),

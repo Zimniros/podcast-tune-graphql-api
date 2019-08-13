@@ -23,6 +23,7 @@ const Query = {
     return db.query.queueEpisodes(
       {
         where: { user: { id: userId }, position_not: 1 },
+        orderBy: 'position_ASC',
       },
       info
     );

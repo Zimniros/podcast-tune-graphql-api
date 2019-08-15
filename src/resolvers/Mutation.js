@@ -113,9 +113,7 @@ const Mutations = {
       subject: 'Your Password Reset Token',
       html: makeANiceEmail(`Your Password Reset Token is here!
       \n\n
-      <a href="${
-        process.env.FRONTEND_URL
-      }/reset?resetToken=${resetToken}">Click Here to Reset</a>`),
+      <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}">Click Here to Reset</a>`),
     });
 
     return { message: 'Thanks!' };
@@ -287,11 +285,92 @@ const Mutations = {
       episodesToUpdateMutations.push(mutation);
     }
 
-    const updatedEpisodes = await Promise.all(episodesToUpdateMutations);
+    await Promise.all(episodesToUpdateMutations);
 
-    return [episodeToReturn, ...updatedEpisodes];
+    return episodeToReturn;
   },
-  async addEpisodeToQueue(parent, { id }, { request, db }, info) {
+  async addEpisodeToQueueNext(parent, { id }, { request, db }, info) {
+    const { userId } = request;
+
+    if (!userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
+    const queue = await db.query.queueEpisodes(
+      {
+        where: {
+          user: { id: userId },
+        },
+      },
+      `{
+        id
+
+        episode {
+          id
+        }
+      }`
+    );
+
+    const isEpisodeExistsInQueue = queue.some(
+      ({ episode }) => episode.id === id
+    );
+
+    if (isEpisodeExistsInQueue) {
+      throw new Error('Episode is already in queue!');
+    }
+
+    const position = queue.length ? 2 : 1;
+
+    const episodeToReturn = await db.mutation.createQueueEpisode(
+      {
+        data: {
+          position,
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+          episode: {
+            connect: { id },
+          },
+        },
+      },
+      info
+    );
+
+    const episodesToUpdate = await db.query.queueEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          position_gt: 1,
+          id_not: episodeToReturn.id,
+        },
+      },
+      `{
+        id
+        position
+      }`
+    );
+
+    const episodesToUpdateMutations = [];
+
+    for (const episode of episodesToUpdate) {
+      const mutation = db.mutation.updateQueueEpisode(
+        {
+          data: { position: episode.position + 1 },
+          where: { id: episode.id },
+        },
+        info
+      );
+
+      episodesToUpdateMutations.push(mutation);
+    }
+
+    await Promise.all(episodesToUpdateMutations);
+
+    return episodeToReturn;
+  },
+  async addEpisodeToQueueLast(parent, { id }, { request, db }, info) {
     const { userId } = request;
 
     if (!userId) {
@@ -391,9 +470,9 @@ const Mutations = {
       episodesToUpdateMutations.push(mutation);
     }
 
-    const updatedEpisodes = await Promise.all(episodesToUpdateMutations);
+    await Promise.all(episodesToUpdateMutations);
 
-    return [episodeToReturn, ...updatedEpisodes];
+    return episodeToReturn;
   },
 
   /*

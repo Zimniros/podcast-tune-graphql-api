@@ -31,6 +31,7 @@ type Mutation {
   setPlayingEpisode(id: ID!): QueueEpisode!
   addEpisodeToQueueNext(id: ID!): QueueEpisode!
   addEpisodeToQueueLast(id: ID!): QueueEpisode!
+  removeEpisodeFromQueue(id: ID!): QueueEpisode!
 
   updatePodcastFeed(id: ID!): [Episode!]!
   updateEpisodeDuration(id: ID!, duration: Float!): Episode!

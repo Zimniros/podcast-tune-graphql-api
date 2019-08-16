@@ -421,6 +421,73 @@ const Mutations = {
 
     return episodeToReturn;
   },
+  async removeEpisodeFromQueue(parent, { id }, { request, db }, info) {
+    const { userId } = request;
+
+    if (!userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
+    const [existingQueueEpisode] = await db.query.queueEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+        position
+      }`
+    );
+
+    if (!existingQueueEpisode) {
+      throw new Error(`Queue episode with id '${id}' is not found!`);
+    }
+
+    const { position } = existingQueueEpisode;
+
+    const episodesToUpdate = await db.query.queueEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          position_gt: position,
+          id_not: existingQueueEpisode.id,
+        },
+      },
+      `{
+          id
+          position
+        }`
+    );
+
+    const episodeToReturn = await db.mutation.deleteQueueEpisode(
+      {
+        where: {
+          id: existingQueueEpisode.id,
+        },
+      },
+      info
+    );
+
+    const episodesToUpdateMutations = [];
+
+    for (const episode of episodesToUpdate) {
+      const mutation = db.mutation.updateQueueEpisode(
+        {
+          data: { position: episode.position - 1 },
+          where: { id: episode.id },
+        },
+        info
+      );
+
+      episodesToUpdateMutations.push(mutation);
+    }
+
+    await Promise.all(episodesToUpdateMutations);
+
+    return episodeToReturn;
+  },
 
   /*
       Data population methods

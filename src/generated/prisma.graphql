@@ -1,11 +1,15 @@
 # source: http://localhost:4466
-# timestamp: Thu Jul 25 2019 16:34:02 GMT+0300 (Moscow Standard Time)
+# timestamp: Mon Aug 26 2019 16:50:07 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
 }
 
 type AggregateEpisode {
+  count: Int!
+}
+
+type AggregateFavoriteEpisode {
   count: Int!
 }
 
@@ -1141,6 +1145,280 @@ input EpisodeWhereUniqueInput {
   id: ID
 }
 
+type FavoriteEpisode implements Node {
+  id: ID!
+  user: User!
+  episode: Episode!
+  addedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type FavoriteEpisodeConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [FavoriteEpisodeEdge]!
+  aggregate: AggregateFavoriteEpisode!
+}
+
+input FavoriteEpisodeCreateInput {
+  id: ID
+  user: UserCreateOneWithoutFavoritesInput!
+  episode: EpisodeCreateOneInput!
+}
+
+input FavoriteEpisodeCreateManyWithoutUserInput {
+  create: [FavoriteEpisodeCreateWithoutUserInput!]
+  connect: [FavoriteEpisodeWhereUniqueInput!]
+}
+
+input FavoriteEpisodeCreateWithoutUserInput {
+  id: ID
+  episode: EpisodeCreateOneInput!
+}
+
+"""An edge in a connection."""
+type FavoriteEpisodeEdge {
+  """The item at the end of the edge."""
+  node: FavoriteEpisode!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum FavoriteEpisodeOrderByInput {
+  id_ASC
+  id_DESC
+  addedAt_ASC
+  addedAt_DESC
+}
+
+type FavoriteEpisodePreviousValues {
+  id: ID!
+  addedAt: DateTime!
+}
+
+input FavoriteEpisodeScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FavoriteEpisodeScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FavoriteEpisodeScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FavoriteEpisodeScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  addedAt: DateTime
+
+  """All values that are not equal to given value."""
+  addedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  addedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  addedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  addedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  addedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  addedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  addedAt_gte: DateTime
+}
+
+type FavoriteEpisodeSubscriptionPayload {
+  mutation: MutationType!
+  node: FavoriteEpisode
+  updatedFields: [String!]
+  previousValues: FavoriteEpisodePreviousValues
+}
+
+input FavoriteEpisodeSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FavoriteEpisodeSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FavoriteEpisodeSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FavoriteEpisodeSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: FavoriteEpisodeWhereInput
+}
+
+input FavoriteEpisodeUpdateInput {
+  user: UserUpdateOneRequiredWithoutFavoritesInput
+  episode: EpisodeUpdateOneRequiredInput
+}
+
+input FavoriteEpisodeUpdateManyWithoutUserInput {
+  create: [FavoriteEpisodeCreateWithoutUserInput!]
+  connect: [FavoriteEpisodeWhereUniqueInput!]
+  set: [FavoriteEpisodeWhereUniqueInput!]
+  disconnect: [FavoriteEpisodeWhereUniqueInput!]
+  delete: [FavoriteEpisodeWhereUniqueInput!]
+  update: [FavoriteEpisodeUpdateWithWhereUniqueWithoutUserInput!]
+  deleteMany: [FavoriteEpisodeScalarWhereInput!]
+  upsert: [FavoriteEpisodeUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input FavoriteEpisodeUpdateWithoutUserDataInput {
+  episode: EpisodeUpdateOneRequiredInput
+}
+
+input FavoriteEpisodeUpdateWithWhereUniqueWithoutUserInput {
+  where: FavoriteEpisodeWhereUniqueInput!
+  data: FavoriteEpisodeUpdateWithoutUserDataInput!
+}
+
+input FavoriteEpisodeUpsertWithWhereUniqueWithoutUserInput {
+  where: FavoriteEpisodeWhereUniqueInput!
+  update: FavoriteEpisodeUpdateWithoutUserDataInput!
+  create: FavoriteEpisodeCreateWithoutUserInput!
+}
+
+input FavoriteEpisodeWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FavoriteEpisodeWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FavoriteEpisodeWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FavoriteEpisodeWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  addedAt: DateTime
+
+  """All values that are not equal to given value."""
+  addedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  addedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  addedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  addedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  addedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  addedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  addedAt_gte: DateTime
+  user: UserWhereInput
+  episode: EpisodeWhereInput
+}
+
+input FavoriteEpisodeWhereUniqueInput {
+  id: ID
+}
+
 """Raw JSON value"""
 scalar Json
 
@@ -1152,35 +1430,40 @@ scalar Long
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createFavoriteEpisode(data: FavoriteEpisodeCreateInput!): FavoriteEpisode!
   createQueueEpisode(data: QueueEpisodeCreateInput!): QueueEpisode!
   createPodcast(data: PodcastCreateInput!): Podcast!
-  createEpisode(data: EpisodeCreateInput!): Episode!
   createCategory(data: CategoryCreateInput!): Category!
+  createEpisode(data: EpisodeCreateInput!): Episode!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateFavoriteEpisode(data: FavoriteEpisodeUpdateInput!, where: FavoriteEpisodeWhereUniqueInput!): FavoriteEpisode
   updateQueueEpisode(data: QueueEpisodeUpdateInput!, where: QueueEpisodeWhereUniqueInput!): QueueEpisode
   updatePodcast(data: PodcastUpdateInput!, where: PodcastWhereUniqueInput!): Podcast
-  updateEpisode(data: EpisodeUpdateInput!, where: EpisodeWhereUniqueInput!): Episode
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
+  updateEpisode(data: EpisodeUpdateInput!, where: EpisodeWhereUniqueInput!): Episode
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteFavoriteEpisode(where: FavoriteEpisodeWhereUniqueInput!): FavoriteEpisode
   deleteQueueEpisode(where: QueueEpisodeWhereUniqueInput!): QueueEpisode
   deletePodcast(where: PodcastWhereUniqueInput!): Podcast
-  deleteEpisode(where: EpisodeWhereUniqueInput!): Episode
   deleteCategory(where: CategoryWhereUniqueInput!): Category
+  deleteEpisode(where: EpisodeWhereUniqueInput!): Episode
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertFavoriteEpisode(where: FavoriteEpisodeWhereUniqueInput!, create: FavoriteEpisodeCreateInput!, update: FavoriteEpisodeUpdateInput!): FavoriteEpisode!
   upsertQueueEpisode(where: QueueEpisodeWhereUniqueInput!, create: QueueEpisodeCreateInput!, update: QueueEpisodeUpdateInput!): QueueEpisode!
   upsertPodcast(where: PodcastWhereUniqueInput!, create: PodcastCreateInput!, update: PodcastUpdateInput!): Podcast!
-  upsertEpisode(where: EpisodeWhereUniqueInput!, create: EpisodeCreateInput!, update: EpisodeUpdateInput!): Episode!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
+  upsertEpisode(where: EpisodeWhereUniqueInput!, create: EpisodeCreateInput!, update: EpisodeUpdateInput!): Episode!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyQueueEpisodes(data: QueueEpisodeUpdateManyMutationInput!, where: QueueEpisodeWhereInput): BatchPayload!
   updateManyPodcasts(data: PodcastUpdateManyMutationInput!, where: PodcastWhereInput): BatchPayload!
-  updateManyEpisodes(data: EpisodeUpdateManyMutationInput!, where: EpisodeWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
+  updateManyEpisodes(data: EpisodeUpdateManyMutationInput!, where: EpisodeWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyFavoriteEpisodes(where: FavoriteEpisodeWhereInput): BatchPayload!
   deleteManyQueueEpisodes(where: QueueEpisodeWhereInput): BatchPayload!
   deleteManyPodcasts(where: PodcastWhereInput): BatchPayload!
-  deleteManyEpisodes(where: EpisodeWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
+  deleteManyEpisodes(where: EpisodeWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -2013,20 +2296,23 @@ enum PrismaDatabase {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  favoriteEpisodes(where: FavoriteEpisodeWhereInput, orderBy: FavoriteEpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [FavoriteEpisode]!
   queueEpisodes(where: QueueEpisodeWhereInput, orderBy: QueueEpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [QueueEpisode]!
   podcasts(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Podcast]!
-  episodes(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Episode]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
+  episodes(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Episode]!
   user(where: UserWhereUniqueInput!): User
+  favoriteEpisode(where: FavoriteEpisodeWhereUniqueInput!): FavoriteEpisode
   queueEpisode(where: QueueEpisodeWhereUniqueInput!): QueueEpisode
   podcast(where: PodcastWhereUniqueInput!): Podcast
-  episode(where: EpisodeWhereUniqueInput!): Episode
   category(where: CategoryWhereUniqueInput!): Category
+  episode(where: EpisodeWhereUniqueInput!): Episode
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  favoriteEpisodesConnection(where: FavoriteEpisodeWhereInput, orderBy: FavoriteEpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FavoriteEpisodeConnection!
   queueEpisodesConnection(where: QueueEpisodeWhereInput, orderBy: QueueEpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): QueueEpisodeConnection!
   podcastsConnection(where: PodcastWhereInput, orderBy: PodcastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PodcastConnection!
-  episodesConnection(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EpisodeConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
+  episodesConnection(where: EpisodeWhereInput, orderBy: EpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EpisodeConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -2329,10 +2615,11 @@ input QueueEpisodeWhereUniqueInput {
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  favoriteEpisode(where: FavoriteEpisodeSubscriptionWhereInput): FavoriteEpisodeSubscriptionPayload
   queueEpisode(where: QueueEpisodeSubscriptionWhereInput): QueueEpisodeSubscriptionPayload
   podcast(where: PodcastSubscriptionWhereInput): PodcastSubscriptionPayload
-  episode(where: EpisodeSubscriptionWhereInput): EpisodeSubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
+  episode(where: EpisodeSubscriptionWhereInput): EpisodeSubscriptionPayload
 }
 
 type User implements Node {
@@ -2344,6 +2631,7 @@ type User implements Node {
   resetTokenExpiry: Float
   permissions: [Permission!]!
   queue(where: QueueEpisodeWhereInput, orderBy: QueueEpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [QueueEpisode!]
+  favorites(where: FavoriteEpisodeWhereInput, orderBy: FavoriteEpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [FavoriteEpisode!]
 }
 
 """A connection to a list of items."""
@@ -2365,6 +2653,12 @@ input UserCreateInput {
   resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
   queue: QueueEpisodeCreateManyWithoutUserInput
+  favorites: FavoriteEpisodeCreateManyWithoutUserInput
+}
+
+input UserCreateOneWithoutFavoritesInput {
+  create: UserCreateWithoutFavoritesInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutQueueInput {
@@ -2376,6 +2670,17 @@ input UserCreatepermissionsInput {
   set: [Permission!]
 }
 
+input UserCreateWithoutFavoritesInput {
+  id: ID
+  name: String
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserCreatepermissionsInput
+  queue: QueueEpisodeCreateManyWithoutUserInput
+}
+
 input UserCreateWithoutQueueInput {
   id: ID
   name: String
@@ -2384,6 +2689,7 @@ input UserCreateWithoutQueueInput {
   resetToken: String
   resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
+  favorites: FavoriteEpisodeCreateManyWithoutUserInput
 }
 
 """An edge in a connection."""
@@ -2465,6 +2771,7 @@ input UserUpdateInput {
   resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
   queue: QueueEpisodeUpdateManyWithoutUserInput
+  favorites: FavoriteEpisodeUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
@@ -2474,6 +2781,13 @@ input UserUpdateManyMutationInput {
   resetToken: String
   resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
+}
+
+input UserUpdateOneRequiredWithoutFavoritesInput {
+  create: UserCreateWithoutFavoritesInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutFavoritesDataInput
+  upsert: UserUpsertWithoutFavoritesInput
 }
 
 input UserUpdateOneRequiredWithoutQueueInput {
@@ -2487,6 +2801,16 @@ input UserUpdatepermissionsInput {
   set: [Permission!]
 }
 
+input UserUpdateWithoutFavoritesDataInput {
+  name: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserUpdatepermissionsInput
+  queue: QueueEpisodeUpdateManyWithoutUserInput
+}
+
 input UserUpdateWithoutQueueDataInput {
   name: String
   email: String
@@ -2494,6 +2818,12 @@ input UserUpdateWithoutQueueDataInput {
   resetToken: String
   resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
+  favorites: FavoriteEpisodeUpdateManyWithoutUserInput
+}
+
+input UserUpsertWithoutFavoritesInput {
+  update: UserUpdateWithoutFavoritesDataInput!
+  create: UserCreateWithoutFavoritesInput!
 }
 
 input UserUpsertWithoutQueueInput {
@@ -2735,6 +3065,9 @@ input UserWhereInput {
   queue_every: QueueEpisodeWhereInput
   queue_some: QueueEpisodeWhereInput
   queue_none: QueueEpisodeWhereInput
+  favorites_every: FavoriteEpisodeWhereInput
+  favorites_some: FavoriteEpisodeWhereInput
+  favorites_none: FavoriteEpisodeWhereInput
 }
 
 input UserWhereUniqueInput {

@@ -13,6 +13,14 @@ type User {
   resetTokenExpiry: Float
   permissions: [Permission] @scalarList(strategy: RELATION)
   queue: [QueueEpisode!]!
+  favorites: [FavoriteEpisode!]!
+}
+
+type FavoriteEpisode {
+  id: ID! @id
+  user: User!
+  episode: Episode!
+  addedAt: DateTime! @createdAt
 }
 
 type QueueEpisode {

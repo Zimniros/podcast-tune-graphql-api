@@ -33,6 +33,9 @@ type Mutation {
   addEpisodeToQueueLast(id: ID!): QueueEpisode!
   removeEpisodeFromQueue(id: ID!): QueueEpisode!
 
+  addEpisodeToFavorites(id: ID!): FavoriteEpisode!
+  removeEpisodeFromFavorites(id: ID!): FavoriteEpisode!
+
   updatePodcastFeed(id: ID!): [Episode!]!
   updateEpisodeDuration(id: ID!, duration: Float!): Episode!
 
@@ -54,6 +57,7 @@ type Query {
   me: User
   playingEpisode: QueueEpisode
   queue: [QueueEpisode!]!
+  favorites: [FavoriteEpisode!]!
 
   podcasts(
     where: PodcastWhereInput
@@ -124,4 +128,5 @@ type User {
   email: String!
   permissions: [Permission!]!
   queue: [QueueEpisode!]!
+  favorites: [FavoriteEpisode!]!
 }

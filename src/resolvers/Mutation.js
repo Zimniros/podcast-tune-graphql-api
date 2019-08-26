@@ -36,7 +36,7 @@ const Mutations = {
           email: emailLC,
           name,
           password: encryptedPassword,
-          permissions: { set: ['USER'] },
+          permissions: { set: ['USER'] }
         },
       },
       info
@@ -485,6 +485,81 @@ const Mutations = {
     }
 
     await Promise.all(episodesToUpdateMutations);
+
+    return episodeToReturn;
+  },
+  async addEpisodeToFavorites(parent, { id }, { request, db }, info) {
+    const { userId } = request;
+
+    if (!userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
+    const [existingFavoriteEpisode] = await db.query.favoriteEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+      }`
+    );
+
+    if (existingFavoriteEpisode) {
+      throw new Error('Episode is already in favorites!');
+    }
+
+    const episodeToReturn = await db.mutation.createFavoriteEpisode(
+      {
+        data: {
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+          episode: {
+            connect: { id },
+          },
+        },
+      },
+      info
+    );
+
+    return episodeToReturn;
+  },
+  async removeEpisodeFromFavorites(parent, { id }, { request, db }, info) {
+    const { userId } = request;
+
+    if (!userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
+    const [existingFavoriteEpisode] = await db.query.favoriteEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+      }`
+    );
+
+    if (!existingFavoriteEpisode) {
+      throw new Error(`Favorite episode with id '${id}' is not found!`);
+    }
+
+    const episodeToReturn = await db.mutation.deleteFavoriteEpisode(
+      {
+        where: {
+          id: existingFavoriteEpisode.id,
+        },
+      },
+      info
+    );
 
     return episodeToReturn;
   },

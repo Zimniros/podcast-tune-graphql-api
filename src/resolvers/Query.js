@@ -44,6 +44,21 @@ const Query = {
 
     return episodes[0];
   },
+  favorites(parent, args, { request, db }, info) {
+    const { userId } = request;
+
+    if (!request.userId) {
+      throw new Error(`You aren't logged in!`);
+    }
+
+    return db.query.favoriteEpisodes(
+      {
+        where: { user: { id: userId } },
+        orderBy: 'addedAt_DESC',
+      },
+      info
+    );
+  },
 
   podcasts: forwardTo('db'),
   episodes: forwardTo('db'),

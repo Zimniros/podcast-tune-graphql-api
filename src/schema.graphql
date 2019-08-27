@@ -142,4 +142,5 @@ type Episode {
   pubDate: DateTime
   link: String
   isInFavorites: Boolean!
+  isInQueue: Boolean!
 }

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-loop-func */
 import getFeedData from './getFeedData';
 import db from '../../db';

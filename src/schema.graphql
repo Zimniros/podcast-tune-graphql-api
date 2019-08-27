@@ -130,3 +130,16 @@ type User {
   queue: [QueueEpisode!]!
   favorites: [FavoriteEpisode!]!
 }
+
+type Episode {
+  id: ID!
+  podcast: Podcast!
+  title: String!
+  description: String
+  mediaUrl: String!
+  duration: Float
+  durationVerified: Boolean!
+  pubDate: DateTime
+  link: String
+  isInFavorites: Boolean!
+}

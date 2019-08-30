@@ -149,3 +149,25 @@ type Episode {
   isInFavorites: Boolean!
   isInQueue: Boolean!
 }
+
+type Podcast {
+  id: ID!
+  itunesId: Int!
+  title: String!
+  titleLC: String!
+  author: String!
+  authorLC: String!
+  description: String
+  artworkSmall: String!
+  artworkLarge: String!
+  feedUrl: String
+  websiteUrl: String
+  itunesUrl: String!
+  categories: [Category!]!
+  episodes: [Episode!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  feedCheckedAt: DateTime
+  isFeedUpdating: Boolean!
+  isSubscribedTo: Boolean!
+}

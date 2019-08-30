@@ -59,6 +59,21 @@ const Query = {
       info
     );
   },
+  subscribedPodcasts(parent, args, { request, db }, info) {
+    const { userId } = request;
+
+    if (!request.userId) {
+      throw new Error(`You aren't logged in!`);
+    }
+
+    return db.query.subscribedPodcasts(
+      {
+        where: { user: { id: userId } },
+        orderBy: 'subscribedAt_DESC',
+      },
+      info
+    );
+  },
 
   podcasts: forwardTo('db'),
   episodes: forwardTo('db'),
@@ -86,6 +101,8 @@ const Query = {
       await Promise.all(
         searchResults.map(async previewData => {
           const { itunesId, categoryIds } = previewData;
+
+          console.log({ previewData });
 
           const preview = await db.query.podcast(
             {
@@ -123,6 +140,7 @@ const Query = {
       return results;
     } catch (error) {
       console.log({ error: error.message });
+      return results;
       // console.log({ error });
     } finally {
       console.timeEnd(`Search for term ${searchTerm} done in: `);

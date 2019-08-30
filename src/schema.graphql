@@ -36,6 +36,9 @@ type Mutation {
   addEpisodeToFavorites(id: ID!): FavoriteEpisode!
   removeEpisodeFromFavorites(id: ID!): FavoriteEpisode!
 
+  subscribeToPodcast(id: ID!): SubscribedPodcast!
+  unsubscribeFromPodcast(id: ID!): SubscribedPodcast!
+
   updatePodcastFeed(id: ID!): [Episode!]!
   updateEpisodeDuration(id: ID!, duration: Float!): Episode!
 
@@ -58,6 +61,7 @@ type Query {
   playingEpisode: QueueEpisode
   queue: [QueueEpisode!]!
   favorites: [FavoriteEpisode!]!
+  subscribedPodcasts: [SubscribedPodcast!]!
 
   podcasts(
     where: PodcastWhereInput
@@ -129,6 +133,7 @@ type User {
   permissions: [Permission!]!
   queue: [QueueEpisode!]!
   favorites: [FavoriteEpisode!]!
+  subscribedPodcasts: [SubscribedPodcast!]!
 }
 
 type Episode {

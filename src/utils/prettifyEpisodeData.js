@@ -37,11 +37,13 @@ function parseDuration(duration) {
 const prettifyEpisodeData = episodeData => {
   const duration = get(episodeData, ['itunes:duration']);
   const enclosure = filterEnclosures(get(episodeData, 'enclosures'));
+  const episodeArtwork = get(episodeData, ['itunes:image']);
 
   const data = {
     ...pick(episodeData, ['title', 'description', 'pubDate', 'link']),
     mediaUrl: enclosure && enclosure.url,
     duration: duration ? parseDuration(duration['#']) : 0,
+    episodeArtwork: episodeArtwork ? episodeArtwork['@'].href : null,
   };
 
   return data;

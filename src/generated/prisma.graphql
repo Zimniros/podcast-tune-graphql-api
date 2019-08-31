@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Fri Aug 30 2019 22:14:54 GMT+0300 (Moscow Standard Time)
+# timestamp: Sat Aug 31 2019 23:30:38 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -411,6 +411,7 @@ type Episode implements Node {
   mediaUrl: String!
   duration: Float
   durationVerified: Boolean!
+  episodeArtwork: String
   pubDate: DateTime
   link: String
 }
@@ -432,6 +433,7 @@ input EpisodeCreateInput {
   mediaUrl: String!
   duration: Float
   durationVerified: Boolean
+  episodeArtwork: String
   pubDate: DateTime
   link: String
   podcast: PodcastCreateOneWithoutEpisodesInput!
@@ -454,6 +456,7 @@ input EpisodeCreateWithoutPodcastInput {
   mediaUrl: String!
   duration: Float
   durationVerified: Boolean
+  episodeArtwork: String
   pubDate: DateTime
   link: String
 }
@@ -480,6 +483,8 @@ enum EpisodeOrderByInput {
   duration_DESC
   durationVerified_ASC
   durationVerified_DESC
+  episodeArtwork_ASC
+  episodeArtwork_DESC
   pubDate_ASC
   pubDate_DESC
   link_ASC
@@ -493,6 +498,7 @@ type EpisodePreviousValues {
   mediaUrl: String!
   duration: Float
   durationVerified: Boolean!
+  episodeArtwork: String
   pubDate: DateTime
   link: String
 }
@@ -692,6 +698,46 @@ input EpisodeScalarWhereInput {
 
   """All values that are not equal to given value."""
   durationVerified_not: Boolean
+  episodeArtwork: String
+
+  """All values that are not equal to given value."""
+  episodeArtwork_not: String
+
+  """All values that are contained in given list."""
+  episodeArtwork_in: [String!]
+
+  """All values that are not contained in given list."""
+  episodeArtwork_not_in: [String!]
+
+  """All values less than the given value."""
+  episodeArtwork_lt: String
+
+  """All values less than or equal the given value."""
+  episodeArtwork_lte: String
+
+  """All values greater than the given value."""
+  episodeArtwork_gt: String
+
+  """All values greater than or equal the given value."""
+  episodeArtwork_gte: String
+
+  """All values containing the given string."""
+  episodeArtwork_contains: String
+
+  """All values not containing the given string."""
+  episodeArtwork_not_contains: String
+
+  """All values starting with the given string."""
+  episodeArtwork_starts_with: String
+
+  """All values not starting with the given string."""
+  episodeArtwork_not_starts_with: String
+
+  """All values ending with the given string."""
+  episodeArtwork_ends_with: String
+
+  """All values not ending with the given string."""
+  episodeArtwork_not_ends_with: String
   pubDate: DateTime
 
   """All values that are not equal to given value."""
@@ -799,6 +845,7 @@ input EpisodeUpdateDataInput {
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
+  episodeArtwork: String
   pubDate: DateTime
   link: String
   podcast: PodcastUpdateOneRequiredWithoutEpisodesInput
@@ -810,6 +857,7 @@ input EpisodeUpdateInput {
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
+  episodeArtwork: String
   pubDate: DateTime
   link: String
   podcast: PodcastUpdateOneRequiredWithoutEpisodesInput
@@ -821,6 +869,7 @@ input EpisodeUpdateManyDataInput {
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
+  episodeArtwork: String
   pubDate: DateTime
   link: String
 }
@@ -831,6 +880,7 @@ input EpisodeUpdateManyMutationInput {
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
+  episodeArtwork: String
   pubDate: DateTime
   link: String
 }
@@ -865,6 +915,7 @@ input EpisodeUpdateWithoutPodcastDataInput {
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
+  episodeArtwork: String
   pubDate: DateTime
   link: String
 }
@@ -1080,6 +1131,46 @@ input EpisodeWhereInput {
 
   """All values that are not equal to given value."""
   durationVerified_not: Boolean
+  episodeArtwork: String
+
+  """All values that are not equal to given value."""
+  episodeArtwork_not: String
+
+  """All values that are contained in given list."""
+  episodeArtwork_in: [String!]
+
+  """All values that are not contained in given list."""
+  episodeArtwork_not_in: [String!]
+
+  """All values less than the given value."""
+  episodeArtwork_lt: String
+
+  """All values less than or equal the given value."""
+  episodeArtwork_lte: String
+
+  """All values greater than the given value."""
+  episodeArtwork_gt: String
+
+  """All values greater than or equal the given value."""
+  episodeArtwork_gte: String
+
+  """All values containing the given string."""
+  episodeArtwork_contains: String
+
+  """All values not containing the given string."""
+  episodeArtwork_not_contains: String
+
+  """All values starting with the given string."""
+  episodeArtwork_starts_with: String
+
+  """All values not starting with the given string."""
+  episodeArtwork_not_starts_with: String
+
+  """All values ending with the given string."""
+  episodeArtwork_ends_with: String
+
+  """All values not ending with the given string."""
+  episodeArtwork_not_ends_with: String
   pubDate: DateTime
 
   """All values that are not equal to given value."""

@@ -73,6 +73,7 @@ type Episode {
   mediaUrl: String!
   duration: Float @default(value: 0)
   durationVerified: Boolean! @default(value: false)
+  episodeArtwork: String
   pubDate: DateTime
   link: String
 }

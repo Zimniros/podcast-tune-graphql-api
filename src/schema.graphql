@@ -146,6 +146,7 @@ type Episode {
   durationVerified: Boolean!
   pubDate: DateTime
   link: String
+  episodeArtwork: String
   isInFavorites: Boolean!
   isInQueue: Boolean!
 }

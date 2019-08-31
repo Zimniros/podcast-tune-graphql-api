@@ -164,7 +164,7 @@ type Podcast {
   websiteUrl: String
   itunesUrl: String!
   categories: [Category!]!
-  episodes: [Episode!]!
+  episodes(orderBy: EpisodeOrderByInput, first: Int, last: Int): [Episode!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   feedCheckedAt: DateTime

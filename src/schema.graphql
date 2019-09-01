@@ -61,6 +61,7 @@ type Query {
   playingEpisode: QueueEpisode
   queue: [QueueEpisode!]!
   favorites: [FavoriteEpisode!]!
+  inProgress: [InProgressEpisode!]!
   subscribedPodcasts: [SubscribedPodcast!]!
 
   podcasts(
@@ -133,6 +134,7 @@ type User {
   permissions: [Permission!]!
   queue: [QueueEpisode!]!
   favorites: [FavoriteEpisode!]!
+  inProgress: [InProgressEpisode!]!
   subscribedPodcasts: [SubscribedPodcast!]!
 }
 

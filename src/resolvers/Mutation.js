@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { randomBytes } from 'crypto';
@@ -637,6 +638,60 @@ const Mutations = {
     );
 
     return podcastToReturn;
+  },
+  async setPlayedTime(parent, { id, playedTime }, { request, db }, info) {
+    const { userId } = request;
+
+    if (!userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
+    const [existingInProgressEpisode] = await db.query.inProgressEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+      }`
+    );
+
+    let episodeToReturn;
+
+    if (existingInProgressEpisode) {
+      episodeToReturn = await db.mutation.updateInProgressEpisode(
+        {
+          where: {
+            id: existingInProgressEpisode.id,
+          },
+          data: {
+            playedTime,
+          },
+        },
+        info
+      );
+    } else {
+      episodeToReturn = await db.mutation.createInProgressEpisode(
+        {
+          data: {
+            playedTime,
+            user: {
+              connect: {
+                id: userId,
+              },
+            },
+            episode: {
+              connect: { id },
+            },
+          },
+        },
+        info
+      );
+    }
+
+    return episodeToReturn;
   },
 
   /*

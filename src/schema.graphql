@@ -39,6 +39,8 @@ type Mutation {
   subscribeToPodcast(id: ID!): SubscribedPodcast!
   unsubscribeFromPodcast(id: ID!): SubscribedPodcast!
 
+  setPlayedTime(id: ID!, playedTime: Float!): InProgressEpisode!
+
   updatePodcastFeed(id: ID!): [Episode!]!
   updateEpisodeDuration(id: ID!, duration: Float!): Episode!
 
@@ -151,6 +153,7 @@ type Episode {
   episodeArtwork: String
   isInFavorites: Boolean!
   isInQueue: Boolean!
+  playedTime: Float!
 }
 
 type Podcast {

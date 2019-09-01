@@ -47,6 +47,32 @@ const Episode = {
       return Boolean(existingQueueEpisode);
     },
   },
-};
+  playedTime: {
+    fragment: 'fragment episodeId on Episode { id }',
+    async resolve(parent, args, { request, db }, info) {
+      const { userId } = request;
 
+      if (!userId) {
+        return 0;
+      }
+
+      const [existingInProgressEpisode] = await db.query.inProgressEpisodes(
+        {
+          where: {
+            user: { id: userId },
+            episode: { id: parent.id },
+          },
+        },
+        `{
+            id
+            playedTime
+          }`
+      );
+
+      return existingInProgressEpisode
+        ? existingInProgressEpisode.playedTime
+        : 0;
+    },
+  },
+};
 export default Episode;

@@ -1,4 +1,5 @@
 import { pick, get } from 'lodash';
+import { JSDOM } from 'jsdom';
 
 function filterEnclosures(enclosures) {
   const array = Array.isArray(enclosures) ? enclosures : [enclosures];
@@ -34,13 +35,23 @@ function parseDuration(duration) {
     : toSeconds(duration);
 }
 
+function sanitizeDescription(description) {
+  const dom = new JSDOM(description);
+  return dom.window.document.body.textContent || '';
+}
+
 const prettifyEpisodeData = episodeData => {
   const duration = get(episodeData, ['itunes:duration']);
   const enclosure = filterEnclosures(get(episodeData, 'enclosures'));
   const episodeArtwork = get(episodeData, ['itunes:image']);
 
+  const description = get(episodeData, 'description');
+  const descriptionSanitized = sanitizeDescription(description);
+
   const data = {
-    ...pick(episodeData, ['title', 'description', 'pubDate', 'link']),
+    ...pick(episodeData, ['title', 'pubDate', 'link']),
+    description,
+    descriptionSanitized,
     mediaUrl: enclosure && enclosure.url,
     duration: duration ? parseDuration(duration['#']) : 0,
     episodeArtwork: episodeArtwork ? episodeArtwork['@'].href : null,

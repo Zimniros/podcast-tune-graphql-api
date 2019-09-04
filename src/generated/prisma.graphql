@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Wed Sep 04 2019 15:06:18 GMT+0300 (Moscow Standard Time)
+# timestamp: Wed Sep 04 2019 18:21:29 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -416,6 +416,7 @@ type Episode implements Node {
   podcast: Podcast!
   title: String!
   description: String
+  descriptionSanitized: String
   mediaUrl: String!
   duration: Float
   durationVerified: Boolean!
@@ -438,6 +439,7 @@ input EpisodeCreateInput {
   id: ID
   title: String!
   description: String
+  descriptionSanitized: String
   mediaUrl: String!
   duration: Float
   durationVerified: Boolean
@@ -461,6 +463,7 @@ input EpisodeCreateWithoutPodcastInput {
   id: ID
   title: String!
   description: String
+  descriptionSanitized: String
   mediaUrl: String!
   duration: Float
   durationVerified: Boolean
@@ -485,6 +488,8 @@ enum EpisodeOrderByInput {
   title_DESC
   description_ASC
   description_DESC
+  descriptionSanitized_ASC
+  descriptionSanitized_DESC
   mediaUrl_ASC
   mediaUrl_DESC
   duration_ASC
@@ -503,6 +508,7 @@ type EpisodePreviousValues {
   id: ID!
   title: String!
   description: String
+  descriptionSanitized: String
   mediaUrl: String!
   duration: Float
   durationVerified: Boolean!
@@ -640,6 +646,46 @@ input EpisodeScalarWhereInput {
 
   """All values not ending with the given string."""
   description_not_ends_with: String
+  descriptionSanitized: String
+
+  """All values that are not equal to given value."""
+  descriptionSanitized_not: String
+
+  """All values that are contained in given list."""
+  descriptionSanitized_in: [String!]
+
+  """All values that are not contained in given list."""
+  descriptionSanitized_not_in: [String!]
+
+  """All values less than the given value."""
+  descriptionSanitized_lt: String
+
+  """All values less than or equal the given value."""
+  descriptionSanitized_lte: String
+
+  """All values greater than the given value."""
+  descriptionSanitized_gt: String
+
+  """All values greater than or equal the given value."""
+  descriptionSanitized_gte: String
+
+  """All values containing the given string."""
+  descriptionSanitized_contains: String
+
+  """All values not containing the given string."""
+  descriptionSanitized_not_contains: String
+
+  """All values starting with the given string."""
+  descriptionSanitized_starts_with: String
+
+  """All values not starting with the given string."""
+  descriptionSanitized_not_starts_with: String
+
+  """All values ending with the given string."""
+  descriptionSanitized_ends_with: String
+
+  """All values not ending with the given string."""
+  descriptionSanitized_not_ends_with: String
   mediaUrl: String
 
   """All values that are not equal to given value."""
@@ -850,6 +896,7 @@ input EpisodeSubscriptionWhereInput {
 input EpisodeUpdateDataInput {
   title: String
   description: String
+  descriptionSanitized: String
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -862,6 +909,7 @@ input EpisodeUpdateDataInput {
 input EpisodeUpdateInput {
   title: String
   description: String
+  descriptionSanitized: String
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -874,6 +922,7 @@ input EpisodeUpdateInput {
 input EpisodeUpdateManyDataInput {
   title: String
   description: String
+  descriptionSanitized: String
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -885,6 +934,7 @@ input EpisodeUpdateManyDataInput {
 input EpisodeUpdateManyMutationInput {
   title: String
   description: String
+  descriptionSanitized: String
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -920,6 +970,7 @@ input EpisodeUpdateOneRequiredInput {
 input EpisodeUpdateWithoutPodcastDataInput {
   title: String
   description: String
+  descriptionSanitized: String
   mediaUrl: String
   duration: Float
   durationVerified: Boolean
@@ -1073,6 +1124,46 @@ input EpisodeWhereInput {
 
   """All values not ending with the given string."""
   description_not_ends_with: String
+  descriptionSanitized: String
+
+  """All values that are not equal to given value."""
+  descriptionSanitized_not: String
+
+  """All values that are contained in given list."""
+  descriptionSanitized_in: [String!]
+
+  """All values that are not contained in given list."""
+  descriptionSanitized_not_in: [String!]
+
+  """All values less than the given value."""
+  descriptionSanitized_lt: String
+
+  """All values less than or equal the given value."""
+  descriptionSanitized_lte: String
+
+  """All values greater than the given value."""
+  descriptionSanitized_gt: String
+
+  """All values greater than or equal the given value."""
+  descriptionSanitized_gte: String
+
+  """All values containing the given string."""
+  descriptionSanitized_contains: String
+
+  """All values not containing the given string."""
+  descriptionSanitized_not_contains: String
+
+  """All values starting with the given string."""
+  descriptionSanitized_starts_with: String
+
+  """All values not starting with the given string."""
+  descriptionSanitized_not_starts_with: String
+
+  """All values ending with the given string."""
+  descriptionSanitized_ends_with: String
+
+  """All values not ending with the given string."""
+  descriptionSanitized_not_ends_with: String
   mediaUrl: String
 
   """All values that are not equal to given value."""

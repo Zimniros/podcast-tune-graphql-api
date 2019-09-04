@@ -86,6 +86,7 @@ type Episode {
   podcast: Podcast!
   title: String!
   description: String
+  descriptionSanitized: String
   mediaUrl: String!
   duration: Float @default(value: 0)
   durationVerified: Boolean! @default(value: false)

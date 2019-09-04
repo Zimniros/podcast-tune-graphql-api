@@ -693,6 +693,101 @@ const Mutations = {
 
     return episodeToReturn;
   },
+  async markEpisodeAsPlayed(parent, { id }, { request, db }, info) {
+    const { userId } = request;
+
+    if (!userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
+    const [existingPlayedEpisode] = await db.query.playedEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+      }`
+    );
+
+    if (existingPlayedEpisode) {
+      throw new Error('Episode already marked as played!');
+    }
+
+    const [existingInProgressEpisode] = await db.query.inProgressEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+      }`
+    );
+
+    if (existingInProgressEpisode) {
+      await db.mutation.deleteInProgressEpisode({
+        where: {
+          id: existingInProgressEpisode.id,
+        },
+      });
+    }
+
+    const episodeToReturn = await db.mutation.createPlayedEpisode(
+      {
+        data: {
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+          episode: {
+            connect: { id },
+          },
+        },
+      },
+      info
+    );
+
+    return episodeToReturn;
+  },
+  async markEpisodeAsUnplayed(parent, { id }, { request, db }, info) {
+    const { userId } = request;
+
+    if (!userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
+    const [existingPlayedEpisode] = await db.query.playedEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+      }`
+    );
+
+    if (!existingPlayedEpisode) {
+      throw new Error(`Played episode with id '${id}' is not found!`);
+    }
+
+    const episodeToReturn = await db.mutation.deletePlayedEpisode(
+      {
+        where: {
+          id: existingPlayedEpisode.id,
+        },
+      },
+      info
+    );
+
+    return episodeToReturn;
+  },
 
   /*
       Data population methods

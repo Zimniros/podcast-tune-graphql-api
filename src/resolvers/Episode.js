@@ -47,6 +47,30 @@ const Episode = {
       return Boolean(existingQueueEpisode);
     },
   },
+  isPlayed: {
+    fragment: 'fragment episodeId on Episode { id }',
+    async resolve(parent, args, { request, db }, info) {
+      const { userId } = request;
+
+      if (!userId) {
+        return false;
+      }
+
+      const [existingPlayedEpisode] = await db.query.playedEpisodes(
+        {
+          where: {
+            user: { id: userId },
+            episode: { id: parent.id },
+          },
+        },
+        `{
+          id
+        }`
+      );
+
+      return Boolean(existingPlayedEpisode);
+    },
+  },
   playedTime: {
     fragment: 'fragment episodeId on Episode { id }',
     async resolve(parent, args, { request, db }, info) {

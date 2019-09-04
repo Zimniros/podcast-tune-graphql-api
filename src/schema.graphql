@@ -41,6 +41,9 @@ type Mutation {
 
   setPlayedTime(id: ID!, playedTime: Float!): InProgressEpisode!
 
+  markEpisodeAsPlayed(id: ID!): PlayedEpisode!
+  markEpisodeAsUnplayed(id: ID!): PlayedEpisode!
+
   updatePodcastFeed(id: ID!): [Episode!]!
   updateEpisodeDuration(id: ID!, duration: Float!): Episode!
 
@@ -153,6 +156,7 @@ type Episode {
   episodeArtwork: String
   isInFavorites: Boolean!
   isInQueue: Boolean!
+  isPlayed: Boolean!
   playedTime: Float!
 }
 

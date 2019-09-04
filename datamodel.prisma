@@ -40,6 +40,13 @@ type InProgressEpisode {
   playedTime: Float!
 }
 
+type PlayedEpisode {
+  id: ID! @id
+  user: User!
+  episode: Episode!
+  finishedAt: DateTime! @createdAt
+}
+
 type QueueEpisode {
   id: ID! @id
   user: User!

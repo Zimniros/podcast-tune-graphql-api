@@ -213,6 +213,26 @@ const Mutations = {
     let episodesToUpdate;
     let episodeToReturn;
 
+    const [existingPlayedEpisode] = await db.query.playedEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+      }`
+    );
+
+    if (existingPlayedEpisode) {
+      await db.mutation.deletePlayedEpisode({
+        where: {
+          id: existingPlayedEpisode.id,
+        },
+      });
+    }
+
     if (existingQueueEpisode) {
       const { position } = existingQueueEpisode;
 
@@ -716,6 +736,8 @@ const Mutations = {
       throw new Error('Episode already marked as played!');
     }
 
+    const mutationsToPerform = [];
+
     const [existingInProgressEpisode] = await db.query.inProgressEpisodes(
       {
         where: {
@@ -729,12 +751,69 @@ const Mutations = {
     );
 
     if (existingInProgressEpisode) {
-      await db.mutation.deleteInProgressEpisode({
+      const mutation = db.mutation.deleteInProgressEpisode({
         where: {
           id: existingInProgressEpisode.id,
         },
       });
+
+      mutationsToPerform.push(mutation);
     }
+
+    const [existingQueueEpisode] = await db.query.queueEpisodes(
+      {
+        where: {
+          user: { id: userId },
+          episode: { id },
+        },
+      },
+      `{
+        id
+        position
+      }`
+    );
+
+    let episodesToUpdate;
+
+    if (existingQueueEpisode) {
+      const mutation = db.mutation.deleteQueueEpisode({
+        where: {
+          id: existingQueueEpisode.id,
+        },
+      });
+
+      mutationsToPerform.push(mutation);
+
+      const { position } = existingQueueEpisode;
+
+      episodesToUpdate = await db.query.queueEpisodes(
+        {
+          where: {
+            user: { id: userId },
+            position_gt: position,
+            id_not: existingQueueEpisode.id,
+          },
+        },
+        `{
+          id
+          position
+        }`
+      );
+    }
+
+    for (const episode of episodesToUpdate) {
+      const mutation = db.mutation.updateQueueEpisode(
+        {
+          data: { position: episode.position - 1 },
+          where: { id: episode.id },
+        },
+        info
+      );
+
+      mutationsToPerform.push(mutation);
+    }
+
+    await Promise.all(mutationsToPerform);
 
     const episodeToReturn = await db.mutation.createPlayedEpisode(
       {

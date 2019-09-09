@@ -5,7 +5,6 @@ import { randomBytes } from 'crypto';
 import { promisify } from 'util';
 
 import { transport, makeANiceEmail } from '../mail';
-import fetchCategories from '../utils/population/fetchCategories';
 import fetchPodcastsForCategory from '../utils/population/fetchPodcastsForCategory';
 import updatePodcastFeed from '../utils/population/updatePodcastFeed';
 
@@ -773,7 +772,7 @@ const Mutations = {
       }`
     );
 
-    let episodesToUpdate;
+    let episodesToUpdate = [];
 
     if (existingQueueEpisode) {
       const mutation = db.mutation.deleteQueueEpisode({
@@ -872,26 +871,26 @@ const Mutations = {
       Data population methods
   */
 
-  // Initial Data Population for Categories
-  async getCategories(parent, args, { db }, info) {
-    const categoriesData = await fetchCategories();
-    await db.mutation.deleteManyCategories();
+  // // Initial Data Population for Categories
+  // async getCategories(parent, args, { db }, info) {
+  //   const categoriesData = await fetchCategories();
+  //   await db.mutation.deleteManyCategories();
 
-    const promises = [];
+  //   const promises = [];
 
-    categoriesData.forEach(category => {
-      const upsertPromise = db.mutation.createCategory({
-        data: {
-          ...category,
-        },
-      });
-      promises.push(upsertPromise);
-    });
+  //   categoriesData.forEach(category => {
+  //     const upsertPromise = db.mutation.createCategory({
+  //       data: {
+  //         ...category,
+  //       },
+  //     });
+  //     promises.push(upsertPromise);
+  //   });
 
-    const categories = await Promise.all(promises);
+  //   const categories = await Promise.all(promises);
 
-    return categories;
-  },
+  //   return categories;
+  // },
   // Initial Data Population for Podcast preview for each category
   async getPodcastsForAllCategories(
     parent,

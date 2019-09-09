@@ -47,7 +47,6 @@ type Mutation {
   updatePodcastFeed(id: ID!): [Episode!]!
   updateEpisodeDuration(id: ID!, duration: Float!): Episode!
 
-  getCategories: [Category!]!
   getPodcastsForAllCategories(
     limit: Int
     country: CountryCodes

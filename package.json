@@ -8,17 +8,22 @@
   "license": "GPL-3.0-or-later",
   "private": false,
   "scripts": {
-    "start": "nodemon -e js,graphql -x node src/index.js --exec babel-node",
+    "build": "babel src -d dist",
+    "serve": "npm run build && node dist/index.js",
+    "start": "npm run build && nodemon -e js,graphql src/index.js",
     "debug": "nodemon -e js,graphql -x node --inspect src/index.js --exec babel-node",
+    "seed:local": "babel-node ./src/seed.js",
+    "seed:prod": "node ./dist/seed.js",
+    "delete": "prisma delete --force",
     "test": "jest",
-    "playground": "graphql playground --dotenv .env",
     "deploy": "prisma deploy",
-    "dev": "npm-run-all --parallel debug playground"
+    "dev": "npm run debug"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@babel/node": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.6.0",
     "@babel/preset-env": "^7.5.5",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.3.0",
@@ -33,6 +38,7 @@
     "prettier": "^1.18.2"
   },
   "dependencies": {
+    "@babel/runtime": "^7.6.0",
     "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.4",

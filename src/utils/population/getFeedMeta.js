@@ -1,5 +1,6 @@
 import FeedParser from 'feedparser';
-import axios from 'axios';
+
+import getFeedStream from '../fetching/getFeedStream';
 
 const getFeedMeta = async feedUrl =>
   new Promise(async (resolve, reject) => {
@@ -8,19 +9,7 @@ const getFeedMeta = async feedUrl =>
 
     console.time(`  Meta for feed '${feedUrl}' fetched in `);
 
-    let feedStream;
-
-    try {
-      feedStream = await axios({
-        method: 'get',
-        url: feedUrl,
-        responseType: 'stream',
-        timeout: 30000,
-      });
-    } catch (error) {
-      return reject(error);
-    }
-
+    const feedStream = await getFeedStream(feedUrl);
     const feedParser = new FeedParser();
 
     feedParser.on('error', function(error) {

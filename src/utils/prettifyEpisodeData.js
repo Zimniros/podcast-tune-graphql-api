@@ -22,7 +22,10 @@ function toSeconds(time) {
   let m = 1;
 
   while (p.length > 0) {
-    s += m * parseInt(p.pop(), 10);
+    const current = p.pop();
+
+    if (isNaN(current) || current.trim().length === 0) break;
+    s += m * parseInt(current, 10);
     m *= 60;
   }
 
@@ -30,9 +33,11 @@ function toSeconds(time) {
 }
 
 function parseDuration(duration) {
-  return duration.indexOf(':') === -1
-    ? parseInt(duration)
-    : toSeconds(duration);
+  if (duration.trim().length === 0) return 0;
+
+  if (duration.indexOf(':') !== -1) return toSeconds(duration);
+
+  return isNaN(duration) ? 0 : parseInt(duration);
 }
 
 function sanitizeDescription(description) {
@@ -42,6 +47,7 @@ function sanitizeDescription(description) {
 
 const prettifyEpisodeData = episodeData => {
   const duration = get(episodeData, ['itunes:duration']);
+
   const enclosure = filterEnclosures(get(episodeData, 'enclosures'));
   const episodeArtwork = get(episodeData, ['itunes:image']);
 
@@ -53,7 +59,7 @@ const prettifyEpisodeData = episodeData => {
     description,
     descriptionSanitized,
     mediaUrl: enclosure && enclosure.url,
-    duration: duration ? parseDuration(duration['#']) : 0,
+    duration: duration && parseDuration(duration['#']),
     episodeArtwork: episodeArtwork ? episodeArtwork['@'].href : null,
   };
 

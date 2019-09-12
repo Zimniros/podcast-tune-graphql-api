@@ -1,7 +1,7 @@
 import FeedParser from 'feedparser';
-import axios from 'axios';
 
 import prettifyEpisodeData from '../prettifyEpisodeData';
+import getFeedStream from '../fetching/getFeedStream';
 
 const getFeedData = async feedUrl =>
   new Promise(async (resolve, reject) => {
@@ -10,22 +10,11 @@ const getFeedData = async feedUrl =>
 
     console.time(`  Data for feed '${feedUrl}' fetched in `);
 
-    let feedStream;
+    const feedStream = await getFeedStream(feedUrl);
     const feed = {
       meta: null,
-      episodes: [],
+      episodes: []
     };
-
-    try {
-      feedStream = await axios({
-        method: 'get',
-        url: feedUrl,
-        responseType: 'stream',
-        timeout: 30000,
-      });
-    } catch (error) {
-      return reject(error);
-    }
 
     const feedParser = new FeedParser();
 

@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 
 import fetchPodcastPreview from './fetchPodcastPreview';
-import getFeedMeta from './population/getFeedMeta';
+import getFeedMeta from './fetching/getFeedMeta';
 import db from '../db';
 
 const createPodcast = itunesId =>

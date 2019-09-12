@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 
 import createServer from './createServer';
-import db from './db';
 
 const server = createServer();
 

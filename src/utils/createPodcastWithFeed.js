@@ -3,7 +3,7 @@
 import { get } from 'lodash';
 
 import fetchPodcastPreview from './fetchPodcastPreview';
-import getFeedData from './population/getFeedData';
+import getFeedData from './fetching/getFeedData';
 
 import db from '../db';
 
@@ -54,10 +54,7 @@ const createPodcastWithFeed = (itunesId, limit = 100) =>
 
       data = { ...data, websiteUrl: link || '', description };
     } catch (error) {
-      console.log('Error in fetching podcast feed', {
-        itunesId,
-        error: error.message,
-      });
+      return reject(error);
     } finally {
       data = { ...data, feedCheckedAt: new Date() };
     }

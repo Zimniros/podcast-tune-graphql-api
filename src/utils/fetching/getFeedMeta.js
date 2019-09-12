@@ -1,16 +1,14 @@
 import FeedParser from 'feedparser';
 
-import getFeedStream from '../fetching/getFeedStream';
+import getFeedStream from './getFeedStream';
 
-const getFeedMeta = async feedUrl =>
-  new Promise(async (resolve, reject) => {
-    if (!feedUrl)
-      return reject(new Error('A podcast feedUrl was not provided.'));
+const getFeedMeta = async feedUrl => {
+  const feedStream = await getFeedStream(feedUrl);
+  console.time(`  Data for feed '${feedUrl}' fetched in `);
 
-    console.time(`  Meta for feed '${feedUrl}' fetched in `);
-
-    const feedStream = await getFeedStream(feedUrl);
+  return new Promise((resolve, reject) => {
     const feedParser = new FeedParser();
+    console.time(`  Meta for feed '${feedUrl}' fetched in `);
 
     feedParser.on('error', function(error) {
       return reject(error);
@@ -30,5 +28,5 @@ const getFeedMeta = async feedUrl =>
 
     feedStream.data.pipe(feedParser);
   });
-
+};
 export default getFeedMeta;

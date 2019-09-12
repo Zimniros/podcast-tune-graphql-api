@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-loop-func */
-import getFeedData from './getFeedData';
+import getFeedData from '../fetching/getFeedData';
 import db from '../../db';
 
 const updatePodcastFeed = (id, info) =>

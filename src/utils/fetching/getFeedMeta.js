@@ -1,9 +1,9 @@
 import FeedParser from 'feedparser';
 
-import getFeedStream from './getFeedStream';
+import fetchFeedStream from './fetchFeedStream';
 
 const getFeedMeta = async feedUrl => {
-  const feedStream = await getFeedStream(feedUrl);
+  const feedStream = await fetchFeedStream(feedUrl);
   console.time(`  Data for feed '${feedUrl}' fetched in `);
 
   return new Promise((resolve, reject) => {

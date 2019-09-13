@@ -6,7 +6,7 @@ const streamConfig = {
   timeout: 30000,
 };
 
-const getFeedStream = async url => {
+const fetchFeedStream = async url => {
   const feedStream = await axios({
     url,
     ...streamConfig,
@@ -15,4 +15,4 @@ const getFeedStream = async url => {
   return feedStream;
 };
 
-export { getFeedStream as default, streamConfig };
+export { fetchFeedStream as default, streamConfig };

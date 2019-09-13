@@ -1,10 +1,10 @@
 import FeedParser from 'feedparser';
 
 import prettifyEpisodeData from '../prettifyEpisodeData';
-import getFeedStream from './getFeedStream';
+import fetchFeedStream from './fetchFeedStream';
 
 const getFeedData = async feedUrl => {
-  const feedStream = await getFeedStream(feedUrl);
+  const feedStream = await fetchFeedStream(feedUrl);
   console.time(`  Data for feed '${feedUrl}' fetched in `);
 
   const feed = {

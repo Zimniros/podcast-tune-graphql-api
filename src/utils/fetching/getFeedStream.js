@@ -1,17 +1,18 @@
 import axios from 'axios';
 
-const getFeedStream = async url => {
-  if (!url || url.trim().length === 0)
-    throw new Error('A podcast feedUrl was not provided.');
+const streamConfig = {
+  method: 'get',
+  responseType: 'stream',
+  timeout: 30000,
+};
 
+const getFeedStream = async url => {
   const feedStream = await axios({
-    method: 'get',
     url,
-    responseType: 'stream',
-    timeout: 30000,
+    ...streamConfig,
   });
 
   return feedStream;
 };
 
-export { getFeedStream as default };
+export { getFeedStream as default, streamConfig };

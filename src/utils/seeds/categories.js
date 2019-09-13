@@ -1,3 +1,13 @@
+const prettifiedCategories = [
+  { name: 'Business', itunesId: 1321 },
+  { name: 'Careers', itunesId: 1410 },
+  { name: 'Investing', itunesId: 1412 },
+  { name: 'Management', itunesId: 1491 },
+  { name: 'Marketing', itunesId: 1492 },
+  { name: 'Entrepreneurship', itunesId: 1493 },
+  { name: 'Non-Profit', itunesId: 1494 },
+];
+
 const rawCategories = {
   '1321': {
     name: 'Business',
@@ -37,4 +47,4 @@ const rawData = {
   },
 };
 
-export { rawData, rawCategories };
+export { rawData, rawCategories, prettifiedCategories };

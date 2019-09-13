@@ -23,7 +23,7 @@ describe('getFeedDara', () => {
     jest.resetAllMocks();
   });
 
-  it('calls fetchCategories and returns correct data', async () => {
+  it('calls fetchFeedStream and returns correct data', async () => {
     // setup
     fetchFeedStream.mockResolvedValue({
       data: getMockedStream(threeCorrectEpisodes),

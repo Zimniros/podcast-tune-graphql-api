@@ -1,8 +1,5 @@
-import './config';
-
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
-
 import createServer from './createServer';
 
 const server = createServer();

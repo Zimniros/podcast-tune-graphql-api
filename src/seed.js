@@ -1,5 +1,3 @@
-import './config';
-
 import db from './db';
 import fetchCategories from './utils/fetching/fetchCategories';
 

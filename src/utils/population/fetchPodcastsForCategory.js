@@ -1,4 +1,4 @@
-import fetchTopPodcasts from './fetchTopPodcasts';
+import getTopPodcasts from '../fetching/getTopPodcasts';
 import createPodcast from '../createPodcast';
 import createPodcastWithFeed from '../createPodcastWithFeed';
 
@@ -7,7 +7,7 @@ const fetchPodcastsForCategory = async ({ categoryId, limit, country }) =>
     let podcastsIds;
 
     try {
-      podcastsIds = await fetchTopPodcasts({ categoryId, limit, country });
+      podcastsIds = await getTopPodcasts({ categoryId, limit, country });
     } catch (error) {
       return reject(error);
     }

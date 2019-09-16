@@ -15,10 +15,17 @@
     "seed:local": "babel-node ./src/seed.js",
     "seed:prod": "node ./dist/seed.js",
     "delete": "prisma delete --force",
-    "test": "dotenv -e ./config/.env.test -- jest --watch --runInBand",
-    "deploy": "dotenv -e ./config/.env -- prisma deploy",
-    "playground": "graphql playground --dotenv .env",
-    "dev": "npm-run-all --parallel debug playground"
+    "test": "dotenv -e ./config/.env -- jest --watch",
+    "deploy": "dotenv -e ./config/.env -- prisma deploy"
+  },
+  "jest": {
+    "globalSetup": "./jest/globalSetup.js",
+    "globalTeardown": "./jest/globalTeardown.js",
+    "modulePathIgnorePatterns": [
+      "dist",
+      "data",
+      "node_modules"
+    ]
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -26,7 +33,9 @@
     "@babel/node": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.6.0",
     "@babel/preset-env": "^7.5.5",
+    "@babel/register": "^7.6.0",
     "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.9.0",
     "dotenv-cli": "^2.0.1",
     "eslint": "^6.3.0",
     "eslint-config-airbnb": "^18.0.1",

@@ -4,7 +4,7 @@ import episode from './episode';
 import podcast from './podcast';
 import dataPopulation from './dataPopulation';
 
-export const Mutation = {
+const Mutation = {
   ...auth,
   ...episode,
   ...podcast,

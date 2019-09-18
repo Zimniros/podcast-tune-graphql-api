@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { randomBytes } from 'crypto';
 import { promisify } from 'util';
+import generateToken from '../../utils/auth/generateToken';
 
 import { transport, makeANiceEmail } from '../../mail';
 
@@ -39,7 +39,7 @@ export default {
       info
     );
 
-    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+    const token = generateToken(user.id);
 
     ctx.response.cookie('token', token, {
       httpOnly: true,
@@ -73,7 +73,7 @@ export default {
       throw new Error('Invalid Password!');
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+    const token = generateToken(user.id);
     ctx.response.cookie('token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365,

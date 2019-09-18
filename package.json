@@ -14,8 +14,9 @@
     "debug": "dotenv -e ./config/.env -- nodemon -e js,graphql -x node --inspect src/index.js --exec babel-node",
     "seed:local": "babel-node ./src/seed.js",
     "seed:prod": "node ./dist/seed.js",
+    "playground": "dotenv -e ./config/.env -- graphql playground",
     "delete": "prisma delete --force",
-    "test": "dotenv -e ./config/.env -- jest --watch",
+    "test": "dotenv -e ./config/.env.test -- jest --watch",
     "deploy": "dotenv -e ./config/.env -- prisma deploy"
   },
   "jest": {
@@ -51,9 +52,11 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.6.0",
+    "apollo-boost": "^0.4.4",
     "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.4",
+    "cross-fetch": "^3.0.4",
     "dayjs": "^1.8.16",
     "feedparser": "^2.2.9",
     "graphql": "^14.5.4",

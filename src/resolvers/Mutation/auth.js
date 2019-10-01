@@ -5,6 +5,7 @@ import generateToken from '../../utils/auth/generateToken';
 import { formatYupError } from '../../utils/auth/formatYupError';
 import {
   validUserSchema,
+  validRequestSchema,
   validResetSchema,
 } from '../../utils/auth/validationRules';
 import {
@@ -12,12 +13,14 @@ import {
   noUserFound,
   invalidPassword,
   requestSuccessful,
+  resetSuccessful,
+  invalidToken,
 } from '../../utils/auth/messages';
 
 import { transport, makeANiceEmail } from '../../mail';
 
 export default {
-  async register(parent, { email, password, name }, ctx, info) {
+  async register(_, { email, password, name }, ctx) {
     try {
       await validUserSchema.validate(
         {
@@ -72,7 +75,7 @@ export default {
 
     return { token };
   },
-  async login(parent, { email, password }, ctx, info) {
+  async login(_, { email, password }, ctx) {
     try {
       await validUserSchema.validate(
         {
@@ -123,13 +126,13 @@ export default {
 
     return { token };
   },
-  logout(parent, args, ctx, info) {
+  logout(_, __, ctx) {
     ctx.response.clearCookie('token');
     return { message: 'Goodbye!' };
   },
-  async requestReset(parent, { email }, { db }, info) {
+  async requestReset(_, { email }, { db }) {
     try {
-      await validResetSchema.validate(
+      await validRequestSchema.validate(
         {
           email,
         },
@@ -152,15 +155,20 @@ export default {
       };
     }
 
+    /*
+      TODO: 1. prevent doing more than 1 request per 20 min.
+            2. lock user account 
+    */
     const randomBytesPromiseified = promisify(randomBytes);
     const resetToken = (await randomBytesPromiseified(20)).toString('hex');
     const resetTokenExpiry = Date.now() + 3600000; // 1 hour from now
-    const res = await db.mutation.updateUser({
+
+    await db.mutation.updateUser({
       where: { email },
       data: { resetToken, resetTokenExpiry },
     });
 
-    const mailRes = await transport.sendMail({
+    await transport.sendMail({
       from: 'help@podcast-tune.com',
       to: user.email,
       subject: 'Your Password Reset Token',
@@ -173,22 +181,17 @@ export default {
       message: requestSuccessful,
     };
   },
-  async resetPassword(
-    parent,
-    { password, confirmPassword, resetToken },
-    { db, response },
-    info
-  ) {
-    if (!password || password.trim().length === 0) {
-      throw new Error(`Password is not provided.`);
-    }
-
-    if (!confirmPassword || confirmPassword.trim().length === 0) {
-      throw new Error(`Password confirmation is not provided.`);
-    }
-
-    if (password !== confirmPassword) {
-      throw new Error("Yo Passwords don't match!");
+  async resetPassword(_, { password, confirmPassword, resetToken }, { db }) {
+    try {
+      await validResetSchema.validate(
+        {
+          password,
+          confirmPassword,
+        },
+        { abortEarly: false }
+      );
+    } catch (error) {
+      return { errors: formatYupError(error) };
     }
 
     const [user] = await db.query.users({
@@ -197,13 +200,21 @@ export default {
         resetTokenExpiry_gte: Date.now() - 3600000,
       },
     });
+
     if (!user) {
-      throw new Error('This token is either invalid or expired!');
+      return {
+        errors: [
+          {
+            path: 'confirmPassword',
+            message: invalidToken,
+          },
+        ],
+      };
     }
 
     const newPassword = await bcrypt.hash(password, 10);
 
-    const updatedUser = await db.mutation.updateUser({
+    await db.mutation.updateUser({
       where: { email: user.email },
       data: {
         password: newPassword,
@@ -212,13 +223,6 @@ export default {
       },
     });
 
-    const token = generateToken(user.id);
-
-    response.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 365,
-    });
-
-    return updatedUser;
+    return { message: resetSuccessful };
   },
 };

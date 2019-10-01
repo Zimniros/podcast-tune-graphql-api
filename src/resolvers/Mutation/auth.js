@@ -3,8 +3,16 @@ import { randomBytes } from 'crypto';
 import { promisify } from 'util';
 import generateToken from '../../utils/auth/generateToken';
 import { formatYupError } from '../../utils/auth/formatYupError';
-import { validUserSchema } from '../../utils/auth/validationRules';
-import { duplicateEmail } from '../../utils/auth/errorMessages';
+import {
+  validUserSchema,
+  validResetSchema,
+} from '../../utils/auth/validationRules';
+import {
+  duplicateEmail,
+  noUserFound,
+  invalidPassword,
+  requestSuccessful,
+} from '../../utils/auth/messages';
 
 import { transport, makeANiceEmail } from '../../mail';
 
@@ -65,12 +73,16 @@ export default {
     return { token };
   },
   async login(parent, { email, password }, ctx, info) {
-    if (!email || email.trim().length === 0) {
-      throw new Error(`Email is not provided.`);
-    }
-
-    if (!password || password.trim().length === 0) {
-      throw new Error(`Password is not provided.`);
+    try {
+      await validUserSchema.validate(
+        {
+          email,
+          password,
+        },
+        { abortEarly: false }
+      );
+    } catch (error) {
+      return { errors: formatYupError(error) };
     }
 
     const user = await ctx.db.query.user({
@@ -80,13 +92,27 @@ export default {
     });
 
     if (!user) {
-      throw new Error(`No such user found for email ${email}`);
+      return {
+        errors: [
+          {
+            path: 'email',
+            message: noUserFound,
+          },
+        ],
+      };
     }
 
     const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {
-      throw new Error('Invalid Password!');
+      return {
+        errors: [
+          {
+            path: 'password',
+            message: invalidPassword,
+          },
+        ],
+      };
     }
 
     const token = generateToken(user.id);
@@ -95,21 +121,35 @@ export default {
       maxAge: 1000 * 60 * 60 * 24 * 365,
     });
 
-    return user;
+    return { token };
   },
   logout(parent, args, ctx, info) {
     ctx.response.clearCookie('token');
     return { message: 'Goodbye!' };
   },
   async requestReset(parent, { email }, { db }, info) {
-    if (!email || email.trim().length === 0) {
-      throw new Error(`Email is not provided.`);
+    try {
+      await validResetSchema.validate(
+        {
+          email,
+        },
+        { abortEarly: false }
+      );
+    } catch (error) {
+      return { errors: formatYupError(error) };
     }
 
     const user = await db.query.user({ where: { email } });
 
     if (!user) {
-      throw new Error(`No such user found for email ${email}`);
+      return {
+        errors: [
+          {
+            path: 'email',
+            message: noUserFound,
+          },
+        ],
+      };
     }
 
     const randomBytesPromiseified = promisify(randomBytes);
@@ -121,7 +161,7 @@ export default {
     });
 
     const mailRes = await transport.sendMail({
-      from: 'help@podcasttune.com',
+      from: 'help@podcast-tune.com',
       to: user.email,
       subject: 'Your Password Reset Token',
       html: makeANiceEmail(`Your Password Reset Token is here!
@@ -129,7 +169,9 @@ export default {
     <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}">Click Here to Reset</a>`),
     });
 
-    return { message: 'Thanks!' };
+    return {
+      message: requestSuccessful,
+    };
   },
   async resetPassword(
     parent,
@@ -170,7 +212,7 @@ export default {
       },
     });
 
-    const token = jwt.sign({ userId: updatedUser.id }, process.env.APP_SECRET);
+    const token = generateToken(user.id);
 
     response.cookie('token', token, {
       httpOnly: true,

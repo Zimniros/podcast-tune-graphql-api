@@ -20,3 +20,7 @@ export const validUserSchema = object().shape({
   email: emailRule,
   password: passwordRule,
 });
+
+export const validResetSchema = object().shape({
+  email: emailRule,
+});

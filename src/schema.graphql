@@ -41,7 +41,7 @@ type Mutation {
     resetToken: String!
     password: String!
     confirmPassword: String!
-  ): User!
+  ): ResetPayload!
 
   setPlayingEpisode(id: ID!): QueueEpisode!
   addEpisodeToQueueNext(id: ID!): QueueEpisode!

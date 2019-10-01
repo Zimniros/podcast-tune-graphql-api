@@ -15,9 +15,10 @@
     "seed:local": "babel-node ./src/seed.js",
     "seed:prod": "node ./dist/seed.js",
     "playground": "dotenv -e ./config/.env -- graphql playground",
-    "delete": "prisma delete --force",
+    "delete": "dotenv -e ./config/.env -- prisma delete --force",
     "test": "dotenv -e ./config/.env.test -- jest --watch",
-    "deploy": "dotenv -e ./config/.env -- prisma deploy"
+    "deploy:local": "prisma deploy --env-file config/.env",
+    "deploy:test": "prisma deploy --env-file config/.env.test"
   },
   "jest": {
     "globalSetup": "./jest/globalSetup.js",
@@ -58,6 +59,7 @@
     "cookie-parser": "^1.4.4",
     "cross-fetch": "^3.0.4",
     "dayjs": "^1.8.16",
+    "faker": "^4.1.0",
     "feedparser": "^2.2.9",
     "graphql": "^14.5.4",
     "graphql-cli": "^3.0.14",

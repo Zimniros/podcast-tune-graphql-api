@@ -1,14 +1,16 @@
 import { string, object, ref } from 'yup';
-
-const emailRequired = 'Email is required';
-const passwordRequired = 'Password is required';
-const passwordNotLongEnough = 'Password must be at least 9 characters';
-const invalidEmail = "Email isn't valid";
-const confirmPasswordRequired = 'Password confirmation is required';
-const confirmPasswordMismatch = 'Passwords must match';
+import {
+  emailRequired,
+  emailNotLongEnough,
+  invalidEmail,
+  passwordNotLongEnough,
+  passwordRequired,
+  confirmPasswordRequired,
+  confirmPasswordMismatch,
+} from './messages';
 
 const emailRule = string()
-  .min(3)
+  .min(3, emailNotLongEnough)
   .max(255)
   .email(invalidEmail)
   .required(emailRequired);

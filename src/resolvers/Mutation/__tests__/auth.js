@@ -1,8 +1,19 @@
 import 'cross-fetch/polyfill';
 import { gql } from 'apollo-boost';
+import * as faker from 'faker';
 import getClient from '../../../utils/testUtils/getClient';
-import db from "../../../db";
-import generateToken from '../../../utils/auth/generateToken';
+import db from '../../../db';
+import {
+  duplicateEmail,
+  emailNotLongEnough,
+  invalidEmail,
+  passwordNotLongEnough,
+} from '../../../utils/auth/messages';
+import seedDatabase, { userOne } from '../../../utils/testUtils/seedDatabase';
+
+const email = faker.internet.email();
+const password = faker.internet.password();
+const name = faker.name.firstName();
 
 const client = getClient();
 
@@ -13,9 +24,12 @@ const REGISTER_MUTATION = gql`
     $name: String
   ) {
     register(email: $email, password: $password, name: $name) {
-      id
-      name
-      email
+      errors {
+        path
+        message
+      }
+
+      token
     }
   }
 `;
@@ -32,30 +46,127 @@ const CURRENT_USER_QUERY = gql`
 `;
 
 beforeEach(async () => {
-  await db.mutation.deleteManyUsers();
+  await seedDatabase();
 });
 
 describe('auth mutations', () => {
-  it('register', async () => {
-    // const client = getClient(
-    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjazBwZ2d1OGswMDIxMDcxN29seGJ0cTVyIiwiaWF0IjoxNTY4ODIyNTk1fQ.ipGtPd3GhuLlwHaCY08SKVaji57q6rOQT5QwYOXfW8Y'
-    // );
+  describe('Register user', () => {
+    it('should create a new user', async () => {
+      const variables = {
+        name,
+        email,
+        password,
+      };
 
-    // const variables = {
-    //   name: 'John',
-    //   email: 'andasczddasrewczx@examdsadcxzczasdasple.com',
-    //   password: 'MyPass123',
-    // };
+      const result = await client.mutate({
+        mutation: REGISTER_MUTATION,
+        variables,
+      });
 
-    // const result = await client.mutate({
-    //   mutation: REGISTER_MUTATION,
-    //   variables,
-    // });
+      const {
+        data: { register },
+      } = result;
+      const { errors, token } = register;
 
-    // console.log(result.data.register.id);
-    // console.log('generateToken', generateToken(result.data.register.id));
+      const exists = await db.exists.User({ email: email.toLowerCase() });
 
-    const result2 = await client.query({ query: CURRENT_USER_QUERY });
-    console.log(result2);
+      expect(errors).toBeNull();
+      expect(token).not.toBeNull();
+      expect(exists).toBe(true);
+    });
+
+    it('checks for duplicate emails', async () => {
+      const result = await client.mutate({
+        mutation: REGISTER_MUTATION,
+        variables: {
+          email: userOne.data.email,
+          password,
+        },
+      });
+
+      const {
+        data: { register },
+      } = result;
+      const { errors, token } = register;
+
+      expect(token).toBeNull();
+      expect(errors).toEqual([
+        {
+          __typename: 'Error',
+          path: 'email',
+          message: duplicateEmail,
+        },
+      ]);
+    });
+
+    it('checks for bad email', async () => {
+      const result = await client.mutate({
+        mutation: REGISTER_MUTATION,
+        variables: {
+          email: 'b',
+          password,
+        },
+      });
+
+      const {
+        data: { register },
+      } = result;
+      const { errors, token } = register;
+
+      expect(token).toBeNull();
+      expect(errors).toEqual([
+        {
+          __typename: 'Error',
+          path: 'email',
+          message: emailNotLongEnough,
+        },
+        {
+          __typename: 'Error',
+          path: 'email',
+          message: invalidEmail,
+        },
+      ]);
+    });
+
+    it('checks for bad password', async () => {
+      const result = await client.mutate({
+        mutation: REGISTER_MUTATION,
+        variables: {
+          email: faker.internet.email(),
+          password: 'b',
+        },
+      });
+
+      const {
+        data: { register },
+      } = result;
+      const { errors, token } = register;
+
+      expect(token).toBeNull();
+      expect(errors).toEqual([
+        {
+          __typename: 'Error',
+          path: 'password',
+          message: passwordNotLongEnough,
+        },
+      ]);
+    });
   });
+
+  // it('register user with correct ', async () => {
+  // const client = getClient(
+  //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjazBwZ2d1OGswMDIxMDcxN29seGJ0cTVyIiwiaWF0IjoxNTY4ODIyNTk1fQ.ipGtPd3GhuLlwHaCY08SKVaji57q6rOQT5QwYOXfW8Y'
+  // );
+
+  // const variables = {
+  //   name: 'John',
+  //   email: 'andasczddasrewczx@examdsadcxzczasdasple.com',
+  //   password: 'MyPass123',
+  // };
+
+  // console.log(result.data.register.id);
+  // console.log('generateToken', generateToken(result.data.register.id));
+
+  // const result2 = await client.query({ query: CURRENT_USER_QUERY });
+  // console.log(result2);
 });

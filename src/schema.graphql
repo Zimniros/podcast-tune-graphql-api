@@ -17,9 +17,19 @@ type SuccessMessage {
   message: String
 }
 
+type Error {
+  path: String!
+  message: String!
+}
+
+type AuthPayload {
+  errors: [Error!]
+  token: String
+}
+
 type Mutation {
-  login(email: String!, password: String!): User!
-  register(email: String!, password: String!, name: String): User!
+  login(email: String!, password: String!): AuthPayload!
+  register(email: String!, password: String!, name: String): AuthPayload!
   logout: SuccessMessage
   requestReset(email: String!): SuccessMessage
   resetPassword(

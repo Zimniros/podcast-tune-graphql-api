@@ -2,27 +2,41 @@ import bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import { promisify } from 'util';
 import generateToken from '../../utils/auth/generateToken';
+import { formatYupError } from '../../utils/auth/formatYupError';
+import { validUserSchema } from '../../utils/auth/validationRules';
+import { duplicateEmail } from '../../utils/auth/errorMessages';
 
 import { transport, makeANiceEmail } from '../../mail';
 
 export default {
   async register(parent, { email, password, name }, ctx, info) {
-    if (!email || email.trim().length === 0) {
-      throw new Error(`Email is not provided.`);
-    }
-
-    if (!password || password.trim().length === 0) {
-      throw new Error(`Password is not provided.`);
+    try {
+      await validUserSchema.validate(
+        {
+          email,
+          password,
+        },
+        { abortEarly: false }
+      );
+    } catch (error) {
+      return { errors: formatYupError(error) };
     }
 
     const emailLC = email.toLowerCase();
 
-    const userExists = await ctx.db.exists.User({
+    const userAlreadyExists = await ctx.db.exists.User({
       email,
     });
 
-    if (userExists) {
-      throw new Error(`Email is already found in our database`);
+    if (userAlreadyExists) {
+      return {
+        errors: [
+          {
+            path: 'email',
+            message: duplicateEmail,
+          },
+        ],
+      };
     }
 
     const encryptedPassword = await bcrypt.hash(password, 10);
@@ -36,7 +50,9 @@ export default {
           permissions: { set: ['USER'] },
         },
       },
-      info
+      `{
+        id
+      }`
     );
 
     const token = generateToken(user.id);
@@ -46,7 +62,7 @@ export default {
       maxAge: 1000 * 60 * 60 * 24 * 365,
     });
 
-    return user;
+    return { token };
   },
   async login(parent, { email, password }, ctx, info) {
     if (!email || email.trim().length === 0) {

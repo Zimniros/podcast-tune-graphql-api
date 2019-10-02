@@ -1,18 +1,28 @@
-import cookieParser from 'cookie-parser';
-import jwt from 'jsonwebtoken';
+import session from 'express-session';
+import connectRedis from 'connect-redis';
+import redis from './redis';
 import createServer from './createServer';
 
 const server = createServer();
+const RedisStore = connectRedis(session);
 
-server.express.use(cookieParser());
-
-server.express.use((req, res, next) => {
-  const { token } = req.cookies;
-  if (token) {
-    const { userId } = jwt.verify(token, process.env.APP_SECRET);
-    req.userId = userId;
-  }
-  next();
-});
+server.express.use(
+  session({
+    store: new RedisStore({
+      client: redis,
+      prefix: 'sess:',
+    }),
+    name: 'qid',
+    secret: process.env.APP_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      // secure: process.env.NODE_ENV === "production",
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+    },
+  })
+);
 
 export default server;

@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import { promisify } from 'util';
-import generateToken from '../../utils/auth/generateToken';
+import { removeAllUsersSessions } from '../../utils/auth/removeAllUsersSessions';
 import { formatYupError } from '../../utils/auth/formatYupError';
 import {
   validUserSchema,
@@ -20,7 +20,11 @@ import {
 import { transport, makeANiceEmail } from '../../mail';
 
 export default {
-  async register(_, { email, password, name }, ctx) {
+  async register(
+    _,
+    { email, password, name },
+    { db, redis, session, request }
+  ) {
     try {
       await validUserSchema.validate(
         {
@@ -35,7 +39,7 @@ export default {
 
     const emailLC = email.toLowerCase();
 
-    const userAlreadyExists = await ctx.db.exists.User({
+    const userAlreadyExists = await db.exists.User({
       email,
     });
 
@@ -52,7 +56,7 @@ export default {
 
     const encryptedPassword = await bcrypt.hash(password, 10);
 
-    const user = await ctx.db.mutation.createUser(
+    const user = await db.mutation.createUser(
       {
         data: {
           email: emailLC,
@@ -66,16 +70,14 @@ export default {
       }`
     );
 
-    const token = generateToken(user.id);
+    session.userId = user.id;
+    if (request.sessionID) {
+      await redis.lpush(`${'userSids:'}${user.id}`, request.sessionID);
+    }
 
-    ctx.response.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 365,
-    });
-
-    return { token };
+    return { token: request.sessionID };
   },
-  async login(_, { email, password }, ctx) {
+  async login(_, { email, password }, { db, redis, session, request }) {
     try {
       await validUserSchema.validate(
         {
@@ -88,7 +90,7 @@ export default {
       return { errors: formatYupError(error) };
     }
 
-    const user = await ctx.db.query.user({
+    const user = await db.query.user({
       where: {
         email,
       },
@@ -118,17 +120,27 @@ export default {
       };
     }
 
-    const token = generateToken(user.id);
-    ctx.response.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 365,
-    });
+    session.userId = user.id;
+    if (request.sessionID) {
+      await redis.lpush(`${'userSids:'}${user.id}`, request.sessionID);
+    }
 
-    return { token };
+    return { token: request.sessionID };
   },
-  logout(_, __, ctx) {
-    ctx.response.clearCookie('token');
-    return { message: 'Goodbye!' };
+  logout(_, __, { session, redis, response }) {
+    const { userId } = session;
+    if (userId) {
+      removeAllUsersSessions(userId, redis);
+      session.destroy(err => {
+        if (err) {
+          console.log(err);
+        }
+      });
+      response.clearCookie('qid');
+      return true;
+    }
+
+    return false;
   },
   async requestReset(_, { email }, { db }) {
     try {

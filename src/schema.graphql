@@ -13,10 +13,6 @@ enum CountryCodes {
   LT
 }
 
-type SuccessMessage {
-  message: String
-}
-
 type Error {
   path: String!
   message: String!
@@ -35,7 +31,7 @@ type ResetPayload {
 type Mutation {
   login(email: String!, password: String!): AuthPayload!
   register(email: String!, password: String!, name: String): AuthPayload!
-  logout: SuccessMessage
+  logout: Boolean!
   requestReset(email: String!): ResetPayload!
   resetPassword(
     resetToken: String!

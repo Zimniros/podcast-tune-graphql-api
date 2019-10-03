@@ -1,26 +1,30 @@
 import bcrypt from 'bcryptjs';
 import * as faker from 'faker';
 import db from '../../db';
-import generateToken from '../auth/generateToken';
+
+const passwordOne = faker.internet.password();
 
 const userOne = {
   data: {
     email: faker.internet.email().toLowerCase(),
-    password: bcrypt.hashSync(faker.internet.password(), 10),
+    password: bcrypt.hashSync(passwordOne, 10),
     name: faker.name.firstName(),
   },
+  rawPassword: passwordOne,
   user: undefined,
-  jwt: undefined,
 };
+
+const passwordTwo = faker.internet.password();
 
 const userTwo = {
   data: {
     email: faker.internet.email().toLowerCase(),
-    password: bcrypt.hashSync(faker.internet.password(), 10),
+    password: bcrypt.hashSync(passwordTwo, 10),
     name: faker.name.firstName(),
   },
+
+  rawPassword: passwordTwo,
   user: undefined,
-  jwt: undefined,
 };
 
 const seedDatabase = async () => {
@@ -30,13 +34,11 @@ const seedDatabase = async () => {
   userOne.user = await db.mutation.createUser({
     data: userOne.data,
   });
-  userOne.jwt = generateToken(userOne.user.id);
 
   // Create user two
   userTwo.user = await db.mutation.createUser({
     data: userTwo.data,
   });
-  userTwo.jwt = generateToken(userTwo.user.id);
 };
 export default seedDatabase;
 export { userOne, userTwo };

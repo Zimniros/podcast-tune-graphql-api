@@ -6,8 +6,7 @@ export const invalidEmail = "Email isn't valid";
 export const confirmPasswordRequired = 'Password confirmation is required';
 export const confirmPasswordMismatch = 'Passwords must match';
 export const duplicateEmail = 'Email is already in our database';
-export const noUserFound = 'No such user found';
-export const invalidPassword = 'Invalid password';
+export const invalidLogin = 'Invalid login';
 export const invalidToken = 'This token is either invalid or expired';
 
 export const requestSuccessful =

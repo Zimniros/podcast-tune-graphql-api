@@ -10,8 +10,7 @@ import {
 } from '../../utils/auth/validationRules';
 import {
   duplicateEmail,
-  noUserFound,
-  invalidPassword,
+  invalidLogin,
   requestSuccessful,
   resetSuccessful,
   invalidToken,
@@ -101,7 +100,7 @@ export default {
         errors: [
           {
             path: 'email',
-            message: noUserFound,
+            message: invalidLogin,
           },
         ],
       };
@@ -113,8 +112,8 @@ export default {
       return {
         errors: [
           {
-            path: 'password',
-            message: invalidPassword,
+            path: 'email',
+            message: invalidLogin,
           },
         ],
       };
@@ -158,12 +157,7 @@ export default {
 
     if (!user) {
       return {
-        errors: [
-          {
-            path: 'email',
-            message: noUserFound,
-          },
-        ],
+        message: requestSuccessful,
       };
     }
 

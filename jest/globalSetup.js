@@ -1,9 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 require('@babel/register');
-const server = require('./../src/server').default;
+const { startServer } = require('./../src/startServer');
 
 module.exports = async () => {
-  global.httpServer = await server.start({
-    port: process.env.TEST_PORT || 1000,
-  });
+  global.httpServer = await startServer();
 };

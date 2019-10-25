@@ -34,10 +34,10 @@ export const startServer = async () => {
 
   const cors = {
     credentials: true,
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.NODE_ENV === 'test' ? '*' : process.env.FRONTEND_URL,
   };
-
   const port = process.env.PORT || 4000;
+
   const app = await server.start({
     cors,
     port,

@@ -1,5 +1,4 @@
-import 'cross-fetch/polyfill';
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 import * as faker from 'faker';
 import getClient from '../../../utils/testUtils/getClient';
 import db from '../../../db';
@@ -48,13 +47,17 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
+const LOGOUT_MUTATION = gql`
+  mutation LOGOUT_MUTATION {
+    logout
+  }
+`;
+
 const CURRENT_USER_QUERY = gql`
   query {
     me {
       id
       email
-      name
-      permissions
     }
   }
 `;
@@ -72,14 +75,8 @@ describe('auth mutations', () => {
         password,
       };
 
-      const result = await client.mutate({
-        mutation: REGISTER_MUTATION,
-        variables,
-      });
-
-      const {
-        data: { register },
-      } = result;
+      const result = await client.request(REGISTER_MUTATION, variables);
+      const { register } = result;
       const { errors, token } = register;
 
       const exists = await db.exists.User({ email: email.toLowerCase() });
@@ -90,23 +87,17 @@ describe('auth mutations', () => {
     });
 
     it('checks for duplicate emails', async () => {
-      const result = await client.mutate({
-        mutation: REGISTER_MUTATION,
-        variables: {
-          email: userOne.data.email,
-          password,
-        },
+      const result = await client.request(REGISTER_MUTATION, {
+        email: userOne.data.email,
+        password,
       });
 
-      const {
-        data: { register },
-      } = result;
+      const { register } = result;
       const { errors, token } = register;
 
       expect(token).toBeNull();
       expect(errors).toEqual([
         {
-          __typename: 'Error',
           path: 'email',
           message: duplicateEmail,
         },
@@ -114,28 +105,21 @@ describe('auth mutations', () => {
     });
 
     it('checks for bad email', async () => {
-      const result = await client.mutate({
-        mutation: REGISTER_MUTATION,
-        variables: {
-          email: 'b',
-          password,
-        },
+      const result = await client.request(REGISTER_MUTATION, {
+        email: 'b',
+        password,
       });
 
-      const {
-        data: { register },
-      } = result;
+      const { register } = result;
       const { errors, token } = register;
 
       expect(token).toBeNull();
       expect(errors).toEqual([
         {
-          __typename: 'Error',
           path: 'email',
           message: emailNotLongEnough,
         },
         {
-          __typename: 'Error',
           path: 'email',
           message: invalidEmail,
         },
@@ -143,23 +127,17 @@ describe('auth mutations', () => {
     });
 
     it('checks for bad password', async () => {
-      const result = await client.mutate({
-        mutation: REGISTER_MUTATION,
-        variables: {
-          email: faker.internet.email(),
-          password: 'b',
-        },
+      const result = await client.request(REGISTER_MUTATION, {
+        email: faker.internet.email(),
+        password: 'b',
       });
 
-      const {
-        data: { register },
-      } = result;
+      const { register } = result;
       const { errors, token } = register;
 
       expect(token).toBeNull();
       expect(errors).toEqual([
         {
-          __typename: 'Error',
           path: 'password',
           message: passwordNotLongEnough,
         },
@@ -167,33 +145,25 @@ describe('auth mutations', () => {
     });
 
     it('checks for bad password and bad email', async () => {
-      const result = await client.mutate({
-        mutation: REGISTER_MUTATION,
-        variables: {
-          email: 'd',
-          password: 'b',
-        },
+      const result = await client.request(REGISTER_MUTATION, {
+        email: 'd',
+        password: 'b',
       });
 
-      const {
-        data: { register },
-      } = result;
+      const { register } = result;
       const { errors, token } = register;
 
       expect(token).toBeNull();
       expect(errors).toEqual([
         {
-          __typename: 'Error',
           path: 'email',
           message: emailNotLongEnough,
         },
         {
-          __typename: 'Error',
           path: 'email',
           message: invalidEmail,
         },
         {
-          __typename: 'Error',
           path: 'password',
           message: passwordNotLongEnough,
         },
@@ -202,26 +172,35 @@ describe('auth mutations', () => {
   });
 
   describe('Login user', () => {
+    it('should login with correct credentials', async () => {
+      const variables = {
+        email: userOne.data.email,
+        password: userOne.rawPassword,
+      };
+
+      const result = await client.request(LOGIN_MUTATION, variables);
+
+      const { login } = result;
+      const { errors, token } = login;
+
+      expect(errors).toBeNull();
+      expect(token).not.toBeNull();
+    });
+
     it('should not login with bad password', async () => {
       const variables = {
         email: userOne.data.email,
         password: faker.internet.password(),
       };
 
-      const result = await client.mutate({
-        mutation: LOGIN_MUTATION,
-        variables,
-      });
+      const result = await client.request(LOGIN_MUTATION, variables);
 
-      const {
-        data: { login },
-      } = result;
+      const { login } = result;
       const { errors, token } = login;
 
       expect(token).toBeNull();
       expect(errors).toEqual([
         {
-          __typename: 'Error',
           path: 'email',
           message: invalidLogin,
         },
@@ -229,23 +208,17 @@ describe('auth mutations', () => {
     });
 
     it('should not login with non existing email', async () => {
-      const result = await client.mutate({
-        mutation: LOGIN_MUTATION,
-        variables: {
-          email: faker.internet.email(),
-          password: faker.internet.password(),
-        },
+      const result = await client.request(LOGIN_MUTATION, {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
       });
 
-      const {
-        data: { login },
-      } = result;
+      const { login } = result;
       const { errors, token } = login;
 
       expect(token).toBeNull();
       expect(errors).toEqual([
         {
-          __typename: 'Error',
           path: 'email',
           message: invalidLogin,
         },
@@ -253,20 +226,20 @@ describe('auth mutations', () => {
     });
   });
 
-  // it('register user with correct ', async () => {
-  // const client = getClient(
-  //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjazBwZ2d1OGswMDIxMDcxN29seGJ0cTVyIiwiaWF0IjoxNTY4ODIyNTk1fQ.ipGtPd3GhuLlwHaCY08SKVaji57q6rOQT5QwYOXfW8Y'
-  // );
+  describe('Logout user', () => {
+    it('should logout user', async () => {
+      const variables = {
+        email: userOne.data.email,
+        password: userOne.rawPassword,
+      };
 
-  // const variables = {
-  //   name: 'John',
-  //   email: 'andasczddasrewczx@examdsadcxzczasdasple.com',
-  //   password: 'MyPass123',
-  // };
+      await client.request(LOGIN_MUTATION, variables);
+      const response = await client.request(CURRENT_USER_QUERY);
+      expect(response.me).not.toBeNull();
 
-  // console.log(result.data.register.id);
-  // console.log('generateToken', generateToken(result.data.register.id));
-
-  // const result2 = await client.query({ query: CURRENT_USER_QUERY });
-  // console.log(result2);
+      await client.request(LOGOUT_MUTATION);
+      const response2 = await client.request(CURRENT_USER_QUERY);
+      expect(response2.me).toBeNull();
+    });
+  });
 });

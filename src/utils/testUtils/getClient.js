@@ -1,20 +1,10 @@
-import ApolloBoost from 'apollo-boost';
+import { GraphQLClient } from 'graphql-request';
 
-const getClient = jwt =>
-  new ApolloBoost({
-    uri: `http://localhost:${process.env.TEST_PORT || 1000}`,
-    request(operation) {
-      if (jwt) {
-        operation.setContext({
-          fetchOptions: {
-            credentials: 'include',
-          },
-          headers: {
-            cookie: `token=${jwt}`,
-          },
-        });
-      }
-    },
+global.fetch = require('fetch-cookie/node-fetch')(require('node-fetch'));
+
+const getClient = () =>
+  new GraphQLClient(`http://localhost:${process.env.PORT || 1000}`, {
+    credentials: 'include',
   });
 
 export { getClient as default };

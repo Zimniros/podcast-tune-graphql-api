@@ -2,13 +2,13 @@ import { forwardTo } from 'prisma-binding';
 import fetchSearchResults from '../utils/fetchSearchResults';
 
 const Query = {
-  me(parent, args, ctx, info) {
-    if (!ctx.request.userId) {
+  me(parent, args, { db, session }, info) {
+    if (!session.userId) {
       return null;
     }
-    return ctx.db.query.user(
+    return db.query.user(
       {
-        where: { id: ctx.request.userId },
+        where: { id: session.userId },
       },
       info
     );

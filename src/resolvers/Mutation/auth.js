@@ -17,6 +17,7 @@ import {
 } from '../../utils/auth/messages';
 
 import { transport, makeANiceEmail } from '../../mail';
+import { userSessionIdPrefix } from '../../constants';
 
 export default {
   async register(
@@ -71,7 +72,7 @@ export default {
 
     session.userId = user.id;
     if (request.sessionID) {
-      await redis.lpush(`${'userSids:'}${user.id}`, request.sessionID);
+      await redis.lpush(`${userSessionIdPrefix}${user.id}`, request.sessionID);
     }
 
     return { token: request.sessionID };
@@ -121,15 +122,15 @@ export default {
 
     session.userId = user.id;
     if (request.sessionID) {
-      await redis.lpush(`${'userSids:'}${user.id}`, request.sessionID);
+      await redis.lpush(`${userSessionIdPrefix}${user.id}`, request.sessionID);
     }
 
     return { token: request.sessionID };
   },
-  logout(_, __, { session, redis, response }) {
+  logout(_, __, { session, response }) {
     const { userId } = session;
+
     if (userId) {
-      removeAllUsersSessions(userId, redis);
       session.destroy(err => {
         if (err) {
           console.log(err);

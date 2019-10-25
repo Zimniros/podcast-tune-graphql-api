@@ -3,6 +3,8 @@ import connectRedis from 'connect-redis';
 import redis from './redis';
 import createServer from './createServer';
 
+import { redisSessionPrefix } from './constants';
+
 const server = createServer();
 const RedisStore = connectRedis(session);
 
@@ -10,7 +12,7 @@ server.express.use(
   session({
     store: new RedisStore({
       client: redis,
-      prefix: 'sess:',
+      prefix: redisSessionPrefix,
     }),
     name: 'qid',
     secret: process.env.APP_SECRET,

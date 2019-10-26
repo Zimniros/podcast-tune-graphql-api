@@ -8,6 +8,7 @@ import {
   invalidEmail,
   invalidLogin,
   passwordNotLongEnough,
+  requestSuccessful,
 } from '../../../utils/auth/messages';
 import seedDatabase, { userOne } from '../../../utils/testUtils/seedDatabase';
 
@@ -50,6 +51,19 @@ const LOGIN_MUTATION = gql`
 const LOGOUT_MUTATION = gql`
   mutation LOGOUT_MUTATION {
     logout
+  }
+`;
+
+const REQUEST_RESET_MUTATION = gql`
+  mutation REQUEST_RESET_MUTATION($email: String!) {
+    requestReset(email: $email) {
+      errors {
+        path
+        message
+      }
+
+      message
+    }
   }
 `;
 
@@ -240,6 +254,41 @@ describe('auth mutations', () => {
       await client.request(LOGOUT_MUTATION);
       const response2 = await client.request(CURRENT_USER_QUERY);
       expect(response2.me).toBeNull();
+    });
+  });
+
+  describe('Request password reset', () => {
+    it('checks for bad email', async () => {
+      const result = await client.request(REQUEST_RESET_MUTATION, {
+        email: 'b',
+      });
+
+      const { requestReset } = result;
+      const { errors, message } = requestReset;
+
+      expect(message).toBeNull();
+      expect(errors).toEqual([
+        {
+          path: 'email',
+          message: emailNotLongEnough,
+        },
+        {
+          path: 'email',
+          message: invalidEmail,
+        },
+      ]);
+    });
+
+    it('should send success message even with non existing email', async () => {
+      const result = await client.request(REQUEST_RESET_MUTATION, {
+        email: faker.internet.email(),
+      });
+
+      const { requestReset } = result;
+      const { errors, message } = requestReset;
+
+      expect(message).toEqual(requestSuccessful);
+      expect(errors).toBeNull();
     });
   });
 });

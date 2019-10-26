@@ -1,7 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { randomBytes } from 'crypto';
-import { promisify } from 'util';
-import { removeAllUsersSessions } from '../../utils/auth/removeAllUsersSessions';
+import { createForgotPasswordLink } from '../../utils/auth/createForgotPasswordLink';
 import { formatYupError } from '../../utils/auth/formatYupError';
 import {
   validUserSchema,
@@ -142,7 +140,7 @@ export default {
 
     return false;
   },
-  async requestReset(_, { email }, { db }) {
+  async requestReset(_, { email }, { db, redis }) {
     try {
       await validRequestSchema.validate(
         {
@@ -154,7 +152,7 @@ export default {
       return { errors: formatYupError(error) };
     }
 
-    const user = await db.query.user({ where: { email } });
+    const user = await db.query.user({ where: { email } }, `{id}`);
 
     if (!user) {
       return {
@@ -166,22 +164,20 @@ export default {
       TODO: 1. prevent doing more than 1 request per 20 min.
             2. lock user account 
     */
-    const randomBytesPromiseified = promisify(randomBytes);
-    const resetToken = (await randomBytesPromiseified(20)).toString('hex');
-    const resetTokenExpiry = Date.now() + 3600000; // 1 hour from now
 
-    await db.mutation.updateUser({
-      where: { email },
-      data: { resetToken, resetTokenExpiry },
-    });
+    const url = await createForgotPasswordLink(
+      process.env.FRONTEND_URL,
+      user.id,
+      redis
+    );
 
     await transport.sendMail({
       from: 'help@podcast-tune.com',
-      to: user.email,
+      to: email,
       subject: 'Your Password Reset Token',
       html: makeANiceEmail(`Your Password Reset Token is here!
     \n\n
-    <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}">Click Here to Reset</a>`),
+    <a href="${url}">Click Here to Reset</a>`),
     });
 
     return {

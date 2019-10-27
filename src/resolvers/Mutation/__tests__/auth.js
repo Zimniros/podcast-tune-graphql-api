@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import * as faker from 'faker';
+import redis from '../../../redis';
 import getClient from '../../../utils/testUtils/getClient';
 import db from '../../../db';
 import {
@@ -9,8 +10,15 @@ import {
   invalidLogin,
   passwordNotLongEnough,
   requestSuccessful,
+  invalidToken,
+  resetSuccessful,
+  confirmPasswordMismatch,
 } from '../../../utils/auth/messages';
-import seedDatabase, { userOne } from '../../../utils/testUtils/seedDatabase';
+import seedDatabase, {
+  userOne,
+  userTwo,
+} from '../../../utils/testUtils/seedDatabase';
+import { createForgotPasswordLink } from '../../../utils/auth/createForgotPasswordLink';
 
 const email = faker.internet.email();
 const password = faker.internet.password();
@@ -57,6 +65,27 @@ const LOGOUT_MUTATION = gql`
 const REQUEST_RESET_MUTATION = gql`
   mutation REQUEST_RESET_MUTATION($email: String!) {
     requestReset(email: $email) {
+      errors {
+        path
+        message
+      }
+
+      message
+    }
+  }
+`;
+
+const RESET_PASSWORD_MUTATION = gql`
+  mutation RESET_PASSWORD_MUTATION(
+    $resetToken: String!
+    $password: String!
+    $confirmPassword: String!
+  ) {
+    resetPassword(
+      resetToken: $resetToken
+      password: $password
+      confirmPassword: $confirmPassword
+    ) {
       errors {
         path
         message
@@ -289,6 +318,108 @@ describe('auth mutations', () => {
 
       expect(message).toEqual(requestSuccessful);
       expect(errors).toBeNull();
+    });
+  });
+
+  describe('Reset password', () => {
+    it('checks for valid token', async () => {
+      const pass = faker.internet.password();
+
+      const result = await client.request(RESET_PASSWORD_MUTATION, {
+        resetToken: 'b',
+        password: pass,
+        confirmPassword: pass,
+      });
+
+      const { resetPassword } = result;
+      const { errors, message } = resetPassword;
+
+      expect(message).toBeNull();
+      expect(errors).toEqual([
+        {
+          path: 'confirmPassword',
+          message: invalidToken,
+        },
+      ]);
+    });
+
+    it('checks for bad passwords', async () => {
+      const { id } = userOne.user;
+      const url = await createForgotPasswordLink('', id, redis);
+
+      const parts = url.split('=');
+      const resetToken = parts[parts.length - 1];
+
+      const result = await client.request(RESET_PASSWORD_MUTATION, {
+        resetToken,
+        password: 'fasd',
+        confirmPassword: 'd',
+      });
+
+      const { resetPassword } = result;
+      const { errors, message } = resetPassword;
+
+      expect(message).toBeNull();
+      expect(errors).toEqual([
+        {
+          path: 'password',
+          message: passwordNotLongEnough,
+        },
+        {
+          path: 'confirmPassword',
+          message: confirmPasswordMismatch,
+        },
+      ]);
+    });
+
+    it('sets new password', async () => {
+      // setup logged in user
+      const variables = {
+        email: userTwo.data.email,
+        password: userTwo.rawPassword,
+      };
+
+      await client.request(LOGIN_MUTATION, variables);
+
+      const response = await client.request(CURRENT_USER_QUERY);
+      expect(response.me).not.toBeNull();
+
+      // setup reset password
+      const { id } = userTwo.user;
+      const url = await createForgotPasswordLink('', id, redis);
+
+      const parts = url.split('=');
+      const resetToken = parts[parts.length - 1];
+      const newPassword = faker.internet.password();
+
+      const result = await client.request(RESET_PASSWORD_MUTATION, {
+        resetToken,
+        password: newPassword,
+        confirmPassword: newPassword,
+      });
+
+      const { resetPassword } = result;
+      const { errors, message } = resetPassword;
+
+      expect(errors).toBeNull();
+      expect(message).toEqual(resetSuccessful);
+
+      // expect logged out user
+      const response2 = await client.request(CURRENT_USER_QUERY);
+      expect(response2.me).toBeNull();
+
+      const result2 = await client.request(RESET_PASSWORD_MUTATION, {
+        resetToken,
+        password: newPassword,
+        confirmPassword: newPassword,
+      });
+
+      expect(result2.resetPassword.errors).toEqual([
+        {
+          path: 'confirmPassword',
+          message: invalidToken,
+        },
+      ]);
     });
   });
 });

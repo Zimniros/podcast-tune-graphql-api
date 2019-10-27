@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { createForgotPasswordLink } from '../../utils/auth/createForgotPasswordLink';
+import { removeAllUsersSessions } from '../../utils/auth/removeAllUsersSessions';
 import { formatYupError } from '../../utils/auth/formatYupError';
 import {
   validUserSchema,
@@ -15,7 +16,7 @@ import {
 } from '../../utils/auth/messages';
 
 import { transport, makeANiceEmail } from '../../mail';
-import { userSessionIdPrefix } from '../../constants';
+import { userSessionIdPrefix, forgotPasswordPrefix } from '../../constants';
 
 export default {
   async register(
@@ -184,7 +185,26 @@ export default {
       message: requestSuccessful,
     };
   },
-  async resetPassword(_, { password, confirmPassword, resetToken }, { db }) {
+  async resetPassword(
+    _,
+    { password, confirmPassword, resetToken },
+    { db, redis }
+  ) {
+    const redisKey = `${forgotPasswordPrefix}${resetToken}`;
+
+    const userId = await redis.get(redisKey);
+
+    if (!userId) {
+      return {
+        errors: [
+          {
+            path: 'confirmPassword',
+            message: invalidToken,
+          },
+        ],
+      };
+    }
+
     try {
       await validResetSchema.validate(
         {
@@ -197,34 +217,23 @@ export default {
       return { errors: formatYupError(error) };
     }
 
-    const [user] = await db.query.users({
-      where: {
-        resetToken,
-        resetTokenExpiry_gte: Date.now() - 3600000,
-      },
-    });
-
-    if (!user) {
-      return {
-        errors: [
-          {
-            path: 'confirmPassword',
-            message: invalidToken,
-          },
-        ],
-      };
-    }
-
     const newPassword = await bcrypt.hash(password, 10);
 
-    await db.mutation.updateUser({
-      where: { email: user.email },
+    const updatePromise = db.mutation.updateUser({
+      where: { id: userId },
       data: {
         password: newPassword,
-        resetToken: null,
-        resetTokenExpiry: null,
       },
     });
+
+    const deleteKeyPromise = redis.del(redisKey);
+    const removeAllSessionsPromise = removeAllUsersSessions(userId, redis);
+
+    await Promise.all([
+      updatePromise,
+      deleteKeyPromise,
+      removeAllSessionsPromise,
+    ]);
 
     return { message: resetSuccessful };
   },

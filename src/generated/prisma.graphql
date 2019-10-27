@@ -1,5 +1,5 @@
 # source: http://localhost:4466
-# timestamp: Wed Sep 04 2019 18:21:29 GMT+0300 (Moscow Standard Time)
+# timestamp: Sat Oct 26 2019 23:57:02 GMT+0300 (Moscow Standard Time)
 
 type AggregateCategory {
   count: Int!
@@ -3663,8 +3663,6 @@ type User implements Node {
   name: String
   email: String!
   password: String!
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: [Permission!]!
   queue(where: QueueEpisodeWhereInput, orderBy: QueueEpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [QueueEpisode!]
   inProgress(where: InProgressEpisodeWhereInput, orderBy: InProgressEpisodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [InProgressEpisode!]
@@ -3687,8 +3685,6 @@ input UserCreateInput {
   name: String
   email: String!
   password: String!
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
   queue: QueueEpisodeCreateManyWithoutUserInput
   inProgress: InProgressEpisodeCreateManyWithoutUserInput
@@ -3730,8 +3726,6 @@ input UserCreateWithoutFavoritesInput {
   name: String
   email: String!
   password: String!
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
   queue: QueueEpisodeCreateManyWithoutUserInput
   inProgress: InProgressEpisodeCreateManyWithoutUserInput
@@ -3743,8 +3737,6 @@ input UserCreateWithoutInProgressInput {
   name: String
   email: String!
   password: String!
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
   queue: QueueEpisodeCreateManyWithoutUserInput
   favorites: FavoriteEpisodeCreateManyWithoutUserInput
@@ -3756,8 +3748,6 @@ input UserCreateWithoutQueueInput {
   name: String
   email: String!
   password: String!
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
   inProgress: InProgressEpisodeCreateManyWithoutUserInput
   favorites: FavoriteEpisodeCreateManyWithoutUserInput
@@ -3769,8 +3759,6 @@ input UserCreateWithoutSubscribedPodcastsInput {
   name: String
   email: String!
   password: String!
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
   queue: QueueEpisodeCreateManyWithoutUserInput
   inProgress: InProgressEpisodeCreateManyWithoutUserInput
@@ -3795,10 +3783,6 @@ enum UserOrderByInput {
   email_DESC
   password_ASC
   password_DESC
-  resetToken_ASC
-  resetToken_DESC
-  resetTokenExpiry_ASC
-  resetTokenExpiry_DESC
 }
 
 type UserPreviousValues {
@@ -3806,8 +3790,6 @@ type UserPreviousValues {
   name: String
   email: String!
   password: String!
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: [Permission!]!
 }
 
@@ -3852,8 +3834,6 @@ input UserUpdateDataInput {
   name: String
   email: String
   password: String
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
   queue: QueueEpisodeUpdateManyWithoutUserInput
   inProgress: InProgressEpisodeUpdateManyWithoutUserInput
@@ -3865,8 +3845,6 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
   queue: QueueEpisodeUpdateManyWithoutUserInput
   inProgress: InProgressEpisodeUpdateManyWithoutUserInput
@@ -3878,8 +3856,6 @@ input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
 }
 
@@ -3926,8 +3902,6 @@ input UserUpdateWithoutFavoritesDataInput {
   name: String
   email: String
   password: String
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
   queue: QueueEpisodeUpdateManyWithoutUserInput
   inProgress: InProgressEpisodeUpdateManyWithoutUserInput
@@ -3938,8 +3912,6 @@ input UserUpdateWithoutInProgressDataInput {
   name: String
   email: String
   password: String
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
   queue: QueueEpisodeUpdateManyWithoutUserInput
   favorites: FavoriteEpisodeUpdateManyWithoutUserInput
@@ -3950,8 +3922,6 @@ input UserUpdateWithoutQueueDataInput {
   name: String
   email: String
   password: String
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
   inProgress: InProgressEpisodeUpdateManyWithoutUserInput
   favorites: FavoriteEpisodeUpdateManyWithoutUserInput
@@ -3962,8 +3932,6 @@ input UserUpdateWithoutSubscribedPodcastsDataInput {
   name: String
   email: String
   password: String
-  resetToken: String
-  resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
   queue: QueueEpisodeUpdateManyWithoutUserInput
   inProgress: InProgressEpisodeUpdateManyWithoutUserInput
@@ -4164,68 +4132,6 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   password_not_ends_with: String
-  resetToken: String
-
-  """All values that are not equal to given value."""
-  resetToken_not: String
-
-  """All values that are contained in given list."""
-  resetToken_in: [String!]
-
-  """All values that are not contained in given list."""
-  resetToken_not_in: [String!]
-
-  """All values less than the given value."""
-  resetToken_lt: String
-
-  """All values less than or equal the given value."""
-  resetToken_lte: String
-
-  """All values greater than the given value."""
-  resetToken_gt: String
-
-  """All values greater than or equal the given value."""
-  resetToken_gte: String
-
-  """All values containing the given string."""
-  resetToken_contains: String
-
-  """All values not containing the given string."""
-  resetToken_not_contains: String
-
-  """All values starting with the given string."""
-  resetToken_starts_with: String
-
-  """All values not starting with the given string."""
-  resetToken_not_starts_with: String
-
-  """All values ending with the given string."""
-  resetToken_ends_with: String
-
-  """All values not ending with the given string."""
-  resetToken_not_ends_with: String
-  resetTokenExpiry: Float
-
-  """All values that are not equal to given value."""
-  resetTokenExpiry_not: Float
-
-  """All values that are contained in given list."""
-  resetTokenExpiry_in: [Float!]
-
-  """All values that are not contained in given list."""
-  resetTokenExpiry_not_in: [Float!]
-
-  """All values less than the given value."""
-  resetTokenExpiry_lt: Float
-
-  """All values less than or equal the given value."""
-  resetTokenExpiry_lte: Float
-
-  """All values greater than the given value."""
-  resetTokenExpiry_gt: Float
-
-  """All values greater than or equal the given value."""
-  resetTokenExpiry_gte: Float
   queue_every: QueueEpisodeWhereInput
   queue_some: QueueEpisodeWhereInput
   queue_none: QueueEpisodeWhereInput

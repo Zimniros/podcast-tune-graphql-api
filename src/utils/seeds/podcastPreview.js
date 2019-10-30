@@ -63,4 +63,9 @@ const rawData = {
   results: rawResults,
 };
 
-export { rawData, rawResults, prettifiedResult };
+const emptyData = {
+  resultCount: 0,
+  results: [],
+};
+
+export { rawData, rawResults, prettifiedResult, emptyData };

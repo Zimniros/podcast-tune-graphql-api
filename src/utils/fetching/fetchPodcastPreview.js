@@ -5,7 +5,11 @@ const fetchPodcastPreview = async itunesId => {
     `https://itunes.apple.com/lookup?id=${itunesId}&entity=podcast`
   );
 
-  const { results } = jsonData.data;
+  const { resultCount, results } = jsonData.data;
+
+  if (resultCount === 0) {
+    throw new Error(`There's not any data for podcast ${itunesId}.`);
+  }
 
   return results;
 };

@@ -1,5 +1,5 @@
 import getTopPodcasts from '../fetching/getTopPodcasts';
-import createPodcast from '../createPodcast';
+import createPodcast from './createPodcast';
 import createPodcastWithFeed from '../createPodcastWithFeed';
 
 const fetchPodcastsForCategory = async ({ categoryId, limit, country }) =>

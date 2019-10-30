@@ -2,9 +2,9 @@ import fetchPodcastPreview from './fetchPodcastPreview';
 import prettifyPreviewData from '../prettifyPreviewData';
 
 const getPodcastPreview = async itunesId => {
-  const results = await fetchPodcastPreview(itunesId);
+  const result = await fetchPodcastPreview(itunesId);
 
-  const data = prettifyPreviewData(results[0]);
+  const data = prettifyPreviewData(result);
 
   return data;
 };

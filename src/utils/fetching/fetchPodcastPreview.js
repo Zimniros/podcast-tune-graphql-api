@@ -11,7 +11,13 @@ const fetchPodcastPreview = async itunesId => {
     throw new Error(`There's not any data for podcast ${itunesId}.`);
   }
 
-  return results;
+  const data = results.find(preview => preview.collectionId === itunesId);
+
+  if (!data) {
+    throw new Error(`There's not any data for podcast ${itunesId}.`);
+  }
+
+  return data;
 };
 
 export default fetchPodcastPreview;

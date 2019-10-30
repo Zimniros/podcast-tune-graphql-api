@@ -1,7 +1,12 @@
 import axios from 'axios';
 import fetchPodcastPreview from '../fetchPodcastPreview';
 
-import { rawData, rawResults, emptyData } from '../../seeds/podcastPreview';
+import {
+  rawData,
+  rawResult,
+  emptyData,
+  rawBulkResults,
+} from '../../seeds/podcastPreview';
 
 jest.mock('axios');
 
@@ -16,7 +21,7 @@ describe('fetchPodcastPreview', () => {
     const data = await fetchPodcastPreview(1253186678);
 
     // expect
-    expect(data).toEqual(rawResults);
+    expect(data).toEqual(rawResult);
     expect(axios.get).toHaveBeenCalledTimes(1);
   });
 
@@ -24,6 +29,16 @@ describe('fetchPodcastPreview', () => {
     // setup
     axios.get.mockResolvedValue({
       data: emptyData,
+    });
+
+    // work
+    await expect(fetchPodcastPreview(1253186678)).rejects.toThrowError();
+  });
+
+  it("throws an error if results don't contain data with provided itunesId", async () => {
+    // setup
+    axios.get.mockResolvedValue({
+      data: rawBulkResults,
     });
 
     // work

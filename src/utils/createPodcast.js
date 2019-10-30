@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import fetchPodcastPreview from './fetchPodcastPreview';
+import fetchPodcastPreview from './fetching/getPodcastPreview';
 import getFeedMeta from './fetching/getFeedMeta';
 import db from '../db';
 

@@ -1,5 +1,9 @@
-import fetchPodcastsForCategory from '../../utils/population/fetchPodcastsForCategory';
+/* eslint-disable import/no-cycle */
+import getTopPodcast from '../../utils/fetching/getTopPodcasts';
+
 import getCategories from '../../utils/fetching/getCategories';
+import createPodcastWithFeed from '../../utils/createPodcastWithFeed';
+import createPodcast from '../../utils/population/createPodcast';
 
 export default {
   /*
@@ -9,7 +13,6 @@ export default {
   // // Initial Data Population for Categories
   async getCategories(parent, args, { db }, info) {
     const categoriesData = await getCategories();
-    await db.mutation.deleteManyCategories();
 
     const promises = [];
 
@@ -20,26 +23,26 @@ export default {
         },
       });
       promises.push(upsertPromise);
-    });
+    }, info);
 
     const categories = await Promise.all(promises);
 
     return categories;
   },
-  // Initial Data Population for Podcast preview for each category
-  async getPodcastsForAllCategories(
-    parent,
-    { limit = 200, country = 'US', first = 67, skip = 0 },
+  async getPodcasts(
+    _,
+    { limit = 200, country = 'US', first = 67, skip = 0, includeFeed = true },
     { db, request },
     info
   ) {
     request.setTimeout(0);
+
+    const errors = [];
+
     const categories = await db.query.categories({
       first,
       skip,
     });
-
-    // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop/37576787#37576787
 
     console.log(`==============================`);
     console.log(`Getting podcast for categories`);
@@ -55,7 +58,32 @@ export default {
         ) + 1} out of ${categories.length}`
       );
       console.time(`  Podcasts for category ${itunesId} fetched in`);
-      await fetchPodcastsForCategory({ categoryId: itunesId, limit, country });
+      const podcastsIds = await getTopPodcast({
+        categoryId: itunesId,
+        limit,
+        country,
+      });
+
+      let index = 0;
+      const range = includeFeed ? 10 : 20;
+      const method = includeFeed ? createPodcastWithFeed : createPodcast;
+
+      while (index <= podcastsIds.length) {
+        const ids = podcastsIds.slice(index, index + range);
+
+        await Promise.all(
+          ids.map(id =>
+            method(id).catch(error =>
+              errors.push({
+                id,
+                error: error.message,
+              })
+            )
+          )
+        );
+
+        index += range;
+      }
 
       console.timeEnd(`  Podcasts for category ${itunesId} fetched in`);
     }
@@ -64,36 +92,7 @@ export default {
     console.timeEnd('All podcast for categories fetched in');
     console.log(`==============================`);
 
-    return true;
-  },
-  async getPodcastsForCategory(
-    parent,
-    { categoryId, limit = 200, country = 'US' },
-    { db, request },
-    info
-  ) {
-    request.setTimeout(0);
-
-    const exists = await db.query.category({
-      where: {
-        itunesId: categoryId,
-      },
-    });
-
-    if (!exists)
-      throw new Error(`Category with id '${categoryId}' doesn't exist.`);
-
-    console.log(`==============================`);
-    console.log(`Getting podcasts for category`);
-    console.log(`==============================`);
-    console.time(`All podcasts for category '${categoryId}' fetched in`);
-
-    await fetchPodcastsForCategory({ categoryId, limit, country });
-
-    console.log(`==============================`);
-    console.timeEnd(`All podcasts for category '${categoryId}' fetched in`);
-    console.log(`==============================`);
-
+    console.log({ errors });
     return true;
   },
 };

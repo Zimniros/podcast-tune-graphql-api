@@ -16,7 +16,7 @@
     "seed:prod": "node ./dist/seed.js",
     "playground": "dotenv -e ./config/.env -- graphql playground",
     "delete": "dotenv -e ./config/.env -- prisma delete --force",
-    "test": "dotenv -e ./config/.env.test -- jest --watch",
+    "test": "dotenv -e ./config/.env.test -- jest --watch --runInBand",
     "deploy:local": "prisma deploy --env-file config/.env",
     "docker:up": "dotenv -e ./config/.env -- docker-compose -f prisma/docker-compose.yml up -d",
     "deploy:test": "prisma deploy --env-file config/.env.test"

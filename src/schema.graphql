@@ -59,16 +59,12 @@ type Mutation {
   updateEpisodeDuration(id: ID!, duration: Float!): Episode!
 
   getCategories: [Category!]!
-  getPodcastsForAllCategories(
+  getPodcasts(
     limit: Int
     country: CountryCodes
     first: Int
     skip: Int
-  ): Boolean
-  getPodcastsForCategory(
-    categoryId: Int!
-    limit: Int
-    country: CountryCodes
+    includeFeed: Boolean
   ): Boolean
 }
 

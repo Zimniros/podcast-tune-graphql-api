@@ -6,7 +6,7 @@ import getPodcastPreview from '../../fetching/getPodcastPreview';
 import getFeedData from '../../fetching/getFeedData';
 
 import { prettifiedResult } from '../../seeds/podcastPreview';
-import { rawData } from '../../seeds/feedData';
+import { rawDataWithThree } from '../../seeds/feedData';
 
 jest.mock('./../../fetching/getPodcastPreview');
 jest.mock('./../../fetching/getFeedData');
@@ -29,7 +29,7 @@ describe('create podcast with feed', () => {
 
   it('creates new podcast with episodes', async () => {
     getPodcastPreview.mockResolvedValue(prettifiedResult);
-    getFeedData.mockResolvedValue(rawData);
+    getFeedData.mockResolvedValue(rawDataWithThree);
 
     const result = await createPodcastWithFeed(prettifiedResult.itunesId);
 

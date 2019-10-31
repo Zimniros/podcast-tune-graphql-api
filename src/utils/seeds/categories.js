@@ -1,41 +1,36 @@
 const prettifiedCategories = [
-  { name: 'Business', itunesId: 1321 },
-  { name: 'Careers', itunesId: 1410 },
-  { name: 'Investing', itunesId: 1412 },
-  { name: 'Management', itunesId: 1491 },
-  { name: 'Marketing', itunesId: 1492 },
-  { name: 'Entrepreneurship', itunesId: 1493 },
-  { name: 'Non-Profit', itunesId: 1494 },
+  { name: 'Technology', itunesId: 1318 },
+  { name: 'Arts', itunesId: 1301 },
+  { name: 'Education', itunesId: 1304 },
+  { name: 'Design', itunesId: 1402 },
+  { name: 'News', itunesId: 1489 },
+  { name: 'Tech News', itunesId: 1528 },
 ];
 
 const rawCategories = {
-  '1321': {
-    name: 'Business',
-    id: '1321',
+  '1318': {
+    name: 'Technology',
+    id: '1318',
     subgenres: {
-      '1410': {
-        name: 'Careers',
-        id: '1410',
+      '1489': {
+        name: 'News',
+        id: '1489',
       },
-      '1493': {
-        name: 'Entrepreneurship',
-        id: '1493',
+      '1528': {
+        name: 'Tech News',
+        id: '1528',
       },
-      '1412': {
-        name: 'Investing',
-        id: '1412',
+      '1301': {
+        name: 'Arts',
+        id: '1301',
       },
-      '1491': {
-        name: 'Management',
-        id: '1491',
+      '1402': {
+        name: 'Design',
+        id: '1402',
       },
-      '1492': {
-        name: 'Marketing',
-        id: '1492',
-      },
-      '1494': {
-        name: 'Non-Profit',
-        id: '1494',
+      '1304': {
+        name: 'Education',
+        id: '1304',
       },
     },
   },

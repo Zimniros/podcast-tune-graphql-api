@@ -228,7 +228,9 @@ const prettifiedResult = {
     'https://is1-ssl.mzstatic.com/image/thumb/Podcasts113/v4/9f/af/3f/9faf3fc9-98b8-4763-382e-dcccea5fa5c9/mza_3415071783848980264.png/100x100bb.jpg',
   author: 'Wes Bos & Scott Tolinski - Full Stack JavaScript Web Developers',
   authorLC: 'wes bos & scott tolinski - full stack javascript web developers',
-  categoryIds: [{ itunesId: 1318 }, { itunesId: 1489 }, { itunesId: 1528 }],
+  categories: {
+    connect: [{ itunesId: 1318 }, { itunesId: 1489 }, { itunesId: 1528 }],
+  },
   feedUrl: 'https://feed.syntax.fm/rss',
   itunesId: 1253186678,
   itunesUrl:

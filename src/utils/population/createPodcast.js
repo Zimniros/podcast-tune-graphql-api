@@ -11,8 +11,6 @@ const createPodcast = async itunesId => {
       'A podcast itunesId was not provided for createPodcast method.'
     );
 
-  let data;
-
   const podcastExists = await db.exists.Podcast({
     itunesId,
   });
@@ -21,26 +19,17 @@ const createPodcast = async itunesId => {
     throw new Error(`Podcast with itunesId '${itunesId}' already exists.'`);
 
   const previewData = await getPodcastPreview(itunesId);
-
-  const { categoryIds } = previewData;
-  delete previewData.categoryIds;
-
-  data = {
-    ...previewData,
-    categories: {
-      connect: categoryIds,
-    },
-  };
-
   const metaData = await getFeedMeta(previewData.feedUrl);
 
   const { link, description: metaDesc } = metaData;
   const description = get(metaData, 'itunes:summary.#') || metaDesc || '';
 
-  data = { ...data, websiteUrl: link || '', description };
-
   const podcast = await db.mutation.createPodcast({
-    data,
+    data: {
+      ...previewData,
+      websiteUrl: link || '',
+      description,
+    },
   });
 
   return podcast;

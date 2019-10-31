@@ -9,9 +9,11 @@ function prettifyPreviewData(data) {
     itunesUrl: data.collectionViewUrl,
     artworkSmall: data.artworkUrl100,
     artworkLarge: data.artworkUrl600,
-    categoryIds: data.genreIds
-      .filter(id => id !== '26')
-      .map(id => ({ itunesId: +id })),
+    categories: {
+      connect: data.genreIds
+        .filter(id => id !== '26')
+        .map(id => ({ itunesId: +id })),
+    },
   };
 }
 

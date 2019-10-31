@@ -24,15 +24,13 @@ const createPodcast = async itunesId => {
   const { link, description: metaDesc } = metaData;
   const description = get(metaData, 'itunes:summary.#') || metaDesc || '';
 
-  const podcast = await db.mutation.createPodcast({
+  return db.mutation.createPodcast({
     data: {
       ...previewData,
       websiteUrl: link || '',
       description,
     },
   });
-
-  return podcast;
 };
 
 export default createPodcast;

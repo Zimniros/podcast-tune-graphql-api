@@ -85,6 +85,7 @@ const categoryFour = {
 
 const seedDatabase = async () => {
   await db.mutation.deleteManyUsers();
+  await db.mutation.deleteManyEpisodes();
   await db.mutation.deleteManyPodcasts();
   await db.mutation.deleteManyCategories();
 

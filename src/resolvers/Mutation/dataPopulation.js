@@ -2,7 +2,7 @@
 import getTopPodcast from '../../utils/fetching/getTopPodcasts';
 
 import getCategories from '../../utils/fetching/getCategories';
-import createPodcastWithFeed from '../../utils/createPodcastWithFeed';
+import createPodcastWithFeed from '../../utils/population/createPodcastWithFeed';
 import createPodcast from '../../utils/population/createPodcast';
 
 export default {
